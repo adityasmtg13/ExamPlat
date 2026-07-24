@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginStudent } from "../services/authService";
-
+import { toast } from "sonner";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 
 function Login() {
@@ -38,12 +38,22 @@ function Login() {
         JSON.stringify(res.data.student)
       );
 
-      alert("Login Successful!");
+      toast.success(
+          `Hi ${res.data.student?.name || "User"} 👋`,
+          {
+              description:"Login Successful",
+              duration:5000,
+          }
+      );
+
+      setTimeout(()=>{
+          navigate("/dashboard");
+      },5000);
 
       navigate("/dashboard");
 
     } catch (err) {
-      alert(err.response?.data?.message || "Login Failed");
+      toast.error(err.response?.data?.message || "Login Failed");
     }
 
     setLoading(false);

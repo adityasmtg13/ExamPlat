@@ -4,3 +4,19 @@ body{
     margin:0;
     font-family:Inter,sans-serif;
 }
+
+@keyframes fadeDropdown {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+.animate-fade {
+  animation: fadeDropdown 0.25s ease;
+}

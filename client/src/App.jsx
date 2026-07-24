@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
@@ -11,7 +12,6 @@ import PublicRoute from "./components/PublicRoute";
 function App() {
   return (
     <Routes>
-
       <Route path="/" element={<Home />} />
 
       <Route
@@ -41,6 +41,14 @@ function App() {
         }
       />
 
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

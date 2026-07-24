@@ -1,89 +1,65 @@
-import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import {
   FaUserGraduate,
   FaClipboardList,
   FaChartBar,
   FaUniversity,
-  FaSignOutAlt,
 } from "react-icons/fa";
 
 function Dashboard() {
-  const navigate = useNavigate();
-
   const student = JSON.parse(localStorage.getItem("student"));
-
-    const logout = () => {
-        localStorage.clear();
-        navigate("/login", { replace: true });
-    };
 
   return (
     <div className="min-h-screen bg-gray-100">
-
       {/* Navbar */}
-
-      <nav className="bg-blue-900 text-white px-10 py-5 flex justify-between items-center shadow-lg">
-
-        <h1 className="text-2xl font-bold">
-          AI Exam Prep Platform
-        </h1>
-
-        <button
-          onClick={logout}
-          className="flex items-center gap-2 bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg transition"
-        >
-          <FaSignOutAlt />
-          Logout
-        </button>
-
-      </nav>
+      <Navbar />
 
       <div className="max-w-7xl mx-auto p-8">
-
         <h2 className="text-4xl font-bold mb-8">
           Welcome,
           <span className="text-blue-700">
             {" "}
-            {student?.fullName}
+            {student?.name}
           </span>
         </h2>
 
         <div className="grid lg:grid-cols-2 gap-8">
-
-          {/* Profile */}
-
+          {/* Student Profile */}
           <div className="bg-white rounded-2xl shadow-lg p-8">
-
             <h3 className="text-2xl font-bold mb-6">
               Student Profile
             </h3>
 
             <div className="space-y-4">
+              <p>
+                <b>Name :</b> {student?.name}
+              </p>
 
-              <p><b>Name :</b> {student?.fullName}</p>
+              <p>
+                <b>Email :</b> {student?.email}
+              </p>
 
-              <p><b>Email :</b> {student?.email}</p>
+              <p>
+                <b>Phone :</b> {student?.phone || "--"}
+              </p>
 
-              <p><b>Phone :</b> {student?.phone}</p>
+              <p>
+                <b>Stream :</b> {student?.stream || "--"}
+              </p>
 
-              <p><b>Aadhaar :</b> {student?.aadhaar}</p>
-
-              <p><b>Role :</b> {student?.role}</p>
-
+              <p>
+                <b>Class :</b> {student?.studentClass || "--"}
+              </p>
             </div>
-
           </div>
 
-          {/* Stats */}
-
+          {/* Quick Stats */}
           <div className="bg-white rounded-2xl shadow-lg p-8">
-
             <h3 className="text-2xl font-bold mb-6">
               Quick Stats
             </h3>
 
             <div className="grid grid-cols-2 gap-5">
-
               <div className="bg-cyan-100 p-5 rounded-xl">
                 <h4 className="font-bold">Mock Tests</h4>
                 <p className="text-3xl mt-2">0</p>
@@ -95,32 +71,29 @@ function Dashboard() {
               </div>
 
               <div className="bg-pink-100 p-5 rounded-xl">
-                <h4 className="font-bold">AIR</h4>
+                <h4 className="font-bold">Predicted AIR</h4>
                 <p className="text-3xl mt-2">--</p>
               </div>
 
               <div className="bg-yellow-100 p-5 rounded-xl">
-                <h4 className="font-bold">Rank</h4>
+                <h4 className="font-bold">Percentile</h4>
                 <p className="text-3xl mt-2">--</p>
               </div>
-
             </div>
-
           </div>
-
         </div>
 
+        {/* Features */}
         <h2 className="text-3xl font-bold mt-12 mb-8">
           Features
         </h2>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-
           <div className="bg-white rounded-xl shadow-lg p-8 hover:scale-105 transition cursor-pointer">
-            <FaClipboardList className="text-blue-600 text-5xl mb-4" />
+            <FaClipboardList className="text-gray-600 text-5xl mb-4" />
             <h3 className="font-bold text-xl">Mock Tests</h3>
             <p className="text-gray-600 mt-2">
-              Practice AI generated exams.
+              Practice AI-generated exams.
             </p>
           </div>
 
@@ -128,7 +101,7 @@ function Dashboard() {
             <FaChartBar className="text-green-600 text-5xl mb-4" />
             <h3 className="font-bold text-xl">Analytics</h3>
             <p className="text-gray-600 mt-2">
-              View detailed performance.
+              View detailed performance reports.
             </p>
           </div>
 
@@ -136,22 +109,21 @@ function Dashboard() {
             <FaUserGraduate className="text-pink-600 text-5xl mb-4" />
             <h3 className="font-bold text-xl">Rank Predictor</h3>
             <p className="text-gray-600 mt-2">
-              Predict your AIR.
+              Predict your JEE/NEET rank.
             </p>
           </div>
 
           <div className="bg-white rounded-xl shadow-lg p-8 hover:scale-105 transition cursor-pointer">
             <FaUniversity className="text-yellow-600 text-5xl mb-4" />
-            <h3 className="font-bold text-xl">College Predictor</h3>
+            <h3 className="font-bold text-xl">
+              College Predictor
+            </h3>
             <p className="text-gray-600 mt-2">
-              Find the best colleges.
+              Explore colleges based on your rank.
             </p>
           </div>
-
         </div>
-
       </div>
-
     </div>
   );
 }
