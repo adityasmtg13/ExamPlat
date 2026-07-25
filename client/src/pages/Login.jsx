@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { loginStudent } from "../services/authService";
 import { toast } from "sonner";
 import { FaEnvelope, FaLock } from "react-icons/fa";
+import { setStudent } from "../storage";
 
 function Login() {
   const navigate = useNavigate();
@@ -32,11 +33,8 @@ function Login() {
       // Save JWT
       localStorage.setItem("token", res.data.token);
 
-      // Save student details
-      localStorage.setItem(
-        "student",
-        JSON.stringify(res.data.student)
-      );
+      // Save student details safely
+      setStudent(res.data.student);
 
       toast.success(
           `Hi ${res.data.student?.name || "User"} 👋`,

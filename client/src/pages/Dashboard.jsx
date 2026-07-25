@@ -7,9 +7,10 @@ import {
   FaUniversity,
   FaCheckCircle,
 } from "react-icons/fa";
+import { getStudent } from "../storage";
 
 function Dashboard() {
-  const student = JSON.parse(localStorage.getItem("student"));
+  const student = getStudent();
 
   return (
     <div className="min-h-screen bg-gray-100">

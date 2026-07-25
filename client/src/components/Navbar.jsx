@@ -3,11 +3,12 @@ import { FaUserCircle, FaChevronDown } from "react-icons/fa";
 import { useState, useEffect, useRef } from "react";
 
 import ProfileDropdown from "./ProfileDropdown";
+import { getStudent } from "../storage";
 
 function Navbar() {
   const navigate = useNavigate();
 
-  const student = JSON.parse(localStorage.getItem("student"));
+  const student = getStudent();
 
   const [open, setOpen] = useState(false);
 
