@@ -1,16 +1,38 @@
 const Student = require("../models/Student");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { isValidEmail, isValidName, getPasswordValidationErrors } = require("../utils/validation");
 
 // Register Student
 exports.registerStudent = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, confirmPassword } = req.body;
 
-    if (!name || !email || !password) {
+    const errors = [];
+
+    if (!name || !isValidName(name)) {
+      errors.push("Enter a valid full name. Only letters and spaces are allowed.");
+    }
+
+    if (!email || !isValidEmail(email)) {
+      errors.push("Enter a valid email address.");
+    }
+
+    if (!password) {
+      errors.push("Password is required.");
+    } else {
+      errors.push(...getPasswordValidationErrors(password, confirmPassword));
+    }
+
+    if (confirmPassword === undefined || confirmPassword === "") {
+      errors.push("Passwords do not match.");
+    }
+
+    if (errors.length > 0) {
       return res.status(400).json({
         success: false,
-        message: "Please fill all required fields",
+        message: "Please fix the highlighted registration errors.",
+        errors,
       });
     }
 
