@@ -39,16 +39,20 @@ function Navbar() {
   };
 
   return (
-    <nav className="bg-blue-900 text-white shadow-lg">
-      <div className="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
+    <nav className="bg-white text-[#103f7c] shadow-md border-b">
+      <div className="max-w-7xl mx-auto px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
 
         {/* Logo */}
 
-        <Link
-          to="/dashboard"
-          className="text-3xl font-bold tracking-wide"
-        >
-          AI Exam Prep Platform
+        <Link to="/dashboard" className="flex items-center gap-4">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg"
+            className="w-14 h-auto object-contain"
+            alt="Emblem of India"
+          />
+          <h1 className="font-bold text-[#103f7c] text-2xl md:text-3xl">
+            National Exam Platform
+          </h1>
         </Link>
 
         {/* Navigation */}
@@ -57,28 +61,28 @@ function Navbar() {
 
           <Link
             to="/dashboard"
-            className="hover:text-cyan-300 transition"
+            className="font-semibold text-[#103f7c] hover:text-orange-500 transition"
           >
             Dashboard
           </Link>
 
           <Link
             to="/mock-tests"
-            className="hover:text-cyan-300 transition"
+            className="font-semibold text-[#103f7c] hover:text-orange-500 transition"
           >
             Mock Tests
           </Link>
 
           <Link
             to="/analytics"
-            className="hover:text-cyan-300 transition"
+            className="font-semibold text-[#103f7c] hover:text-orange-500 transition"
           >
             Analytics
           </Link>
 
           <Link
             to="/predictor"
-            className="hover:text-cyan-300 transition"
+            className="font-semibold text-[#103f7c] hover:text-orange-500 transition"
           >
             Predictor
           </Link>

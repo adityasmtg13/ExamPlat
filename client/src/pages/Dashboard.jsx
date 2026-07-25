@@ -1,9 +1,11 @@
 import Navbar from "../components/Navbar";
 import {
+  FaUserCircle,
   FaUserGraduate,
   FaClipboardList,
   FaChartBar,
   FaUniversity,
+  FaCheckCircle,
 } from "react-icons/fa";
 
 function Dashboard() {
@@ -14,115 +16,178 @@ function Dashboard() {
       {/* Navbar */}
       <Navbar />
 
-      <div className="max-w-7xl mx-auto p-8">
-        <h2 className="text-4xl font-bold mb-8">
-          Welcome,
-          <span className="text-blue-700">
-            {" "}
-            {student?.name}
-          </span>
-        </h2>
-
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Student Profile */}
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold mb-6">
-              Student Profile
-            </h3>
-
-            <div className="space-y-4">
-              <p>
-                <b>Name :</b> {student?.name}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <section className="bg-white rounded-3xl shadow-md border border-gray-200 p-8 mb-8">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold text-[#103f7c]">
+                Welcome, {student?.name}
+              </h2>
+              <p className="text-gray-600 mt-3">
+                National Exam Platform Student Dashboard
               </p>
+            </div>
+            <p className="text-sm text-gray-500">
+              {new Date().toLocaleDateString("en-IN", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+          </div>
+          <div className="mt-6 h-px bg-[#103f7c]/10" />
+        </section>
 
-              <p>
-                <b>Email :</b> {student?.email}
-              </p>
+        <div className="grid xl:grid-cols-[1.4fr_1fr] gap-8">
+          <div className="space-y-8">
+            <div className="bg-white rounded-3xl shadow-md border-l-4 border-[#103f7c] p-8 hover:shadow-xl transition">
+              <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h3 className="text-xl font-semibold text-[#103f7c]">Profile Summary</h3>
+                  <p className="text-gray-600 mt-3">Student information and contact details.</p>
+                </div>
+                <div className="rounded-full bg-[#f1f5f9] px-4 py-2 text-sm text-gray-600">
+                  Official dashboard overview
+                </div>
+              </div>
+              <div className="mt-8 grid gap-6 sm:grid-cols-2">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-full overflow-hidden bg-[#eff6ff] flex items-center justify-center text-3xl text-[#103f7c]">
+                    {student?.profilePhoto ? (
+                      <img
+                        src={student.profilePhoto}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <FaUserCircle />
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-lg font-semibold text-[#103f7c]">{student?.name || "Student"}</p>
+                    <p className="text-gray-500">{student?.email || "No email provided"}</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="bg-[#f8fafc] rounded-xl p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Phone</p>
+                    <p className="mt-2 font-semibold text-gray-800">{student?.phone || "--"}</p>
+                  </div>
+                  <div className="bg-[#f8fafc] rounded-xl p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Stream</p>
+                    <p className="mt-2 font-semibold text-gray-800">{student?.stream || "--"}</p>
+                  </div>
+                  <div className="bg-[#f8fafc] rounded-xl p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Class</p>
+                    <p className="mt-2 font-semibold text-gray-800">{student?.studentClass || "--"}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-              <p>
-                <b>Phone :</b> {student?.phone || "--"}
-              </p>
+            <div className="bg-white rounded-3xl shadow-md border-l-4 border-green-600 p-8 hover:shadow-xl transition">
+              <h3 className="text-xl font-semibold text-[#103f7c]">Latest Notifications</h3>
+              <div className="mt-6 space-y-4 text-gray-700">
+                <div className="rounded-2xl bg-[#ecf5ff] p-4 flex items-start gap-3">
+                  <FaCheckCircle className="text-green-600 mt-1" />
+                  <p>JEE Main Mock Test Portal Available</p>
+                </div>
+                <div className="rounded-2xl bg-[#ecf5ff] p-4 flex items-start gap-3">
+                  <FaCheckCircle className="text-green-600 mt-1" />
+                  <p>New Analytics Update Released</p>
+                </div>
+                <div className="rounded-2xl bg-[#ecf5ff] p-4 flex items-start gap-3">
+                  <FaCheckCircle className="text-green-600 mt-1" />
+                  <p>Rank Predictor Improved</p>
+                </div>
+              </div>
+            </div>
 
-              <p>
-                <b>Stream :</b> {student?.stream || "--"}
-              </p>
-
-              <p>
-                <b>Class :</b> {student?.studentClass || "--"}
-              </p>
+            <div className="bg-white rounded-3xl shadow-md border-l-4 border-blue-700 p-8 hover:shadow-xl transition">
+              <h3 className="text-xl font-semibold text-[#103f7c]">Quick Services</h3>
+              <div className="grid md:grid-cols-2 gap-6 mt-6">
+                <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition cursor-pointer">
+                  <FaClipboardList className="text-blue-700 text-4xl mb-4" />
+                  <h4 className="font-semibold text-xl">Mock Tests</h4>
+                  <p className="text-gray-600 mt-2">Practice AI-generated exams.</p>
+                </div>
+                <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition cursor-pointer">
+                  <FaChartBar className="text-orange-500 text-4xl mb-4" />
+                  <h4 className="font-semibold text-xl">Analytics</h4>
+                  <p className="text-gray-600 mt-2">View performance insights.</p>
+                </div>
+                <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition cursor-pointer">
+                  <FaUserGraduate className="text-pink-500 text-4xl mb-4" />
+                  <h4 className="font-semibold text-xl">Rank Predictor</h4>
+                  <p className="text-gray-600 mt-2">Estimate your exam rank.</p>
+                </div>
+                <div className="bg-white rounded-xl shadow-md p-6 hover:shadow-xl transition cursor-pointer">
+                  <FaUniversity className="text-yellow-600 text-4xl mb-4" />
+                  <h4 className="font-semibold text-xl">College Predictor</h4>
+                  <p className="text-gray-600 mt-2">Explore college matches.</p>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Quick Stats */}
-          <div className="bg-white rounded-2xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold mb-6">
-              Quick Stats
-            </h3>
-
-            <div className="grid grid-cols-2 gap-5">
-              <div className="bg-cyan-100 p-5 rounded-xl">
-                <h4 className="font-bold">Mock Tests</h4>
-                <p className="text-3xl mt-2">0</p>
+          <div className="space-y-6">
+            <div className="bg-white rounded-3xl shadow-md border-l-4 border-green-600 p-8 hover:shadow-xl transition">
+              <h3 className="text-xl font-semibold text-[#103f7c]">Statistics</h3>
+              <div className="grid grid-cols-2 gap-4 mt-6">
+                <div className="bg-[#f8fafc] rounded-xl p-5">
+                  <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Mock Tests Attempted</p>
+                  <p className="mt-3 text-3xl font-semibold text-gray-900">0</p>
+                </div>
+                <div className="bg-[#f8fafc] rounded-xl p-5">
+                  <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Predicted AIR</p>
+                  <p className="mt-3 text-3xl font-semibold text-gray-900">--</p>
+                </div>
+                <div className="bg-[#f8fafc] rounded-xl p-5">
+                  <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Percentile</p>
+                  <p className="mt-3 text-3xl font-semibold text-gray-900">--</p>
+                </div>
+                <div className="bg-[#f8fafc] rounded-xl p-5">
+                  <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Accuracy</p>
+                  <p className="mt-3 text-3xl font-semibold text-gray-900">--</p>
+                </div>
               </div>
+            </div>
 
-              <div className="bg-green-100 p-5 rounded-xl">
-                <h4 className="font-bold">Accuracy</h4>
-                <p className="text-3xl mt-2">--</p>
-              </div>
-
-              <div className="bg-pink-100 p-5 rounded-xl">
-                <h4 className="font-bold">Predicted AIR</h4>
-                <p className="text-3xl mt-2">--</p>
-              </div>
-
-              <div className="bg-yellow-100 p-5 rounded-xl">
-                <h4 className="font-bold">Percentile</h4>
-                <p className="text-3xl mt-2">--</p>
+            <div className="bg-white rounded-3xl shadow-md border-l-4 border-[#103f7c] p-8 hover:shadow-xl transition">
+              <h3 className="text-xl font-semibold text-[#103f7c]">Student Details</h3>
+              <div className="mt-6 space-y-4 text-gray-700">
+                <p><span className="font-semibold">Name:</span> {student?.name || "--"}</p>
+                <p><span className="font-semibold">Email:</span> {student?.email || "--"}</p>
+                <p><span className="font-semibold">Phone:</span> {student?.phone || "--"}</p>
+                <p><span className="font-semibold">Stream:</span> {student?.stream || "--"}</p>
+                <p><span className="font-semibold">Class:</span> {student?.studentClass || "--"}</p>
+                <p><span className="font-semibold">School:</span> --</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Features */}
-        <h2 className="text-3xl font-bold mt-12 mb-8">
-          Features
-        </h2>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white rounded-xl shadow-lg p-8 hover:scale-105 transition cursor-pointer">
-            <FaClipboardList className="text-gray-600 text-5xl mb-4" />
-            <h3 className="font-bold text-xl">Mock Tests</h3>
-            <p className="text-gray-600 mt-2">
-              Practice AI-generated exams.
-            </p>
+        <footer className="mt-12 bg-[#082b5a] text-white rounded-3xl shadow-md overflow-hidden">
+          <div className="max-w-7xl mx-auto px-6 py-10 grid md:grid-cols-3 gap-8">
+            <div>
+              <h2 className="text-2xl font-bold mb-5">National Exam Platform</h2>
+              <p className="leading-8 text-gray-300">An official student portal for national exam preparation and analytics.</p>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold mb-5">Government of India</h3>
+              <p className="text-gray-300">Ministry of Education</p>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold mb-5">Contact</h3>
+              <p className="text-gray-300">support@nexam.gov.in</p>
+              <p className="text-gray-300">1800-000-0000</p>
+            </div>
           </div>
-
-          <div className="bg-white rounded-xl shadow-lg p-8 hover:scale-105 transition cursor-pointer">
-            <FaChartBar className="text-green-600 text-5xl mb-4" />
-            <h3 className="font-bold text-xl">Analytics</h3>
-            <p className="text-gray-600 mt-2">
-              View detailed performance reports.
-            </p>
+          <div className="border-t border-blue-700 py-5 text-center text-gray-300">
+            © 2026 National Exam Platform
           </div>
-
-          <div className="bg-white rounded-xl shadow-lg p-8 hover:scale-105 transition cursor-pointer">
-            <FaUserGraduate className="text-pink-600 text-5xl mb-4" />
-            <h3 className="font-bold text-xl">Rank Predictor</h3>
-            <p className="text-gray-600 mt-2">
-              Predict your JEE/NEET rank.
-            </p>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-lg p-8 hover:scale-105 transition cursor-pointer">
-            <FaUniversity className="text-yellow-600 text-5xl mb-4" />
-            <h3 className="font-bold text-xl">
-              College Predictor
-            </h3>
-            <p className="text-gray-600 mt-2">
-              Explore colleges based on your rank.
-            </p>
-          </div>
-        </div>
+        </footer>
       </div>
     </div>
   );
