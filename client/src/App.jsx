@@ -5,6 +5,8 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
+import RegisterExam from "./pages/RegisterExam";
+import MockTests from "./pages/MockTests";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
@@ -46,6 +48,24 @@ function App() {
         element={
           <ProtectedRoute>
             <Profile />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/register-exam"
+        element={
+          <ProtectedRoute>
+            <RegisterExam />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/mock-tests"
+        element={
+          <ProtectedRoute>
+            <MockTests />
           </ProtectedRoute>
         }
       />
