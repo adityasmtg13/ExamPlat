@@ -47,9 +47,9 @@ function Navbar() {
 
         <Link to="/" className="flex items-center gap-4">
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg"
-            className="w-14 h-auto object-contain"
-            alt="Emblem of India"
+            src="src/assets/logo.png"
+            className="w-20 h-auto object-contain"
+            alt="National Exam Platform Logo"
           />
           <h1 className="font-bold text-[#103f7c] text-2xl md:text-3xl">
             National Exam Platform

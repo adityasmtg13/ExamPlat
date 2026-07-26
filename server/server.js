@@ -11,6 +11,7 @@ const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
+const registrationRoutes = require("./routes/registrationRoutes");
 
 connectDB();
 
@@ -26,6 +27,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
+app.use("/api/registration", registrationRoutes);
 
 // Home Route
 app.get("/", (req, res) => {
@@ -33,7 +35,7 @@ app.get("/", (req, res) => {
 });
 
 // Server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
