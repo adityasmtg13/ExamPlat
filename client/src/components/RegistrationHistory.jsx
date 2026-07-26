@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { downloadReceipt } from "../services/receiptService";
 
 function RegistrationHistory({ registrations = [] }) {
   const navigate = useNavigate();
@@ -33,6 +34,14 @@ function RegistrationHistory({ registrations = [] }) {
             {status}
           </span>
         );
+    }
+  };
+
+  const handleDownloadReceipt = async (paymentId) => {
+    try {
+      await downloadReceipt(paymentId);
+    } catch (error) {
+      alert(error.message || "Unable to download receipt.");
     }
   };
 
@@ -95,6 +104,9 @@ function RegistrationHistory({ registrations = [] }) {
 
                     {registration.status === "Registered" && (
                       <button
+                        onClick={() =>
+                          handleDownloadReceipt(registration.paymentId)
+                        }
                         className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700"
                       >
                         Download Receipt

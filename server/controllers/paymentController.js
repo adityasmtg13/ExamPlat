@@ -4,6 +4,8 @@ const {
   generatePaymentNumber,
   generateTransactionId,
 } = require("../utils/generateTransactionId");
+const Student = require("../models/Student");
+const sendPaymentConfirmation = require("../utils/sendPaymentConfirmation");
 
 /**
  * Create a payment for a registration
@@ -94,6 +96,10 @@ const createPayment = async (req, res) => {
  * Complete payment (Mock Gateway)
  * POST /api/payment/complete
  */
+/**
+ * Complete payment (Mock Gateway)
+ * POST /api/payment/complete
+ */
 const completePayment = async (req, res) => {
   try {
     const studentId = req.student.id;
@@ -106,6 +112,7 @@ const completePayment = async (req, res) => {
       });
     }
 
+    // Find payment
     const payment = await Payment.findById(paymentId);
 
     if (!payment) {
@@ -115,6 +122,7 @@ const completePayment = async (req, res) => {
       });
     }
 
+    // Verify owner
     if (payment.studentId.toString() !== studentId) {
       return res.status(403).json({
         success: false,
@@ -122,6 +130,7 @@ const completePayment = async (req, res) => {
       });
     }
 
+    // Prevent duplicate payment
     if (payment.status === "Success") {
       return res.status(400).json({
         success: false,
@@ -129,15 +138,35 @@ const completePayment = async (req, res) => {
       });
     }
 
+    // Mark payment as successful
     payment.status = "Success";
     payment.paidAt = new Date();
 
     await payment.save();
 
-    await ExamRegistration.findByIdAndUpdate(payment.registrationId, {
-      status: "Registered",
-      paymentId: payment._id,
-    });
+    // Update registration
+    const registration = await ExamRegistration.findByIdAndUpdate(
+      payment.registrationId,
+      {
+        status: "Registered",
+        paymentId: payment._id,
+      },
+      { new: true }
+    );
+
+    // Fetch student details
+    const student = await Student.findById(studentId);
+
+    // Send payment confirmation email
+    try {
+      await sendPaymentConfirmation({
+        student,
+        registration,
+        payment,
+      });
+    } catch (err) {
+      console.error("Email Error:", err);
+    }
 
     res.status(200).json({
       success: true,

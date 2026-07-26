@@ -13,6 +13,9 @@ const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const registrationRoutes = require("./routes/registrationRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
+const receiptRoutes = require("./routes/receiptRoutes");
+const mockTestRoutes = require("./routes/mockTestRoutes");
+const mockExamRoutes = require("./routes/mockExamRoutes");
 
 connectDB();
 
@@ -30,6 +33,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/registration", registrationRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/receipt", receiptRoutes);
+app.use("/api/mock-tests", mockTestRoutes);
+app.use("/api/mock-exam", mockExamRoutes);
 
 // Home Route
 app.get("/", (req, res) => {

@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import RegisterExam from "./pages/RegisterExam";
 import MockTests from "./pages/MockTests";
 import ComingSoon from "./pages/ComingSoon";
+import MockExam from "./pages/MockExam";
 
 // Payment Pages
 import Payment from "./pages/Payment";
@@ -18,6 +19,9 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
+
+// Mock Test Pages
+import MockInstructions from "./pages/MockInstructions";
 
 function App() {
   return (
@@ -68,6 +72,17 @@ function App() {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/mock-test/instructions/:registrationId"
+        element={<MockInstructions />}
+      />
+
+      <Route
+  path="/mock-test/exam/:attemptId"
+  element={<MockExam />}
+/>
+
 
       {/* Payment Routes */}
 

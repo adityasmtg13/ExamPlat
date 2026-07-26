@@ -60,8 +60,8 @@ function Home() {
           <div className="flex items-center gap-5">
 
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg"
-              className="w-14"
+              src="src/assets/logo.png"
+              className="w-24"
               alt=""
             />
 

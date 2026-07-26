@@ -94,7 +94,7 @@ const MockQRCode = () => {
               : "bg-green-600 hover:bg-green-700"
           }`}
         >
-          {loading ? "Verifying Payment..." : `I've Paid ₹${payment.amount}`}
+          {loading ? "Verifying Payment..." : `Pay ₹${payment.amount}`}
         </button>
       </div>
     </div>

@@ -1,116 +1,243 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { FaFlask, FaCalculator } from "react-icons/fa";
+import { FaCalculator, FaFlask } from "react-icons/fa";
+import { getMockTests } from "../services/mockTestService";
 
-const mockTests = [
-  {
+const examDetails = {
+  "JEE Main": {
     title: "JEE Main Mock Test",
     body: "National Testing Agency",
     duration: "3 Hours",
     questions: "90",
     marks: "300",
     sections: ["Physics", "Chemistry", "Mathematics"],
-    negative: "Yes",
-    pattern: "Official NTA Pattern",
-    difficulty: "Mixed",
-    attempts: "3 Attempts",
-    remaining: "3 / 3",
-    button: "Start Mock Test",
     icon: <FaCalculator className="text-[#103f7c]" />,
     accent: "from-blue-600 to-indigo-700",
   },
-  {
+
+  NEET: {
     title: "NEET Mock Test",
     body: "National Testing Agency",
     duration: "3 Hours 20 Minutes",
     questions: "180",
     marks: "720",
     sections: ["Physics", "Chemistry", "Botany", "Zoology"],
-    negative: "Yes",
-    pattern: "Official NTA Pattern",
-    difficulty: "Mixed",
-    attempts: "3 Attempts",
-    remaining: "3 / 3",
-    button: "Start Mock Test",
     icon: <FaFlask className="text-emerald-600" />,
     accent: "from-emerald-600 to-green-700",
-  }
-];
+  },
+};
 
 function MockTests() {
+  const navigate = useNavigate();
+
+  const [mockTests, setMockTests] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadMockTests();
+  }, []);
+
+  const loadMockTests = async () => {
+    try {
+      const data = await getMockTests();
+      setMockTests(data.mockTests);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-100">
+        <Navbar />
+
+        <div className="flex h-[70vh] items-center justify-center">
+          <h2 className="text-xl font-semibold text-[#103f7c]">
+            Loading Mock Tests...
+          </h2>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-[#103f7c] md:text-4xl">Mock Tests</h1>
-          <p className="mx-auto mt-3 max-w-2xl text-gray-600">
-            Prepare with nationally aligned mock assessments designed for serious aspirants.
+
+      <div className="mx-auto max-w-7xl px-4 py-10">
+
+        <div className="mb-10 text-center">
+          <h1 className="text-4xl font-bold text-[#103f7c]">
+            Mock Tests
+          </h1>
+
+          <p className="mt-3 text-gray-600">
+            Practice using official examination patterns before your real exam.
           </p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3">
-          {mockTests.map((test) => (
-            <div
-              key={test.title}
-              className="group rounded-3xl border border-gray-200 bg-white p-6 shadow-md transition duration-200 hover:-translate-y-1 hover:shadow-xl"
-            >
-              <div className={`rounded-2xl bg-gradient-to-r ${test.accent} p-4 text-white`}>
-                <div className="flex items-center justify-between">
-                  <div className="text-3xl">{test.icon}</div>
-                  <span className="rounded-full bg-white/20 px-3 py-1 text-sm font-semibold">
-                    {test.body}
-                  </span>
-                </div>
-                <h2 className="mt-4 text-xl font-semibold">{test.title}</h2>
-              </div>
+        {mockTests.length === 0 ? (
+          <div className="rounded-2xl bg-white p-12 text-center shadow-md">
+            <h2 className="text-2xl font-semibold text-gray-700">
+              No Registered Exams
+            </h2>
 
-              <div className="mt-6 space-y-3 text-sm text-gray-700">
-                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
-                  <span className="font-semibold text-gray-600">Duration</span>
-                  <span>{test.duration}</span>
-                </div>
-                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
-                  <span className="font-semibold text-gray-600">Questions</span>
-                  <span>{test.questions}</span>
-                </div>
-                <div className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2">
-                  <span className="font-semibold text-gray-600">Maximum Marks</span>
-                  <span>{test.marks}</span>
-                </div>
-                <div className="rounded-lg bg-gray-50 px-3 py-3 text-sm">
-                  <p className="mb-2 font-semibold text-gray-600">Sections</p>
-                  <div className="flex flex-wrap gap-2">
-                    {test.sections.map((section) => (
-                      <span key={section} className="rounded-full bg-white px-3 py-1 text-xs text-[#103f7c] shadow-sm">
-                        {section}
+            <p className="mt-3 text-gray-500">
+              Register for an examination to unlock mock tests.
+            </p>
+
+            <button
+              onClick={() => navigate("/register-exam")}
+              className="mt-6 rounded-xl bg-[#103f7c] px-6 py-3 font-semibold text-white hover:bg-[#0b2d57]"
+            >
+              Register Examination
+            </button>
+          </div>
+        ) : (
+          <div className="grid gap-6 lg:grid-cols-2">
+
+            {mockTests.map((test) => {
+
+              const details = examDetails[test.examType];
+
+              return (
+                <div
+                  key={test.registrationId}
+                  className="rounded-3xl bg-white shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
+                >
+                  <div
+                    className={`rounded-t-3xl bg-gradient-to-r ${details.accent} p-6 text-white`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="text-3xl">
+                        {details.icon}
+                      </div>
+
+                      <span className="rounded-full bg-white/20 px-3 py-1 text-sm font-semibold">
+                        {details.body}
                       </span>
-                    ))}
+                    </div>
+
+                    <h2 className="mt-5 text-2xl font-bold">
+                      {details.title}
+                    </h2>
+
+                    <p className="mt-2 text-sm">
+                      Registration No : {test.registrationNumber}
+                    </p>
+                  </div>
+
+                  <div className="space-y-3 p-6">
+
+                    <div className="flex justify-between rounded-lg bg-gray-50 p-3">
+                      <span className="font-semibold">
+                        Duration
+                      </span>
+
+                      <span>{details.duration}</span>
+                    </div>
+
+                    <div className="flex justify-between rounded-lg bg-gray-50 p-3">
+                      <span className="font-semibold">
+                        Questions
+                      </span>
+
+                      <span>{details.questions}</span>
+                    </div>
+
+                    <div className="flex justify-between rounded-lg bg-gray-50 p-3">
+                      <span className="font-semibold">
+                        Maximum Marks
+                      </span>
+
+                      <span>{details.marks}</span>
+                    </div>
+
+                    <div className="rounded-lg bg-gray-50 p-3">
+                      <p className="mb-2 font-semibold">
+                        Sections
+                      </p>
+
+                      <div className="flex flex-wrap gap-2">
+
+                        {details.sections.map((section) => (
+                          <span
+                            key={section}
+                            className="rounded-full bg-white px-3 py-1 text-sm text-[#103f7c] shadow"
+                          >
+                            {section}
+                          </span>
+                        ))}
+
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between rounded-lg bg-gray-50 p-3">
+                      <span className="font-semibold">
+                        Registration Status
+                      </span>
+
+                      <span
+                        className={`font-bold ${
+                          test.registrationStatus === "Registered"
+                            ? "text-green-600"
+                            : "text-yellow-600"
+                        }`}
+                      >
+                        {test.registrationStatus}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between rounded-lg bg-gray-50 p-3">
+                      <span className="font-semibold">
+                        Attempts Used
+                      </span>
+
+                      <span>
+                        {test.attemptsUsed} / {test.maximumAttempts}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between rounded-lg bg-gray-50 p-3">
+                      <span className="font-semibold">
+                        Remaining Attempts
+                      </span>
+
+                      <span>
+                        {test.remainingAttempts}
+                      </span>
+                    </div>
+
+                    {test.canAttempt ? (
+                      <button
+                        onClick={() =>
+                          navigate(
+                            `/mock-test/instructions/${test.registrationId}`
+                          )
+                        }
+                        className="mt-4 w-full rounded-xl bg-green-600 py-3 font-semibold text-white transition hover:bg-green-700"
+                      >
+                        Take Mock Test
+                      </button>
+                    ) : (
+                      <button
+                        disabled
+                        className="mt-4 w-full cursor-not-allowed rounded-xl bg-gray-400 py-3 font-semibold text-white"
+                      >
+                        {test.registrationStatus === "Pending Payment"
+                          ? "Complete Registration Payment"
+                          : "Maximum Attempts Reached"}
+                      </button>
+                    )}
                   </div>
                 </div>
-              </div>
-
-              <div className="mt-6 border-t border-gray-100 pt-4">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="font-semibold text-gray-600">Attempts</span>
-                  <span>{test.attempts}</span>
-                </div>
-                <div className="mt-2 flex items-center justify-between text-sm">
-                  <span className="font-semibold text-gray-600">Remaining</span>
-                  <span>{test.remaining}</span>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                disabled
-                title="Mock test launch will be enabled soon."
-                className="mt-6 w-full rounded-xl bg-[#103f7c] px-4 py-3 font-semibold text-white transition hover:bg-[#0b2d57] disabled:cursor-not-allowed disabled:bg-gray-400"
-              >
-                {test.button}
-              </button>
-            </div>
-          ))}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

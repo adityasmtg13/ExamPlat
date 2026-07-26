@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { downloadReceipt } from "../services/receiptService";
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
@@ -10,6 +11,14 @@ const PaymentSuccess = () => {
     navigate("/register-exam");
     return null;
   }
+
+  const handleDownloadReceipt = async () => {
+    try {
+      await downloadReceipt(payment._id);
+    } catch (error) {
+      alert(error.message || "Unable to download receipt.");
+    }
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-green-50 p-6">
@@ -64,7 +73,7 @@ const PaymentSuccess = () => {
 
             <span>
               {payment.paidAt
-                ? new Date(payment.paidAt).toLocaleString()
+                ? new Date(payment.paidAt).toLocaleString("en-IN")
                 : "-"}
             </span>
           </div>
@@ -79,7 +88,7 @@ const PaymentSuccess = () => {
           </button>
 
           <button
-            onClick={() => alert("Receipt generation will be available in Phase 4.")}
+            onClick={handleDownloadReceipt}
             className="flex-1 rounded-lg bg-green-600 px-5 py-3 font-semibold text-white transition hover:bg-green-700"
           >
             Download Receipt

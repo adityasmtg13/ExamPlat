@@ -1,0 +1,142 @@
+[
+  {
+    "id": "NEET-BIO-001",
+    "question": "The powerhouse of the cell is",
+    "options": [
+      "Nucleus",
+      "Mitochondria",
+      "Ribosome",
+      "Golgi Apparatus"
+    ],
+    "correctAnswer": 1,
+    "marks": 4,
+    "negativeMarks": 1,
+    "subject": "Biology"
+  },
+  {
+    "id": "NEET-BIO-002",
+    "question": "DNA stands for",
+    "options": [
+      "Deoxyribonucleic Acid",
+      "Deoxyribose Nucleic Acid",
+      "Dioxyribonucleic Acid",
+      "Dynamic Nucleic Acid"
+    ],
+    "correctAnswer": 0,
+    "marks": 4,
+    "negativeMarks": 1,
+    "subject": "Biology"
+  },
+  {
+    "id": "NEET-BIO-003",
+    "question": "Which blood group is known as the universal donor?",
+    "options": [
+      "A",
+      "B",
+      "AB",
+      "O Negative"
+    ],
+    "correctAnswer": 3,
+    "marks": 4,
+    "negativeMarks": 1,
+    "subject": "Biology"
+  },
+  {
+    "id": "NEET-PHY-001",
+    "question": "SI unit of electric current is",
+    "options": [
+      "Volt",
+      "Ampere",
+      "Ohm",
+      "Watt"
+    ],
+    "correctAnswer": 1,
+    "marks": 4,
+    "negativeMarks": 1,
+    "subject": "Physics"
+  },
+  {
+    "id": "NEET-PHY-002",
+    "question": "Acceleration due to gravity on Earth is approximately",
+    "options": [
+      "9.8 m/s²",
+      "3.0 m/s²",
+      "1.6 m/s²",
+      "12.5 m/s²"
+    ],
+    "correctAnswer": 0,
+    "marks": 4,
+    "negativeMarks": 1,
+    "subject": "Physics"
+  },
+  {
+    "id": "NEET-CHE-001",
+    "question": "Water has the chemical formula",
+    "options": [
+      "CO₂",
+      "H₂O",
+      "NaCl",
+      "O₂"
+    ],
+    "correctAnswer": 1,
+    "marks": 4,
+    "negativeMarks": 1,
+    "subject": "Chemistry"
+  },
+  {
+    "id": "NEET-CHE-002",
+    "question": "Atomic number represents the number of",
+    "options": [
+      "Neutrons",
+      "Electrons only",
+      "Protons",
+      "Nucleons"
+    ],
+    "correctAnswer": 2,
+    "marks": 4,
+    "negativeMarks": 1,
+    "subject": "Chemistry"
+  },
+  {
+    "id": "NEET-BIO-004",
+    "question": "Which organ purifies blood in the human body?",
+    "options": [
+      "Heart",
+      "Kidney",
+      "Liver",
+      "Lungs"
+    ],
+    "correctAnswer": 1,
+    "marks": 4,
+    "negativeMarks": 1,
+    "subject": "Biology"
+  },
+  {
+    "id": "NEET-BIO-005",
+    "question": "Photosynthesis mainly occurs in",
+    "options": [
+      "Roots",
+      "Stem",
+      "Leaves",
+      "Flowers"
+    ],
+    "correctAnswer": 2,
+    "marks": 4,
+    "negativeMarks": 1,
+    "subject": "Biology"
+  },
+  {
+    "id": "NEET-CHE-003",
+    "question": "The pH of pure water at room temperature is",
+    "options": [
+      "5",
+      "6",
+      "7",
+      "8"
+    ],
+    "correctAnswer": 2,
+    "marks": 4,
+    "negativeMarks": 1,
+    "subject": "Chemistry"
+  }
+]
