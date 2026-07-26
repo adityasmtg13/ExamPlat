@@ -151,12 +151,14 @@ exports.createMockAttempt = async (req, res) => {
     });
 
     if (activeAttempt) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "A mock test attempt is already in progress.",
-      });
-    }
+  return res.status(409).json({
+    success: false,
+    activeAttempt: true,
+    attemptId: activeAttempt._id,
+    message:
+      "A mock test attempt is already in progress. Do you want to submit it and start a new one?",
+  });
+}
 
     // Count completed attempts
     const completedAttempts = await MockAttempt.countDocuments({
@@ -193,6 +195,80 @@ exports.createMockAttempt = async (req, res) => {
 
   } catch (err) {
     console.error("Create Mock Attempt Error:", err);
+
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+/**
+ * Submit current attempt and start a new one
+ * POST /api/mock-tests/submit-and-restart/:registrationId
+ */
+exports.submitAndRestartMockAttempt = async (req, res) => {
+  try {
+    const studentId = req.student.id;
+    const { registrationId } = req.params;
+
+    // Verify registration
+    const registration = await ExamRegistration.findOne({
+      _id: registrationId,
+      studentId,
+    });
+
+    if (!registration) {
+      return res.status(404).json({
+        success: false,
+        message: "Registration not found.",
+      });
+    }
+
+    // Find active attempt
+    const activeAttempt = await MockAttempt.findOne({
+      registrationId,
+      status: "In Progress",
+    });
+
+    if (activeAttempt) {
+      activeAttempt.status = "Completed";
+      activeAttempt.submittedAt = new Date();
+
+      await activeAttempt.save();
+    }
+
+    // Count completed attempts
+    const completedAttempts = await MockAttempt.countDocuments({
+      registrationId,
+      status: "Completed",
+    });
+
+    if (completedAttempts >= 3) {
+      return res.status(400).json({
+        success: false,
+        message: "Maximum of 3 mock test attempts reached.",
+      });
+    }
+
+    // Create new attempt
+    const attempt = await MockAttempt.create({
+      studentId,
+      registrationId,
+      examType: registration.examType,
+      attemptNumber: completedAttempts + 1,
+      status: "In Progress",
+      startedAt: new Date(),
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Previous attempt submitted successfully.",
+      attempt,
+    });
+
+  } catch (err) {
+    console.error("Submit And Restart Error:", err);
 
     res.status(500).json({
       success: false,

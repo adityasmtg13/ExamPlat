@@ -4,7 +4,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 import { getRegistrationById } from "../services/registrationService";
-import { startMockAttempt } from "../services/mockTestService";
+
+
+import {
+  startMockAttempt,
+  submitAndRestartMockAttempt,
+} from "../services/mockTestService";
 
 const examDetails = {
   "JEE Main": {
@@ -48,29 +53,46 @@ function MockInstructions() {
     }
   };
 
-  const handleStart = async () => {
-    try {
-      setStarting(true);
+const handleStart = async () => {
+  try {
+    setStarting(true);
 
-      const response = await startMockAttempt(registrationId);
+    const response = await startMockAttempt(registrationId);
 
-      console.log("Start Mock Response:", response);
+    navigate(`/mock-test/exam/${response.attempt._id}`);
+  } catch (err) {
+    if (err.activeAttempt) {
+      const submitPrevious = window.confirm(
+        "You already have a mock test in progress.\n\nDo you want to submit it and start a new one?"
+      );
 
-      if (!response.success) {
-        throw new Error(response.message);
+      if (!submitPrevious) {
+        setStarting(false);
+        return;
       }
 
-      navigate(`/mock-test/exam/${response.attempt._id}`);
-    } catch (err) {
-      console.error(err);
+      try {
+        const response = await submitAndRestartMockAttempt(
+          registrationId
+        );
 
-      alert(
-        err.message || "Unable to start mock examination."
-      );
-    } finally {
-      setStarting(false);
+        navigate(`/mock-test/exam/${response.attempt._id}`);
+      } catch (restartErr) {
+        console.log(restartErr);
+
+alert(
+  restartErr?.message ||
+  restartErr?.response?.data?.message ||
+  "Failed to submit the previous attempt."
+);
+      }
+    } else {
+      alert(err.message);
     }
-  };
+  } finally {
+    setStarting(false);
+  }
+};
 
   if (loading) {
     return (

@@ -3,11 +3,11 @@ const router = express.Router();
 
 const authMiddleware = require("../middleware/authMiddleware");
 
-
 const {
   getMockTests,
   getMockAttemptHistory,
   createMockAttempt,
+  submitAndRestartMockAttempt,
 } = require("../controllers/mockTestController");
 
 
@@ -25,6 +25,16 @@ router.post(
   "/start/:registrationId",
   authMiddleware,
   createMockAttempt
+);
+
+/**
+ * Submit current attempt and start a new one
+ * POST /api/mock-tests/submit-and-restart/:registrationId
+ */
+router.post(
+  "/submit-and-restart/:registrationId",
+  authMiddleware,
+  submitAndRestartMockAttempt
 );
 
 /**

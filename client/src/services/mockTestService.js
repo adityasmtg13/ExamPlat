@@ -164,3 +164,24 @@ export const submitMockExam = async (
     );
   }
 };
+
+export const submitAndRestartMockAttempt = async (
+  registrationId
+) => {
+  try {
+    const { data } = await axios.post(
+      `${MOCK_TEST_API}/submit-and-restart/${registrationId}`,
+      {},
+      authConfig()
+    );
+
+    return data;
+  } catch (error) {
+    throw (
+      error.response?.data || {
+        success: false,
+        message: "Unable to restart mock test.",
+      }
+    );
+  }
+};
