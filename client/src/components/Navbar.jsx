@@ -45,7 +45,7 @@ function Navbar() {
 
         {/* Logo */}
 
-        <Link to="/dashboard" className="flex items-center gap-4">
+        <Link to="/" className="flex items-center gap-4">
           <img
             src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg"
             className="w-14 h-auto object-contain"

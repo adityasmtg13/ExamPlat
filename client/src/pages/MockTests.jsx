@@ -1,6 +1,5 @@
-import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { FaBookOpen, FaFlask, FaCalculator, FaBrain } from "react-icons/fa";
+import { FaFlask, FaCalculator } from "react-icons/fa";
 
 const mockTests = [
   {
@@ -38,8 +37,6 @@ const mockTests = [
 ];
 
 function MockTests() {
-  const navigate = useNavigate();
-
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
@@ -105,8 +102,9 @@ function MockTests() {
 
               <button
                 type="button"
-                onClick={() => navigate("/dashboard")}
-                className="mt-6 w-full rounded-xl bg-[#103f7c] px-4 py-3 font-semibold text-white transition hover:bg-[#0b2d57]"
+                disabled
+                title="Mock test launch will be enabled soon."
+                className="mt-6 w-full rounded-xl bg-[#103f7c] px-4 py-3 font-semibold text-white transition hover:bg-[#0b2d57] disabled:cursor-not-allowed disabled:bg-gray-400"
               >
                 {test.button}
               </button>

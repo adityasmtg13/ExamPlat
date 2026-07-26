@@ -30,14 +30,21 @@ function Dashboard() {
 
   const profileCompleted = isProfileComplete(student);
 
-  const handleRegisterClick = () => {
-    if (!profileCompleted) {
-      toast.error("Please complete and validate all profile details before registering for the examination.");
-      return;
-    }
+ const handleRegisterClick = () => {
+  if (!profileCompleted) {
+    toast.error(
+      "Please complete your profile fully before proceeding with examination registration.",
+      {
+        position: "top-center",
+        duration: 4000,
+      }
+    );
 
-    navigate("/register-exam");
-  };
+    return;
+  }
+
+  navigate("/register-exam");
+};
 
   const quickServices = [
     {
@@ -52,18 +59,21 @@ function Dashboard() {
       description: "View performance insights.",
       icon: <FaChartBar />,
       iconClassName: "text-orange-500",
+      onClick: () => navigate("/analytics"),
     },
     {
       title: "Rank Predictor",
       description: "Estimate your exam rank.",
       icon: <FaUserGraduate />,
       iconClassName: "text-pink-500",
+      onClick: () => navigate("/rank-predictor"),
     },
     {
       title: "College Predictor",
       description: "Explore college matches.",
       icon: <FaUniversity />,
       iconClassName: "text-yellow-600",
+      onClick: () => navigate("/college-predictor"),
     },
     {
       title: "Profile",
