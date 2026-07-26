@@ -1,8 +1,8 @@
-# 🇮🇳 National Exam Platform
+# 🇮🇳 National Exam Platform (ExamPlat)
 
-An AI-powered MERN Stack based examination platform inspired by the National Testing Agency (NTA), built to help students prepare for competitive examinations such as **JEE**, **NEET**, and other national-level entrance exams.
+An AI-powered MERN Stack based examination platform inspired by the **National Testing Agency (NTA)**. The platform enables students to register, prepare, and participate in competitive examinations such as **JEE**, **NEET**, and other national-level entrance exams through a secure government-style portal.
 
-The platform provides secure authentication, personalized student profiles, mock test preparation, exam registration flows, and a government-style student dashboard experience.
+ExamPlat provides secure authentication, student profile management, examination registration, mock payment gateway, downloadable PDF receipts, and a modern dashboard experience.
 
 ---
 
@@ -13,11 +13,14 @@ The platform provides secure authentication, personalized student profiles, mock
 - React (Vite)
 - React Router DOM
 - Axios
+- Tailwind CSS
+- Bootstrap
 - React Icons
 - React Hot Toast
 - Sonner
-- Bootstrap
 - JWT Decode
+
+---
 
 ## Backend
 
@@ -31,6 +34,7 @@ The platform provides secure authentication, personalized student profiles, mock
 - cors
 - Multer
 - Cloudinary
+- PDFKit
 
 ---
 
@@ -41,56 +45,77 @@ ExamPlat/
 │
 ├── client/
 │   ├── public/
-│   └── src/
-│       ├── assets/
-│       ├── components/
-│       │   ├── Button.jsx
-│       │   ├── FormField.jsx
-│       │   ├── Input.jsx
-│       │   ├── Navbar.jsx
-│       │   ├── ProfileDropdown.jsx
-│       │   ├── ProfileForm.jsx
-│       │   ├── ProfilePhoto.jsx
-│       │   ├── ProtectedRoute.jsx
-│       │   └── PublicRoute.jsx
-│       ├── pages/
-│       │   ├── Dashboard.jsx
-│       │   ├── Home.jsx
-│       │   ├── Login.jsx
-│       │   ├── MockTests.jsx
-│       │   ├── Profile.jsx
-│       │   ├── Register.jsx
-│       │   ├── RegisterExam.jsx
-│       │   └── Home.jsx
-│       ├── services/
-│       │   ├── authService.js
-│       │   └── profileService.jsx
-│       ├── utils/
-│       │   ├── profileUtils.js
-│       │   └── validation.js
-│       ├── App.css
-│       ├── App.jsx
-│       ├── index.css
-│       ├── main.jsx
-│       └── storage.js
+│   ├── src/
+│   │
+│   ├── assets/
+│   │
+│   ├── components/
+│   │   ├── Navbar.jsx
+│   │   ├── ProtectedRoute.jsx
+│   │   ├── PublicRoute.jsx
+│   │   ├── ProfileForm.jsx
+│   │   ├── ProfileDropdown.jsx
+│   │   ├── ProfilePhoto.jsx
+│   │   ├── RegistrationForm.jsx
+│   │   ├── RegistrationHistory.jsx
+│   │   └── ...
+│   │
+│   ├── pages/
+│   │   ├── Home.jsx
+│   │   ├── Login.jsx
+│   │   ├── Register.jsx
+│   │   ├── Dashboard.jsx
+│   │   ├── Profile.jsx
+│   │   ├── MockTests.jsx
+│   │   ├── RegisterExam.jsx
+│   │   ├── Payment.jsx
+│   │   ├── MockUPIPayment.jsx
+│   │   ├── MockQRCode.jsx
+│   │   ├── MockCardPayment.jsx
+│   │   └── PaymentSuccess.jsx
+│   │
+│   ├── services/
+│   │   ├── authService.js
+│   │   ├── profileService.js
+│   │   ├── registrationService.js
+│   │   ├── paymentService.js
+│   │   └── receiptService.js
+│   │
+│   └── ...
 │
 ├── server/
 │   ├── config/
-│   │   ├── cloudinary.js
-│   │   └── db.js
+│   │   ├── db.js
+│   │   └── cloudinary.js
+│   │
 │   ├── controllers/
 │   │   ├── authController.js
-│   │   └── profileController.js
+│   │   ├── profileController.js
+│   │   ├── registrationController.js
+│   │   ├── paymentController.js
+│   │   └── receiptController.js
+│   │
 │   ├── middleware/
 │   │   ├── authMiddleware.js
 │   │   └── uploadMiddleware.js
+│   │
 │   ├── models/
-│   │   └── Student.js
+│   │   ├── Student.js
+│   │   ├── ExamRegistration.js
+│   │   └── Payment.js
+│   │
 │   ├── routes/
 │   │   ├── authRoutes.js
-│   │   └── profileRoutes.js
+│   │   ├── profileRoutes.js
+│   │   ├── registrationRoutes.js
+│   │   ├── paymentRoutes.js
+│   │   └── receiptRoutes.js
+│   │
 │   ├── utils/
-│   │   └── validation.js
+│   │   ├── validation.js
+│   │   ├── generateTransactionId.js
+│   │   └── receiptGenerator.js
+│   │
 │   └── server.js
 │
 ├── README.md
@@ -101,106 +126,177 @@ ExamPlat/
 
 # ✨ Features
 
-## Authentication
+## 🔐 Authentication
 
 - Student Registration
 - Student Login
 - JWT Authentication
 - Protected Routes
 - Public Routes
-- Password Encryption using bcryptjs
+- Password Encryption (bcryptjs)
 
 ---
 
-## Student Dashboard
+## 👨‍🎓 Student Dashboard
 
-- Government-style dashboard UI
-- Personalized student welcome section
-- Quick services section
-- Mock test access
-- Profile summary and navigation
-- Student action cards for exam preparation
+- Government-inspired UI
+- Personalized dashboard
+- Quick service cards
+- Profile summary
+- Mock test navigation
+- Examination services
 
 ---
 
-## Student Profile
+## 👤 Student Profile
 
 - View Profile
 - Edit Profile
-- Update Name
-- Update Email
-- Update Contact Details
-- Parent Information
-- Address Details
-- Academic Information
+- Upload Profile Photo
+- Cloudinary Image Storage
+- Parent Details
+- Academic Details
+- Address Information
+- School Information
 - Stream Selection
 - Class Selection
-- School Information
 
 ---
 
-## Exam & Mock Test Flow
+## 📝 Examination Registration
 
-- Exam registration page
-- Mock tests page
-- Student-focused preparation navigation
-- Protected access for exam-related modules
+- Register for JEE Main
+- Register for NEET
+- Automatic Registration Number Generation
+- Duplicate Registration Prevention
+- Registration History
+- Registration Status Tracking
 
----
+Registration Number Format
 
-## Profile Photo
-
-- Upload profile picture
-- Cloudinary image storage
-- Real-time profile image updates
-- Navbar profile synchronization
-
----
-
-## Landing Page
-
-- Government portal inspired design
-- Ministry of Education themed layout
-- National exam platform branding
-- Responsive layout for desktop and mobile
+```text
+EX202600001
+```
 
 ---
 
-# ✅ Completed
+## 💳 Mock Payment Gateway
+
+Three payment options are available.
+
+### UPI Payment
+
+- Simulated UPI payment
+- Transaction generation
+
+### QR Code Payment
+
+- QR Code based payment simulation
+
+### Card Payment
+
+- Card Number
+- Card Holder Name
+- Expiry
+- CVV
+
+Features
+
+- Payment Number Generation
+- Transaction ID Generation
+- Payment Status Tracking
+
+Payment Number
+
+```text
+PAY202600001
+```
+
+Transaction ID
+
+```text
+TXN175349873412345
+```
+
+---
+
+## 📄 PDF Receipt Generation
+
+After successful payment the student can download a professionally formatted PDF receipt.
+
+Receipt includes
+
+- Receipt Number
+- Payment Number
+- Transaction ID
+- Student Details
+- Examination Details
+- Payment Method
+- Amount Paid
+- Payment Status
+- Paid Date
+
+Receipt Number
+
+```text
+RCPT202600001
+```
+
+---
+
+## ☁️ Profile Photo
+
+- Upload Photo
+- Delete Photo
+- Cloudinary Storage
+- Live Navbar Synchronization
+
+---
+
+## 🏠 Landing Page
+
+- Ministry of Education Inspired
+- Responsive Design
+- Government Theme
+- Modern UI
+
+---
+
+# ✅ Completed Modules
 
 ## Backend
 
-- Express server setup
-- MongoDB Atlas integration
-- Student authentication
-- JWT authorization
-- Password hashing with bcryptjs
-- Protected APIs
-- Student profile APIs
-- Profile update APIs
-- Cloudinary integration
-- Image upload APIs
-- Middleware authentication
-- Multer integration
+- Express Server
+- MongoDB Atlas Integration
+- Student Authentication
+- JWT Authorization
+- Password Hashing
+- Profile APIs
+- Cloudinary Integration
+- Image Upload APIs
+- Registration APIs
+- Payment APIs
+- Receipt APIs
+- PDF Receipt Generator
+- Authentication Middleware
+- Multer Integration
 
 ---
 
 ## Frontend
 
-- React + Vite setup
+- React + Vite
 - Responsive UI
-- Government inspired landing page
-- Student dashboard
-- Student profile page
-- Exam registration page
-- Mock tests page
-- Cloudinary profile upload
-- Dynamic navbar
-- Profile dropdown
-- Toast notifications
-- Protected routing
-- Authentication services
-- Profile services
+- Student Dashboard
+- Profile Module
+- Mock Tests
+- Registration Module
+- Payment Module
+- Receipt Download
+- Protected Routes
+- Navbar
+- Toast Notifications
+- Government Inspired Design
 
 ---
 
@@ -216,7 +312,7 @@ cd ExamPlat
 
 ---
 
-## Backend Setup
+## Backend
 
 ```bash
 cd server
@@ -227,14 +323,19 @@ npm install
 
 ```env
 PORT=5000
+
 MONGO_URI=YOUR_MONGODB_URI
+
 JWT_SECRET=YOUR_SECRET
+
 CLOUDINARY_CLOUD_NAME=YOUR_CLOUD_NAME
+
 CLOUDINARY_API_KEY=YOUR_API_KEY
+
 CLOUDINARY_API_SECRET=YOUR_API_SECRET
 ```
 
-### Run Backend
+Run Backend
 
 ```bash
 npm run dev
@@ -242,30 +343,24 @@ npm run dev
 
 ---
 
-## Frontend Setup
+## Frontend
 
 ```bash
 cd client
 npm install
 ```
 
-### Install Dependencies
+Install Dependencies
 
 ```bash
-npm install react-router-dom axios react-icons react-hot-toast jwt-decode
-```
-```bash
-npm install tailwindcss @tailwindcss/vite
+npm install react-router-dom axios react-icons react-hot-toast sonner jwt-decode bootstrap tailwindcss @tailwindcss/vite
 ```
 
----
-
-### Run Frontend
+Run Frontend
 
 ```bash
 npm run dev
 ```
-
 
 ---
 
@@ -285,71 +380,144 @@ http://localhost:5000
 
 ---
 
-# 📌 Available APIs
+# 📌 API Endpoints
 
 ## Authentication
 
 ```http
-POST /api/auth/register
-POST /api/auth/login
+POST   /api/auth/register
+POST   /api/auth/login
 ```
 
-## Student Profile
+---
+
+## Profile
 
 ```http
-GET /api/profile
-PUT /api/profile
-POST /api/profile/upload-photo
+GET    /api/profile
+PUT    /api/profile
+POST   /api/profile/upload-photo
 DELETE /api/profile/photo
 ```
 
 ---
 
-# 📸 Screens
+## Examination Registration
 
-- Government styled landing page
-- Student login
-- Student registration
-- Student dashboard
-- Student profile
-- Cloudinary profile upload
-- Responsive navbar
-- Government inspired footer
+```http
+POST   /api/registration
+GET    /api/registration/history
+GET    /api/registration/:id
+```
+
+---
+
+## Payments
+
+```http
+POST   /api/payment/create
+POST   /api/payment/complete
+GET    /api/payment/history
+GET    /api/payment/:id
+```
+
+---
+
+## Receipt
+
+```http
+GET    /api/receipt/:paymentId
+```
+
+---
+
+# 📷 Application Screens
+
+- Landing Page
+- Student Registration
+- Student Login
+- Dashboard
+- Student Profile
+- Exam Registration
+- Registration History
+- Payment Selection
+- UPI Payment
+- QR Payment
+- Card Payment
+- Payment Success
+- PDF Receipt
+- Responsive Navigation
 
 ---
 
 # 🔜 Upcoming Features
 
-- AI mock test generator
-- Online examination engine
-- Live exam timer
-- Negative marking system
-- Subject-wise analytics
-- Performance graphs
-- AI performance recommendations
-- AI rank prediction
-- College predictor
-- Question bank management
-- Admin dashboard
-- Student management
+## Examination System
+
+- AI Question Generator
+- Online Examination Engine
+- Live Timer
+- Full Screen Secure Mode
+- Negative Marking
+- Randomized Questions
+- Auto Submission
+- Result Generation
+
+---
+
+## Student Features
+
+- Performance Analytics
+- AI Performance Recommendation
+- College Predictor
+- Rank Prediction
+- Subject-wise Analysis
 - Leaderboard
-- Forgot password
-- OTP verification
-- Email verification
-- Push notifications
-- Payment gateway
-- Exam certificates
-- Downloadable scorecards
+- Exam Calendar
+- Hall Ticket Download
+
+---
+
+## Administration
+
+- Admin Dashboard
+- Student Management
+- Question Bank Management
+- Examination Management
+- Result Management
+- Payment Reports
+- Receipt Management
+
+---
+
+## Authentication
+
+- Forgot Password
+- OTP Verification
+- Email Verification
+- Google Login
+
+---
+
+## Notifications
+
+- Email Notifications
+- SMS Notifications
+- Push Notifications
 
 ---
 
 # 👨‍💻 Authors
 
 ### Aditya Pulipaka
+
 ### Rohith Narayanan
 
-- B.Tech CSE, VIT-AP University
+**B.Tech Computer Science and Engineering**
 
+**VIT-AP University**
+
+---
 
 # ⭐ Project Status
 
@@ -358,7 +526,26 @@ DELETE /api/profile/photo
 Current Version
 
 ```text
-v0.4.0 Beta
+v0.7.0 Beta
 ```
 
-More AI-powered features and examination modules are under development.
+---
+
+## 📌 Current Progress
+
+| Module | Status |
+|----------|--------|
+| Authentication | ✅ Complete |
+| Student Profile | ✅ Complete |
+| Dashboard | ✅ Complete |
+| Mock Tests | ✅ Complete |
+| Exam Registration | ✅ Complete |
+| Payment Gateway | ✅ Complete |
+| PDF Receipt Generation | ✅ Complete |
+| Admin Dashboard | 🚧 In Progress |
+| Online Examination Engine | 🚧 In Progress |
+| AI Features | 🚧 Planned |
+
+---
+
+Built using the MERN Stack to provide a secure, scalable, and modern digital examination platform inspired by India's National Testing Agency (NTA).
