@@ -249,11 +249,23 @@ cd client
 npm install
 ```
 
+### Install Dependencies
+
+```bash
+npm install react-router-dom axios react-icons react-hot-toast jwt-decode
+```
+```bash
+npm install tailwindcss @tailwindcss/vite
+```
+
+---
+
 ### Run Frontend
 
 ```bash
 npm run dev
 ```
+
 
 ---
 
