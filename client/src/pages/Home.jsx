@@ -488,11 +488,11 @@ function Home() {
     </li>
 
     <li>
-    <a href="#">Mock Tests</a>
+    <Link to="/mock-tests">Mock Tests</Link>
     </li>
 
     <li>
-    <a href="#">Notifications</a>
+    <Link to="/notifications">Notifications</Link>
     </li>
 
     </ul>

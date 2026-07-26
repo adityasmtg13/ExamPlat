@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { loginStudent } from "../services/authService";
 import { toast } from "sonner";
 import { FaEnvelope, FaLock } from "react-icons/fa";
@@ -8,6 +8,7 @@ import { EMAIL_REGEX } from "../utils/validation";
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [form, setForm] = useState({
     email: "",
@@ -57,7 +58,9 @@ function Login() {
         description: "Login Successful",
         duration: 5000,
       });
-      navigate("/dashboard");
+
+      const fromPath = location.state?.from?.pathname;
+      navigate(fromPath || "/dashboard", { replace: true });
     } catch (err) {
       toast.error(err.response?.data?.message || "Login Failed");
     }
