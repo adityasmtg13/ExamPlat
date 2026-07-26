@@ -243,6 +243,10 @@ npm install react-router-dom axios react-icons react-hot-toast jwt-decode
 ```bash
 npm run dev
 ```
+```bash
+npm install tailwindcss @tailwindcss/vite
+```
+
 
 ---
 
