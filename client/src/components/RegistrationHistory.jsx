@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function RegistrationHistory({ registrations = [] }) {
+  const navigate = useNavigate();
+
   const getStatusBadge = (status) => {
     switch (status) {
       case "Registered":
@@ -81,6 +84,9 @@ function RegistrationHistory({ registrations = [] }) {
                   <td className="p-4 text-center">
                     {registration.status === "Pending Payment" && (
                       <button
+                        onClick={() =>
+                          navigate(`/payment/${registration._id}`)
+                        }
                         className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
                       >
                         Proceed to Payment

@@ -8,6 +8,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.8.0",
     "react-icons": "^5.7.0",
+    "react-qr-code": "^2.2.0",
     "react-router-dom": "^7.18.1"
   },
   "devDependencies": {

@@ -12,6 +12,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const registrationRoutes = require("./routes/registrationRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 connectDB();
 
@@ -28,6 +29,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/registration", registrationRoutes);
+app.use("/api/payment", paymentRoutes);
 
 // Home Route
 app.get("/", (req, res) => {

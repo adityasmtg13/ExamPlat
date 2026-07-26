@@ -9,6 +9,13 @@ import RegisterExam from "./pages/RegisterExam";
 import MockTests from "./pages/MockTests";
 import ComingSoon from "./pages/ComingSoon";
 
+// Payment Pages
+import Payment from "./pages/Payment";
+import MockUPIPayment from "./pages/MockUPIPayment";
+import MockQRCode from "./pages/MockQRCode";
+import MockCardPayment from "./pages/MockCardPayment";
+import PaymentSuccess from "./pages/PaymentSuccess";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 
@@ -62,6 +69,53 @@ function App() {
         }
       />
 
+      {/* Payment Routes */}
+
+      <Route
+        path="/payment/:registrationId"
+        element={
+          <ProtectedRoute>
+            <Payment />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/payment/upi"
+        element={
+          <ProtectedRoute>
+            <MockUPIPayment />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/payment/qr"
+        element={
+          <ProtectedRoute>
+            <MockQRCode />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/payment/card"
+        element={
+          <ProtectedRoute>
+            <MockCardPayment />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/payment/success"
+        element={
+          <ProtectedRoute>
+            <PaymentSuccess />
+          </ProtectedRoute>
+        }
+      />
+
       <Route
         path="/mock-tests"
         element={
@@ -75,7 +129,10 @@ function App() {
         path="/analytics"
         element={
           <ProtectedRoute>
-            <ComingSoon title="AI Analytics" description="Explore detailed performance insights and exam trends." />
+            <ComingSoon
+              title="AI Analytics"
+              description="Explore detailed performance insights and exam trends."
+            />
           </ProtectedRoute>
         }
       />
@@ -84,7 +141,10 @@ function App() {
         path="/rank-predictor"
         element={
           <ProtectedRoute>
-            <ComingSoon title="Rank Predictor" description="Estimate your expected rank with AI-assisted predictions." />
+            <ComingSoon
+              title="Rank Predictor"
+              description="Estimate your expected rank with AI-assisted predictions."
+            />
           </ProtectedRoute>
         }
       />
@@ -93,7 +153,10 @@ function App() {
         path="/college-predictor"
         element={
           <ProtectedRoute>
-            <ComingSoon title="College Predictor" description="Discover the best-fit colleges based on your profile and performance." />
+            <ComingSoon
+              title="College Predictor"
+              description="Discover the best-fit colleges based on your profile and performance."
+            />
           </ProtectedRoute>
         }
       />
@@ -102,7 +165,10 @@ function App() {
         path="/predictor"
         element={
           <ProtectedRoute>
-            <ComingSoon title="Predictor" description="Compare rank and college prediction tools in one place." />
+            <ComingSoon
+              title="Predictor"
+              description="Compare rank and college prediction tools in one place."
+            />
           </ProtectedRoute>
         }
       />
@@ -111,7 +177,10 @@ function App() {
         path="/notifications"
         element={
           <ProtectedRoute>
-            <ComingSoon title="Notifications" description="Stay updated with the latest announcements and exam updates." />
+            <ComingSoon
+              title="Notifications"
+              description="Stay updated with the latest announcements and exam updates."
+            />
           </ProtectedRoute>
         }
       />
