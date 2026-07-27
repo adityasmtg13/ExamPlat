@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import Navbar from "../components/Navbar";
+
 
 import { getRegistrationById } from "../services/registrationService";
 
@@ -97,7 +97,7 @@ alert(
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100">
-        <Navbar />
+        
 
         <div className="flex h-[70vh] items-center justify-center">
           <h2 className="text-xl font-semibold text-[#103f7c]">
@@ -112,7 +112,7 @@ alert(
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar />
+     
 
       <div className="mx-auto max-w-5xl px-4 py-10">
         <div className="rounded-3xl bg-white p-8 shadow-lg">

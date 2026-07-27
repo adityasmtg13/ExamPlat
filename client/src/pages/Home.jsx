@@ -141,7 +141,7 @@ function Home() {
 
             <p className="text-2xl text-gray-200 mb-8 max-w-2xl">
 
-              India's Official AI Powered Examination Platform
+              India's very own Examination Platform
               for National Level Competitive Examinations.
 
             </p>

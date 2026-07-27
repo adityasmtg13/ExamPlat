@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import Navbar from "../components/Navbar";
+
 
 import QuestionCard from "../components/QuestionCard";
 import QuestionPalette from "../components/QuestionPalette";
@@ -92,7 +92,7 @@ function MockExam() {
         answers
       );
 
-      navigate("/mock-result", {
+      navigate("/analytics", {
         state: response.result,
       });
     } catch (error) {
@@ -108,7 +108,7 @@ function MockExam() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100">
-        <Navbar />
+       
 
         <div className="flex h-[80vh] items-center justify-center">
           <h2 className="text-2xl font-semibold text-[#103f7c]">
@@ -122,7 +122,7 @@ function MockExam() {
   if (!questions.length) {
     return (
       <div className="min-h-screen bg-gray-100">
-        <Navbar />
+    
 
         <div className="flex h-[80vh] items-center justify-center">
           <h2 className="text-xl font-semibold">
@@ -137,7 +137,7 @@ function MockExam() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar />
+    
 
       <div className="mx-auto max-w-7xl px-5 py-8">
 
