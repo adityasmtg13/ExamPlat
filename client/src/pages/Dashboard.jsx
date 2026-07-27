@@ -15,51 +15,52 @@ import {
 } from "react-icons/fa";
 import { getStudent } from "../storage";
 import { isProfileComplete } from "../utils/profileUtils";
+import logo from "../assets/logo.png";
 
 function Dashboard() {
   const navigate = useNavigate();
   const [student, setStudent] = useState(getStudent());
   const [analytics, setAnalytics] = useState(null);
 
-  useEffect(() => {
-  const syncStudent = () => setStudent(getStudent());
-
-  syncStudent();
-  fetchAnalytics();
-
-  window.addEventListener("studentUpdated", syncStudent);
-
-  return () => {
-    window.removeEventListener("studentUpdated", syncStudent);
-  };
-}, []);
-
   const profileCompleted = isProfileComplete(student);
 
- const handleRegisterClick = () => {
-  if (!profileCompleted) {
-    toast.error(
-      "Please complete your profile fully before proceeding with examination registration.",
-      {
-        position: "top-center",
-        duration: 4000,
-      }
-    );
+  const fetchAnalytics = async () => {
+    try {
+      const response = await getAnalytics();
+      setAnalytics(response);
+    } catch (error) {
+      console.error("Analytics Error:", error);
+    }
+  };
 
-    return;
-  }
+  useEffect(() => {
+    const syncStudent = () => setStudent(getStudent());
 
-  navigate("/register-exam");
-};
+    syncStudent();
+    fetchAnalytics();
 
-const fetchAnalytics = async () => {
-  try {
-    const response = await getAnalytics();
-    setAnalytics(response);
-  } catch (error) {
-    console.error("Analytics Error:", error);
-  }
-};
+    window.addEventListener("studentUpdated", syncStudent);
+
+    return () => {
+      window.removeEventListener("studentUpdated", syncStudent);
+    };
+  }, []);
+
+  const handleRegisterClick = () => {
+    if (!profileCompleted) {
+      toast.error(
+        "Please complete your profile fully before proceeding with examination registration.",
+        {
+          position: "top-center",
+          duration: 4000,
+        }
+      );
+
+      return;
+    }
+
+    navigate("/register-exam");
+  };
 
   const quickServices = [
     {
@@ -105,52 +106,86 @@ const fetchAnalytics = async () => {
       onClick: handleRegisterClick,
       disabled: !profileCompleted,
       status: profileCompleted ? "valid" : "invalid",
-      tooltip: profileCompleted ? "" : "Fill all profile details correctly to proceed with examination registration.",
+      tooltip: profileCompleted
+        ? ""
+        : "Fill all profile details correctly to proceed with examination registration.",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-slate-100 text-slate-900">
       <Navbar />
 
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <section className="mb-8 rounded-3xl border border-gray-200 bg-white p-8 shadow-md">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <h2 className="text-3xl font-bold text-[#103f7c] md:text-4xl">
-                Welcome, {student?.name}
-              </h2>
-              <p className="mt-3 text-gray-600">
-                National Exam Platform Student Dashboard
-              </p>
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg shadow-slate-200/70">
+          <div className="grid gap-8 bg-slate-950 px-6 py-8 text-white md:grid-cols-[1fr_auto] md:px-8">
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
+              <img
+                src={logo}
+                alt="National Exam Platform logo"
+                className="h-16 w-16 rounded-xl bg-white p-2"
+              />
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan-300">
+                  National Exam Platform
+                </p>
+                <h1 className="mt-2 text-3xl font-bold md:text-4xl">
+                  Welcome, {student?.name || "Student"}
+                </h1>
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
+                  Manage exam registration, preparation tools, analytics, and profile details
+                  from your official student dashboard.
+                </p>
+              </div>
             </div>
-            <p className="text-sm text-gray-500">
-              {new Date().toLocaleDateString("en-IN", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </p>
+
+            <div className="rounded-xl border border-white/10 bg-white/5 px-5 py-4 md:text-right">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+                Today
+              </p>
+              <p className="mt-2 text-sm font-medium text-slate-100">
+                {new Date().toLocaleDateString("en-IN", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </p>
+              <div
+                className={`mt-4 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+                  profileCompleted
+                    ? "bg-emerald-400/15 text-emerald-200"
+                    : "bg-amber-400/15 text-amber-200"
+                }`}
+              >
+                {profileCompleted ? "Profile Complete" : "Profile Pending"}
+              </div>
+            </div>
           </div>
-          <div className="mt-6 h-px bg-[#103f7c]/10" />
         </section>
 
-        <div className="grid gap-8 xl:grid-cols-[1.4fr_1fr]">
+        <div className="mt-8 grid gap-8 xl:grid-cols-[1.45fr_0.85fr]">
           <div className="space-y-8">
-            <div className="rounded-3xl border-l-4 border-[#103f7c] bg-white p-8 shadow-md transition hover:shadow-xl">
-              <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md shadow-slate-200/70 sm:p-8">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <h3 className="text-xl font-semibold text-[#103f7c]">Profile Summary</h3>
-                  <p className="mt-3 text-gray-600">Student information and contact details.</p>
+                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-700">
+                    Student Profile
+                  </p>
+                  <h2 className="mt-2 text-2xl font-bold text-slate-950">Profile Summary</h2>
                 </div>
-                <div className="rounded-full bg-[#f1f5f9] px-4 py-2 text-sm text-gray-600">
-                  Official dashboard overview
-                </div>
+                <button
+                  type="button"
+                  onClick={() => navigate("/profile")}
+                  className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-cyan-600 hover:text-cyan-700"
+                >
+                  Update Profile
+                </button>
               </div>
-              <div className="mt-8 grid gap-6 sm:grid-cols-2">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-[#eff6ff] text-3xl text-[#103f7c]">
+
+              <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1.2fr]">
+                <div className="flex items-center gap-4 rounded-xl bg-slate-50 p-5">
+                  <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-cyan-50 text-4xl text-cyan-800">
                     {student?.profilePhoto ? (
                       <img
                         src={student.profilePhoto}
@@ -162,48 +197,52 @@ const fetchAnalytics = async () => {
                     )}
                   </div>
                   <div>
-                    <p className="text-lg font-semibold text-[#103f7c]">{student?.name || "Student"}</p>
-                    <p className="text-gray-500">{student?.email || "No email provided"}</p>
+                    <p className="text-lg font-bold text-slate-950">
+                      {student?.name || "Student"}
+                    </p>
+                    <p className="mt-1 text-sm text-slate-500">
+                      {student?.email || "No email provided"}
+                    </p>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 gap-4">
-                  <div className="rounded-xl bg-[#f8fafc] p-4">
-                    <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Phone</p>
-                    <p className="mt-2 font-semibold text-gray-800">{student?.phone || "--"}</p>
+
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <div className="rounded-xl border border-slate-200 bg-white p-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                      Phone
+                    </p>
+                    <p className="mt-2 font-semibold text-slate-900">{student?.phone || "--"}</p>
                   </div>
-                  <div className="rounded-xl bg-[#f8fafc] p-4">
-                    <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Stream</p>
-                    <p className="mt-2 font-semibold text-gray-800">{student?.stream || "--"}</p>
+                  <div className="rounded-xl border border-slate-200 bg-white p-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                      Stream
+                    </p>
+                    <p className="mt-2 font-semibold text-slate-900">{student?.stream || "--"}</p>
                   </div>
-                  <div className="rounded-xl bg-[#f8fafc] p-4">
-                    <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Class</p>
-                    <p className="mt-2 font-semibold text-gray-800">{student?.studentClass || "--"}</p>
+                  <div className="rounded-xl border border-slate-200 bg-white p-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                      Class
+                    </p>
+                    <p className="mt-2 font-semibold text-slate-900">
+                      {student?.studentClass || "--"}
+                    </p>
                   </div>
                 </div>
               </div>
-            </div>
+            </section>
 
-            <div className="rounded-3xl border-l-4 border-green-600 bg-white p-8 shadow-md transition hover:shadow-xl">
-              <h3 className="text-xl font-semibold text-[#103f7c]">Latest Notifications</h3>
-              <div className="mt-6 space-y-4 text-gray-700">
-                <div className="flex items-start gap-3 rounded-2xl bg-[#ecf5ff] p-4">
-                  <FaCheckCircle className="mt-1 text-green-600" />
-                  <p>JEE Main Mock Test Portal Available</p>
+            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md shadow-slate-200/70 sm:p-8">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-700">
+                    Services
+                  </p>
+                  <h2 className="mt-2 text-2xl font-bold text-slate-950">Quick Services</h2>
                 </div>
-                <div className="flex items-start gap-3 rounded-2xl bg-[#ecf5ff] p-4">
-                  <FaCheckCircle className="mt-1 text-green-600" />
-                  <p>New Analytics Update Released</p>
-                </div>
-                <div className="flex items-start gap-3 rounded-2xl bg-[#ecf5ff] p-4">
-                  <FaCheckCircle className="mt-1 text-green-600" />
-                  <p>Rank Predictor Improved</p>
-                </div>
+                <p className="text-sm text-slate-500">Choose a service to continue.</p>
               </div>
-            </div>
 
-            <div className="rounded-3xl border-l-4 border-blue-700 bg-white p-8 shadow-md transition hover:shadow-xl">
-              <h3 className="text-xl font-semibold text-[#103f7c]">Quick Services</h3>
-              <div className="mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                 {quickServices.map((service) => (
                   <QuickServiceCard
                     key={service.title}
@@ -218,69 +257,155 @@ const fetchAnalytics = async () => {
                   />
                 ))}
               </div>
-            </div>
+            </section>
+
+            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md shadow-slate-200/70 sm:p-8">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-700">
+                  Updates
+                </p>
+                <h2 className="mt-2 text-2xl font-bold text-slate-950">Latest Notifications</h2>
+              </div>
+
+              <div className="mt-6 grid gap-4 md:grid-cols-3">
+                <div className="flex items-start gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+                  <FaCheckCircle className="mt-1 shrink-0 text-emerald-600" />
+                  <p className="text-sm font-medium text-slate-700">
+                    JEE Main Mock Test Portal Available
+                  </p>
+                </div>
+                <div className="flex items-start gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+                  <FaCheckCircle className="mt-1 shrink-0 text-emerald-600" />
+                  <p className="text-sm font-medium text-slate-700">
+                    New Analytics Update Released
+                  </p>
+                </div>
+                <div className="flex items-start gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+                  <FaCheckCircle className="mt-1 shrink-0 text-emerald-600" />
+                  <p className="text-sm font-medium text-slate-700">Rank Predictor Improved</p>
+                </div>
+              </div>
+            </section>
           </div>
 
-          <div className="space-y-6">
-            <div className="rounded-3xl border-l-4 border-green-600 bg-white p-8 shadow-md transition hover:shadow-xl">
-              <h3 className="text-xl font-semibold text-[#103f7c]">Statistics</h3>
+          <aside className="space-y-8">
+            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md shadow-slate-200/70 sm:p-8">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-700">
+                Performance
+              </p>
+              <h2 className="mt-2 text-2xl font-bold text-slate-950">Statistics</h2>
+
               <div className="mt-6 grid grid-cols-2 gap-4">
-                <div className="rounded-xl bg-[#f8fafc] p-5">
-                  <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Mock Tests Attempted</p>
-                  <p className="mt-3 text-3xl font-semibold text-gray-900">
+                <div className="rounded-xl bg-slate-50 p-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                    Mock Tests
+                  </p>
+                  <p className="mt-3 text-3xl font-bold text-slate-950">
                     {analytics?.overall?.totalAttempts ?? 0}
                   </p>
                 </div>
-                <div className="rounded-xl bg-[#f8fafc] p-5">
-                  <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Predicted AIR</p>
-                  <p className="mt-3 text-3xl font-semibold text-gray-900">--</p>
+                <div className="rounded-xl bg-slate-50 p-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                    AIR
+                  </p>
+                  <p className="mt-3 text-3xl font-bold text-slate-950">--</p>
                 </div>
-                <div className="rounded-xl bg-[#f8fafc] p-5">
-                  <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Percentile</p>
-                  <p className="mt-3 text-3xl font-semibold text-gray-900">--</p>
+                <div className="rounded-xl bg-slate-50 p-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                    Percentile
+                  </p>
+                  <p className="mt-3 text-3xl font-bold text-slate-950">--</p>
                 </div>
-                <div className="rounded-xl bg-[#f8fafc] p-5">
-                  <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Accuracy</p>
-                  <p className="mt-3 text-3xl font-semibold text-gray-900">--</p>
+                <div className="rounded-xl bg-slate-50 p-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                    Accuracy
+                  </p>
+                  <p className="mt-3 text-3xl font-bold text-slate-950">--</p>
                 </div>
               </div>
-            </div>
+            </section>
 
-            <div className="rounded-3xl border-l-4 border-[#103f7c] bg-white p-8 shadow-md transition hover:shadow-xl">
-              <h3 className="text-xl font-semibold text-[#103f7c]">Student Details</h3>
-              <div className="mt-6 space-y-4 text-gray-700">
-                <p><span className="font-semibold">Name:</span> {student?.name || "--"}</p>
-                <p><span className="font-semibold">Email:</span> {student?.email || "--"}</p>
-                <p><span className="font-semibold">Phone:</span> {student?.phone || "--"}</p>
-                <p><span className="font-semibold">Stream:</span> {student?.stream || "--"}</p>
-                <p><span className="font-semibold">Class:</span> {student?.studentClass || "--"}</p>
-                <p><span className="font-semibold">School:</span> --</p>
+            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md shadow-slate-200/70 sm:p-8">
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-700">
+                Records
+              </p>
+              <h2 className="mt-2 text-2xl font-bold text-slate-950">Student Details</h2>
+
+              <div className="mt-6 divide-y divide-slate-100 text-sm">
+                <p className="flex justify-between gap-4 py-3">
+                  <span className="font-semibold text-slate-500">Name</span>
+                  <span className="text-right font-medium text-slate-900">
+                    {student?.name || "--"}
+                  </span>
+                </p>
+                <p className="flex justify-between gap-4 py-3">
+                  <span className="font-semibold text-slate-500">Email</span>
+                  <span className="text-right font-medium text-slate-900">
+                    {student?.email || "--"}
+                  </span>
+                </p>
+                <p className="flex justify-between gap-4 py-3">
+                  <span className="font-semibold text-slate-500">Phone</span>
+                  <span className="text-right font-medium text-slate-900">
+                    {student?.phone || "--"}
+                  </span>
+                </p>
+                <p className="flex justify-between gap-4 py-3">
+                  <span className="font-semibold text-slate-500">Stream</span>
+                  <span className="text-right font-medium text-slate-900">
+                    {student?.stream || "--"}
+                  </span>
+                </p>
+                <p className="flex justify-between gap-4 py-3">
+                  <span className="font-semibold text-slate-500">Class</span>
+                  <span className="text-right font-medium text-slate-900">
+                    {student?.studentClass || "--"}
+                  </span>
+                </p>
+                <p className="flex justify-between gap-4 py-3">
+                  <span className="font-semibold text-slate-500">School</span>
+                  <span className="text-right font-medium text-slate-900">--</span>
+                </p>
               </div>
-            </div>
-          </div>
+            </section>
+          </aside>
         </div>
 
-        <footer className="mt-12 overflow-hidden rounded-3xl bg-[#082b5a] text-white shadow-md">
-          <div className="mx-auto grid max-w-7xl gap-8 px-6 py-10 md:grid-cols-3">
-            <div>
-              <h2 className="mb-5 text-2xl font-bold">National Exam Platform</h2>
-              <p className="leading-8 text-gray-300">An official student portal for national exam preparation and analytics.</p>
+        <footer className="mt-10 overflow-hidden rounded-2xl bg-slate-950 text-white shadow-md">
+          <div className="grid gap-8 px-6 py-8 md:grid-cols-[1.3fr_1fr_1fr]">
+            <div className="flex gap-4">
+              <img
+                src={logo}
+                alt="National Exam Platform logo"
+                className="h-12 w-12 rounded-lg bg-white p-1.5"
+              />
+              <div>
+                <h2 className="text-xl font-bold">National Exam Platform</h2>
+                <p className="mt-3 max-w-md leading-7 text-slate-300">
+                  An official student portal for national exam preparation, registration, and
+                  analytics.
+                </p>
+              </div>
             </div>
             <div>
-              <h3 className="mb-5 text-xl font-bold">Government of India</h3>
-              <p className="text-gray-300">Ministry of Education</p>
+              <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-300">
+                Government of India
+              </h3>
+              <p className="mt-4 text-slate-300">Ministry of Education</p>
             </div>
             <div>
-              <h3 className="mb-5 text-xl font-bold">Contact</h3>
-              <p className="text-gray-300">support@nexam.gov.in</p>
-              <p className="text-gray-300">1800-000-0000</p>
+              <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-300">
+                Contact
+              </h3>
+              <p className="mt-4 text-slate-300">support@nexam.gov.in</p>
+              <p className="mt-1 text-slate-300">1800-000-0000</p>
             </div>
           </div>
-          <div className="border-t border-blue-700 py-5 text-center text-gray-300">
-            © 2026 National Exam Platform
+          <div className="border-t border-white/10 py-4 text-center text-sm text-slate-400">
+            &copy; 2026 National Exam Platform
           </div>
         </footer>
-      </div>
+      </main>
     </div>
   );
 }
