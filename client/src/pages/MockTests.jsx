@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { FaCalculator, FaFlask } from "react-icons/fa";
+import {
+  FaCalculator,
+  FaFlask,
+  FaClipboardList,
+} from "react-icons/fa";
 import { getMockTests } from "../services/mockTestService";
 
 const examDetails = {

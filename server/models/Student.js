@@ -39,9 +39,11 @@ const studentSchema = new mongoose.Schema(
     },
 
     aadhaar: {
-      type: String,
-      default: "",
-    },
+  type: String,
+  default: null,
+  unique: true,
+  sparse: true,
+},
 
     fatherName: {
       type: String,

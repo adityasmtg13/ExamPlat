@@ -207,12 +207,12 @@ function Dashboard() {
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-3">
-                  <div className="rounded-xl border border-slate-200 bg-white p-4">
+                  {/* <div className="rounded-xl border border-slate-200 bg-white p-4">
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                       Phone
                     </p>
                     <p className="mt-2 font-semibold text-slate-900">{student?.phone || "--"}</p>
-                  </div>
+                  </div> */}
                   <div className="rounded-xl border border-slate-200 bg-white p-4">
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                       Stream
@@ -318,9 +318,12 @@ function Dashboard() {
                 </div>
                 <div className="rounded-xl bg-slate-50 p-5">
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
-                    Accuracy
+                    Average Percentile
                   </p>
-                  <p className="mt-3 text-3xl font-bold text-slate-950">--</p>
+
+                  <p className="mt-2 text-2xl font-bold text-slate-950">
+                    {analytics?.overall?.averagePercentile?.toFixed(2) ?? "0.00"}%
+                  </p>
                 </div>
               </div>
             </section>
@@ -364,47 +367,20 @@ function Dashboard() {
                 </p>
                 <p className="flex justify-between gap-4 py-3">
                   <span className="font-semibold text-slate-500">School</span>
-                  <span className="text-right font-medium text-slate-900">--</span>
+                  <span className="text-right font-medium text-slate-900">
+                    {student?.school || "--"}
+                  </span>
+                </p>
+                <p className="flex justify-between gap-4 py-3">
+                  <span className="font-semibold text-slate-500">Exams Registered</span>
+                  <span className="text-right font-medium text-slate-900">
+                    {analytics?.overall?.totalRegistrations ?? 0}
+                  </span>
                 </p>
               </div>
             </section>
           </aside>
         </div>
-
-        <footer className="mt-10 overflow-hidden rounded-2xl bg-slate-950 text-white shadow-md">
-          <div className="grid gap-8 px-6 py-8 md:grid-cols-[1.3fr_1fr_1fr]">
-            <div className="flex gap-4">
-              <img
-                src={logo}
-                alt="National Exam Platform logo"
-                className="h-12 w-12 rounded-lg bg-white p-1.5"
-              />
-              <div>
-                <h2 className="text-xl font-bold">National Exam Platform</h2>
-                <p className="mt-3 max-w-md leading-7 text-slate-300">
-                  An official student portal for national exam preparation, registration, and
-                  analytics.
-                </p>
-              </div>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-300">
-                Government of India
-              </h3>
-              <p className="mt-4 text-slate-300">Ministry of Education</p>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-300">
-                Contact
-              </h3>
-              <p className="mt-4 text-slate-300">support@nexam.gov.in</p>
-              <p className="mt-1 text-slate-300">1800-000-0000</p>
-            </div>
-          </div>
-          <div className="border-t border-white/10 py-4 text-center text-sm text-slate-400">
-            &copy; 2026 National Exam Platform
-          </div>
-        </footer>
       </main>
     </div>
   );
