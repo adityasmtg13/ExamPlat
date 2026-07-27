@@ -45,6 +45,9 @@ ExamPlat/
 │
 ├── client/
 │   ├── public/
+│   │   ├── logo.png
+│   │   └── favicon.ico
+│   │
 │   ├── src/
 │   │
 │   ├── assets/
@@ -58,6 +61,9 @@ ExamPlat/
 │   │   ├── ProfilePhoto.jsx
 │   │   ├── RegistrationForm.jsx
 │   │   ├── RegistrationHistory.jsx
+│   │   ├── MockTestCard.jsx
+│   │   ├── MockQuestionPalette.jsx
+│   │   ├── QuickServiceCard.jsx
 │   │   └── ...
 │   │
 │   ├── pages/
@@ -66,22 +72,42 @@ ExamPlat/
 │   │   ├── Register.jsx
 │   │   ├── Dashboard.jsx
 │   │   ├── Profile.jsx
-│   │   ├── MockTests.jsx
 │   │   ├── RegisterExam.jsx
+│   │   ├── RegistrationHistory.jsx
 │   │   ├── Payment.jsx
 │   │   ├── MockUPIPayment.jsx
 │   │   ├── MockQRCode.jsx
 │   │   ├── MockCardPayment.jsx
-│   │   └── PaymentSuccess.jsx
+│   │   ├── PaymentSuccess.jsx
+│   │   ├── MockTests.jsx
+│   │   ├── MockInstructions.jsx
+│   │   ├── MockExam.jsx
+│   │   ├── MockResult.jsx
+│   │   ├── Analytics.jsx
+│   │   ├── RankPredictor.jsx
+│   │   └── CollegePredictor.jsx
 │   │
 │   ├── services/
 │   │   ├── authService.js
 │   │   ├── profileService.js
 │   │   ├── registrationService.js
 │   │   ├── paymentService.js
-│   │   └── receiptService.js
+│   │   ├── receiptService.js
+│   │   ├── mockTestService.js
+│   │   └── examService.js
 │   │
-│   └── ...
+│   ├── storage/
+│   │   ├── authStorage.js
+│   │   └── index.js
+│   │
+│   ├── utils/
+│   │   ├── profileUtils.js
+│   │   ├── constants.js
+│   │   └── helpers.js
+│   │
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
 │
 ├── server/
 │   ├── config/
@@ -93,37 +119,173 @@ ExamPlat/
 │   │   ├── profileController.js
 │   │   ├── registrationController.js
 │   │   ├── paymentController.js
-│   │   └── receiptController.js
+│   │   ├── receiptController.js
+│   │   ├── mockTestController.js
+│   │   └── examController.js
 │   │
 │   ├── middleware/
 │   │   ├── authMiddleware.js
-│   │   └── uploadMiddleware.js
+│   │   ├── uploadMiddleware.js
+│   │   └── errorMiddleware.js
 │   │
 │   ├── models/
 │   │   ├── Student.js
 │   │   ├── ExamRegistration.js
-│   │   └── Payment.js
+│   │   ├── Payment.js
+│   │   ├── MockAttempt.js
+│   │   ├── Question.js
+│   │   └── Exam.js
 │   │
 │   ├── routes/
 │   │   ├── authRoutes.js
 │   │   ├── profileRoutes.js
 │   │   ├── registrationRoutes.js
 │   │   ├── paymentRoutes.js
-│   │   └── receiptRoutes.js
+│   │   ├── receiptRoutes.js
+│   │   ├── mockTestRoutes.js
+│   │   └── examRoutes.js
 │   │
 │   ├── utils/
 │   │   ├── validation.js
+│   │   ├── generateRegistrationNumber.js
+│   │   ├── generatePaymentNumber.js
 │   │   ├── generateTransactionId.js
 │   │   └── receiptGenerator.js
 │   │
+│   ├── .env
+│   ├── package.json
 │   └── server.js
 │
 ├── README.md
+├── LICENSE
 └── .gitignore
 ```
 
 ---
 
+# ⚙️ Installation
+
+## Clone Repository
+
+```bash
+git clone https://github.com/adityasmtg13/ExamPlat.git
+
+cd ExamPlat
+```
+
+---
+
+## Backend Setup
+
+```bash
+cd server
+```
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+or
+
+```bash
+npm install express mongoose cors dotenv bcryptjs jsonwebtoken multer cloudinary pdfkit cookie-parser
+```
+
+### Development Dependency
+
+```bash
+npm install -D nodemon
+```
+
+### Environment Variables
+
+Create a `.env` file inside the `server` folder.
+
+```env
+PORT=5000
+
+MONGO_URI=YOUR_MONGODB_URI
+
+JWT_SECRET=YOUR_SECRET_KEY
+
+CLOUDINARY_CLOUD_NAME=YOUR_CLOUD_NAME
+
+CLOUDINARY_API_KEY=YOUR_API_KEY
+
+CLOUDINARY_API_SECRET=YOUR_API_SECRET
+```
+
+### Start Backend
+
+```bash
+npm run dev
+```
+
+---
+
+## Frontend Setup
+
+```bash
+cd client
+```
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+or
+
+```bash
+npm install react-router-dom axios react-icons react-hot-toast sonner jwt-decode bootstrap tailwindcss @tailwindcss/vite
+```
+
+### Start Frontend
+
+```bash
+npm run dev
+```
+
+---
+
+# 📦 NPM Packages
+
+## Frontend
+
+| Package | Purpose |
+|----------|----------|
+| React | Frontend Library |
+| Vite | Build Tool |
+| React Router DOM | Routing |
+| Axios | API Requests |
+| Tailwind CSS | Styling |
+| Bootstrap | UI Components |
+| React Icons | Icons |
+| React Hot Toast | Notifications |
+| Sonner | Toast Notifications |
+| JWT Decode | JWT Parsing |
+
+---
+
+## Backend
+
+| Package | Purpose |
+|----------|----------|
+| Express | Web Framework |
+| Mongoose | MongoDB ODM |
+| MongoDB Atlas | Cloud Database |
+| JWT | Authentication |
+| bcryptjs | Password Hashing |
+| dotenv | Environment Variables |
+| cors | Cross-Origin Requests |
+| Multer | File Uploads |
+| Cloudinary | Image Storage |
+| PDFKit | PDF Receipt Generation |
+| Cookie Parser | Cookie Handling |
+| Nodemon | Development Server |
 # ✨ Features
 
 ## 🔐 Authentication
