@@ -92,9 +92,7 @@ function MockExam() {
         answers
       );
 
-      navigate("/analytics", {
-        state: response.result,
-      });
+      navigate(`/mock-test/result/${attemptId}`);
     } catch (error) {
       alert(
         error.message ||

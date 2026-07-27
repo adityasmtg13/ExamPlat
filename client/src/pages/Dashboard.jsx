@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Navbar from "../components/Navbar";
 import QuickServiceCard from "../components/QuickServiceCard";
+import { getAnalytics } from "../services/mockTestService";
 import {
   FaUserCircle,
   FaUserGraduate,
@@ -18,15 +19,20 @@ import { isProfileComplete } from "../utils/profileUtils";
 function Dashboard() {
   const navigate = useNavigate();
   const [student, setStudent] = useState(getStudent());
+  const [analytics, setAnalytics] = useState(null);
 
   useEffect(() => {
-    const syncStudent = () => setStudent(getStudent());
+  const syncStudent = () => setStudent(getStudent());
 
-    syncStudent();
-    window.addEventListener("studentUpdated", syncStudent);
+  syncStudent();
+  fetchAnalytics();
 
-    return () => window.removeEventListener("studentUpdated", syncStudent);
-  }, []);
+  window.addEventListener("studentUpdated", syncStudent);
+
+  return () => {
+    window.removeEventListener("studentUpdated", syncStudent);
+  };
+}, []);
 
   const profileCompleted = isProfileComplete(student);
 
@@ -44,6 +50,15 @@ function Dashboard() {
   }
 
   navigate("/register-exam");
+};
+
+const fetchAnalytics = async () => {
+  try {
+    const response = await getAnalytics();
+    setAnalytics(response);
+  } catch (error) {
+    console.error("Analytics Error:", error);
+  }
 };
 
   const quickServices = [
@@ -212,7 +227,9 @@ function Dashboard() {
               <div className="mt-6 grid grid-cols-2 gap-4">
                 <div className="rounded-xl bg-[#f8fafc] p-5">
                   <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Mock Tests Attempted</p>
-                  <p className="mt-3 text-3xl font-semibold text-gray-900">0</p>
+                  <p className="mt-3 text-3xl font-semibold text-gray-900">
+                    {analytics?.overall?.totalAttempts ?? 0}
+                  </p>
                 </div>
                 <div className="rounded-xl bg-[#f8fafc] p-5">
                   <p className="text-xs uppercase tracking-[0.2em] text-gray-500">Predicted AIR</p>

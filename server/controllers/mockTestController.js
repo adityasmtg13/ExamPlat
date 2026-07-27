@@ -276,3 +276,175 @@ exports.submitAndRestartMockAttempt = async (req, res) => {
     });
   }
 };
+/**
+ * Get Mock Test Result
+ * GET /api/mock-tests/result/:attemptId
+ */
+exports.getMockResult = async (req, res) => {
+  try {
+    const studentId = req.student.id;
+    const { attemptId } = req.params;
+
+    const attempt = await MockAttempt.findOne({
+      _id: attemptId,
+      studentId,
+    });
+
+    if (!attempt) {
+      return res.status(404).json({
+        success: false,
+        message: "Mock attempt not found.",
+      });
+    }
+
+    const registration = await ExamRegistration.findById(
+      attempt.registrationId
+    );
+
+    res.status(200).json({
+      success: true,
+      result: {
+        attemptId: attempt._id,
+
+        registrationNumber:
+          registration?.registrationNumber,
+
+        examType: attempt.examType,
+
+        attemptNumber: attempt.attemptNumber,
+
+        score: attempt.score,
+
+        totalMarks: attempt.totalMarks,
+
+        percentage: attempt.percentage,
+
+        correctAnswers: attempt.correctAnswers,
+
+        wrongAnswers: attempt.wrongAnswers,
+
+        unanswered: attempt.unanswered,
+
+        startedAt: attempt.startedAt,
+
+        submittedAt: attempt.submittedAt,
+
+        timeTaken: attempt.timeTaken,
+
+        status: attempt.status,
+      },
+    });
+  } catch (err) {
+    console.error("Get Mock Result Error:", err);
+
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+exports.getAnalytics = async (req, res) => {
+  try {
+    const studentId = req.student.id;
+
+    const attempts = await MockAttempt.find({
+      studentId,
+      status: "Completed",
+    }).sort({ submittedAt: -1 });
+
+    const groupedAnalytics = {};
+
+    let totalAttempts = 0;
+    let totalPercentage = 0;
+    let bestPercentage = 0;
+    let totalTimeTaken = 0;
+
+    for (const attempt of attempts) {
+      const examType = attempt.examType;
+
+      if (!groupedAnalytics[examType]) {
+        groupedAnalytics[examType] = {
+          examType,
+          totalAttempts: 0,
+          totalScore: 0,
+          totalMarks: 0,
+          totalPercentage: 0,
+          bestScore: 0,
+          bestPercentage: 0,
+          attempts: [],
+        };
+      }
+
+      const group = groupedAnalytics[examType];
+
+      group.totalAttempts++;
+      group.totalScore += attempt.score;
+      group.totalMarks += attempt.totalMarks;
+      group.totalPercentage += attempt.percentage;
+
+      if (attempt.score > group.bestScore) {
+        group.bestScore = attempt.score;
+      }
+
+      if (attempt.percentage > group.bestPercentage) {
+        group.bestPercentage = attempt.percentage;
+      }
+
+      group.attempts.push({
+        attemptId: attempt._id,
+        attemptNumber: attempt.attemptNumber,
+        submittedAt: attempt.submittedAt,
+        score: attempt.score,
+        totalMarks: attempt.totalMarks,
+        percentage: attempt.percentage,
+        timeTaken: attempt.timeTaken,
+      });
+
+      totalAttempts++;
+      totalPercentage += attempt.percentage;
+      totalTimeTaken += attempt.timeTaken;
+
+      if (attempt.percentage > bestPercentage) {
+        bestPercentage = attempt.percentage;
+      }
+    }
+
+    Object.values(groupedAnalytics).forEach((group) => {
+      group.averageScore = Number(
+        (group.totalScore / group.totalAttempts).toFixed(2)
+      );
+
+      group.averagePercentage = Number(
+        (group.totalPercentage / group.totalAttempts).toFixed(2)
+      );
+
+      delete group.totalScore;
+      delete group.totalMarks;
+      delete group.totalPercentage;
+    });
+
+    const overall = {
+      totalAttempts,
+      averagePercentage:
+        totalAttempts > 0
+          ? Number((totalPercentage / totalAttempts).toFixed(2))
+          : 0,
+      bestPercentage,
+      totalTimeTaken,
+    };
+
+    res.status(200).json({
+      success: true,
+      overall,
+      analytics: groupedAnalytics,
+    });
+  } catch (error) {
+    console.error("Analytics Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch analytics.",
+    });
+  }
+};

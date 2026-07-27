@@ -8,7 +8,7 @@ import Profile from "./pages/Profile";
 import RegisterExam from "./pages/RegisterExam";
 import MockTests from "./pages/MockTests";
 import ComingSoon from "./pages/ComingSoon";
-import MockExam from "./pages/MockExam";
+
 
 // Payment Pages
 import Payment from "./pages/Payment";
@@ -22,6 +22,9 @@ import PublicRoute from "./components/PublicRoute";
 
 // Mock Test Pages
 import MockInstructions from "./pages/MockInstructions";
+import MockExam from "./pages/MockExam";
+import MockResult from "./pages/MockResult";
+import Analytics from "./pages/Analytics";
 
 function App() {
   return (
@@ -84,6 +87,17 @@ function App() {
 />
 
 
+
+<Route
+  path="/mock-test/result/:attemptId"
+  element={
+    <ProtectedRoute>
+      <MockResult />
+    </ProtectedRoute>
+  }
+/>
+
+
       {/* Payment Routes */}
 
       <Route
@@ -141,16 +155,13 @@ function App() {
       />
 
       <Route
-        path="/analytics"
-        element={
-          <ProtectedRoute>
-            <ComingSoon
-              title="AI Analytics"
-              description="Explore detailed performance insights and exam trends."
-            />
-          </ProtectedRoute>
-        }
-      />
+  path="/analytics"
+  element={
+    <ProtectedRoute>
+      <Analytics />
+    </ProtectedRoute>
+  }
+/>
 
       <Route
         path="/rank-predictor"

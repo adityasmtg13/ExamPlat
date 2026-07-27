@@ -185,3 +185,49 @@ export const submitAndRestartMockAttempt = async (
     );
   }
 };
+
+/**
+ * Get Mock Test Result
+ */
+export const getMockResult = async (attemptId) => {
+  try {
+    const { data } = await axios.get(
+      `${MOCK_TEST_API}/result/${attemptId}`,
+      authConfig()
+    );
+
+    console.log("Mock Result Response:", data);
+
+    return data;
+  } catch (error) {
+    console.error(
+      "Get Mock Result Error:",
+      error.response?.data || error
+    );
+
+    throw (
+      error.response?.data || {
+        success: false,
+        message: "Unable to fetch mock test result.",
+      }
+    );
+  }
+};
+
+export const getAnalytics = async () => {
+  try {
+    const response = await axios.get(
+      `${MOCK_TEST_API}/analytics`,
+      authConfig()
+    );
+
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data || {
+        success: false,
+        message: "Failed to fetch analytics.",
+      }
+    );
+  }
+};

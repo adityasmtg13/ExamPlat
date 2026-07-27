@@ -8,6 +8,8 @@ const {
   getMockAttemptHistory,
   createMockAttempt,
   submitAndRestartMockAttempt,
+  getMockResult,
+  getAnalytics,
 } = require("../controllers/mockTestController");
 
 
@@ -45,6 +47,22 @@ router.get(
   "/history/:registrationId",
   authMiddleware,
   getMockAttemptHistory
+);
+
+/**
+ * Get Mock Test Result
+ * GET /api/mock-tests/result/:attemptId
+ */
+router.get(
+  "/result/:attemptId",
+  authMiddleware,
+  getMockResult
+);
+
+router.get(
+  "/analytics",
+  authMiddleware,
+  getAnalytics
 );
 
 module.exports = router;
