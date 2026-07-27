@@ -9,6 +9,7 @@ import {
   getPasswordStrength,
   getPasswordValidationErrors,
 } from "../utils/validation";
+import logo from "../assets/logo.png";
 
 function Register() {
   const navigate = useNavigate();
@@ -85,95 +86,183 @@ function Register() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-950 via-indigo-900 to-purple-900">
-      <div className="w-[450px] rounded-3xl border border-white/20 bg-white/10 p-10 shadow-2xl backdrop-blur-xl">
-        <h1 className="mb-8 text-center text-4xl font-bold text-white">Create Account</h1>
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="rounded-xl bg-white px-4">
-            <div className="flex items-center">
-              <FaUser className="text-gray-500" />
-              <input
-                type="text"
-                name="name"
-                placeholder="Full Name"
-                className="w-full rounded-xl p-3 outline-none"
-                value={form.name}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            {errors.name && <p className="pb-2 text-sm text-red-600">{errors.name}</p>}
-          </div>
-
-          <div className="rounded-xl bg-white px-4">
-            <div className="flex items-center">
-              <FaEnvelope className="text-gray-500" />
-              <input
-                type="email"
-                name="email"
-                placeholder="Email Address"
-                className="w-full rounded-xl p-3 outline-none"
-                value={form.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            {errors.email && <p className="pb-2 text-sm text-red-600">{errors.email}</p>}
-          </div>
-
-          <div className="rounded-xl bg-white px-4">
-            <div className="flex items-center">
-              <FaLock className="text-gray-500" />
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                className="w-full rounded-xl p-3 outline-none"
-                value={form.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            {errors.password && <p className="pb-2 text-sm text-red-600">{errors.password}</p>}
-            {form.password && (
-              <p className={`pb-2 text-sm ${passwordStrength.color}`}>
-                Password Strength: {passwordStrength.label}
+    <div className="min-h-screen bg-slate-100 text-slate-900">
+      <div className="grid min-h-screen lg:grid-cols-[0.95fr_1.05fr]">
+        <section className="hidden bg-slate-950 px-12 py-10 text-white lg:flex lg:flex-col lg:justify-between">
+          <div className="flex items-center gap-3">
+            <img
+              src={logo}
+              alt="National Exam Platform logo"
+              className="h-12 w-12 rounded-lg bg-white p-1.5"
+            />
+            <div>
+              <p className="text-sm font-medium uppercase tracking-[0.2em] text-cyan-300">
+                National
               </p>
-            )}
-          </div>
-
-          <div className="rounded-xl bg-white px-4">
-            <div className="flex items-center">
-              <FaLock className="text-gray-500" />
-              <input
-                type="password"
-                name="confirmPassword"
-                placeholder="Confirm Password"
-                className="w-full rounded-xl p-3 outline-none"
-                value={form.confirmPassword}
-                onChange={handleChange}
-                required
-              />
+              <h2 className="text-2xl font-bold">Exam Platform</h2>
             </div>
-            {errors.confirmPassword && <p className="pb-2 text-sm text-red-600">{errors.confirmPassword}</p>}
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-xl bg-cyan-500 p-3 font-semibold text-white transition hover:bg-cyan-600 disabled:cursor-not-allowed disabled:bg-cyan-300"
-          >
-            {loading ? "Registering..." : "Register"}
-          </button>
-        </form>
+          <div className="max-w-xl">
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.18em] text-cyan-300">
+              Student Registration
+            </p>
+            <h1 className="text-5xl font-bold leading-tight">
+              Create your official student access account.
+            </h1>
+            <p className="mt-6 text-lg leading-8 text-slate-300">
+              Register once to manage exam applications, receive platform notifications, and
+              access your student dashboard securely.
+            </p>
+          </div>
 
-        <p className="mt-6 text-center text-gray-300">
-          Already have an account?
-          <Link to="/login" className="ml-2 text-cyan-400 hover:underline">
-            Login
-          </Link>
-        </p>
+          <div className="grid grid-cols-3 gap-4 text-sm">
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p className="text-2xl font-bold text-cyan-300">01</p>
+              <p className="mt-1 text-slate-300">Create profile</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p className="text-2xl font-bold text-cyan-300">02</p>
+              <p className="mt-1 text-slate-300">Verify details</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p className="text-2xl font-bold text-cyan-300">03</p>
+              <p className="mt-1 text-slate-300">Start exams</p>
+            </div>
+          </div>
+        </section>
+
+        <main className="flex items-center justify-center px-5 py-10 sm:px-8">
+          <div className="w-full max-w-lg">
+            <div className="mb-8 flex items-center justify-center gap-3 lg:hidden">
+              <img
+                src={logo}
+                alt="National Exam Platform logo"
+                className="h-12 w-12 rounded-lg bg-white p-1.5 shadow-sm"
+              />
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-700">
+                  National
+                </p>
+                <h2 className="text-xl font-bold text-slate-950">Exam Platform</h2>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-white p-8 shadow-xl shadow-slate-200/70 sm:p-10">
+              <div className="mb-8">
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-700">
+                  New Student Account
+                </p>
+                <h1 className="mt-3 text-3xl font-bold text-slate-950">Create account</h1>
+                <p className="mt-2 text-sm leading-6 text-slate-500">
+                  Use your official details to register for the National Exam Platform.
+                </p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700">
+                    Full name
+                  </label>
+                  <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 px-4 transition focus-within:border-cyan-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-cyan-100">
+                    <FaUser className="text-slate-400" />
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Enter your full name"
+                      className="w-full bg-transparent p-3 text-slate-900 outline-none placeholder:text-slate-400"
+                      value={form.name}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  {errors.name && <p className="mt-2 text-sm text-red-600">{errors.name}</p>}
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700">
+                    Email address
+                  </label>
+                  <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 px-4 transition focus-within:border-cyan-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-cyan-100">
+                    <FaEnvelope className="text-slate-400" />
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="student@example.com"
+                      className="w-full bg-transparent p-3 text-slate-900 outline-none placeholder:text-slate-400"
+                      value={form.email}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email}</p>}
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700">
+                    Password
+                  </label>
+                  <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 px-4 transition focus-within:border-cyan-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-cyan-100">
+                    <FaLock className="text-slate-400" />
+                    <input
+                      type="password"
+                      name="password"
+                      placeholder="Create a strong password"
+                      className="w-full bg-transparent p-3 text-slate-900 outline-none placeholder:text-slate-400"
+                      value={form.password}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  {errors.password && <p className="mt-2 text-sm text-red-600">{errors.password}</p>}
+                  {form.password && (
+                    <div className="mt-3 rounded-lg bg-slate-50 px-3 py-2">
+                      <p className={`text-sm font-medium ${passwordStrength.color}`}>
+                        Password Strength: {passwordStrength.label}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700">
+                    Confirm password
+                  </label>
+                  <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50 px-4 transition focus-within:border-cyan-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-cyan-100">
+                    <FaLock className="text-slate-400" />
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      placeholder="Re-enter your password"
+                      className="w-full bg-transparent p-3 text-slate-900 outline-none placeholder:text-slate-400"
+                      value={form.confirmPassword}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  {errors.confirmPassword && (
+                    <p className="mt-2 text-sm text-red-600">{errors.confirmPassword}</p>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full rounded-xl bg-slate-950 p-3.5 font-semibold text-white shadow-lg shadow-slate-300 transition hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-100 disabled:cursor-not-allowed disabled:bg-slate-400 disabled:shadow-none"
+                >
+                  {loading ? "Registering..." : "Register"}
+                </button>
+              </form>
+
+              <p className="mt-8 text-center text-sm text-slate-500">
+                Already have an account?
+                <Link to="/login" className="ml-2 font-semibold text-cyan-700 hover:text-cyan-800">
+                  Login
+                </Link>
+              </p>
+            </div>
+          </div>
+        </main>
       </div>
     </div>
   );
