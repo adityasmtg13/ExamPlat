@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import Navbar from "../components/Navbar";
 import QuickServiceCard from "../components/QuickServiceCard";
 import { getAnalytics } from "../services/mockTestService";
+import Footer from "../components/Footer";
 import {
   FaUserCircle,
   FaUserGraduate,
@@ -382,6 +383,7 @@ function Dashboard() {
           </aside>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

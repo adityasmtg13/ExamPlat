@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { getAnalytics } from "../services/mockTestService";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 function Analytics() {
   const [loading, setLoading] = useState(true);
@@ -207,6 +208,7 @@ function Analytics() {
         ))}
       </div>
     </div>
+    <Footer />
      </div>
   );
 }

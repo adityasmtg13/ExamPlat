@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 import RegistrationForm from "../components/RegistrationForm";
 import RegistrationHistory from "../components/RegistrationHistory";
@@ -107,6 +108,7 @@ function RegisterExam() {
 
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

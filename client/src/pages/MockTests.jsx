@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import {
   FaCalculator,
   FaFlask,
@@ -71,6 +72,7 @@ function MockTests() {
             </div>
           </div>
         </main>
+        <Footer />
       </div>
     );
   }
@@ -257,6 +259,7 @@ function MockTests() {
           </section>
         )}
       </main>
+      <Footer />
     </div>
   );
 }

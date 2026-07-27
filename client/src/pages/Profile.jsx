@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Navbar from "../components/Navbar";
 import FormField from "../components/FormField";
+import Footer from "../components/Footer";
 import {
   getProfile,
   updateProfile,
@@ -344,6 +345,7 @@ if (Object.keys(validateProfile(res.student)).length === 0) {
             <p className="mt-2 text-sm text-slate-500">Retrieving your student record.</p>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
@@ -705,6 +707,7 @@ if (Object.keys(validateProfile(res.student)).length === 0) {
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   );
 }
