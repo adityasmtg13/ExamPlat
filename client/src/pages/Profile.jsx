@@ -161,63 +161,94 @@ function Profile() {
 
     switch (name) {
       case "name":
-        nextError.name = trimmedValue && isValidName(trimmedValue)
-          ? ""
-          : "Enter a valid full name. Only letters and spaces are allowed.";
+        nextError.name =
+          trimmedValue && isValidName(trimmedValue)
+            ? ""
+            : "Enter a valid full name. Only letters and spaces are allowed.";
         break;
       case "email":
-        nextError.email = trimmedValue && isValidEmail(trimmedValue) ? "" : "Enter a valid email address.";
+        nextError.email =
+          trimmedValue && isValidEmail(trimmedValue) ? "" : "Enter a valid email address.";
         break;
       case "phone":
-        nextError.phone = trimmedValue && isValidPhone(trimmedValue) ? "" : "Enter a valid 10-digit mobile number.";
+        nextError.phone =
+          trimmedValue && isValidPhone(trimmedValue)
+            ? ""
+            : "Enter a valid 10-digit mobile number.";
         break;
       case "alternateEmail":
-        nextError.alternateEmail = trimmedValue && isValidEmail(trimmedValue) ? "" : "Enter a valid alternate email address.";
+        nextError.alternateEmail =
+          trimmedValue && isValidEmail(trimmedValue)
+            ? ""
+            : "Enter a valid alternate email address.";
         break;
       case "aadhaar":
-        nextError.aadhaar = trimmedValue && isValidAadhaar(trimmedValue) ? "" : "Enter a valid Aadhaar number. Aadhaar must contain exactly 12 digits.";
+        nextError.aadhaar =
+          trimmedValue && isValidAadhaar(trimmedValue)
+            ? ""
+            : "Enter a valid Aadhaar number. Aadhaar must contain exactly 12 digits.";
         break;
       case "fatherName":
-        nextError.fatherName = trimmedValue && isValidLetterName(trimmedValue) ? "" : "Enter a valid parent or guardian name.";
+        nextError.fatherName =
+          trimmedValue && isValidLetterName(trimmedValue)
+            ? ""
+            : "Enter a valid parent or guardian name.";
         break;
       case "fatherPhone":
-        nextError.fatherPhone = trimmedValue && isValidPhone(trimmedValue) ? "" : "Enter a valid 10-digit parent contact number.";
+        nextError.fatherPhone =
+          trimmedValue && isValidPhone(trimmedValue)
+            ? ""
+            : "Enter a valid 10-digit parent contact number.";
         break;
       case "motherName":
-        nextError.motherName = trimmedValue && isValidLetterName(trimmedValue) ? "" : "Enter a valid mother's name.";
+        nextError.motherName =
+          trimmedValue && isValidLetterName(trimmedValue) ? "" : "Enter a valid mother's name.";
         break;
       case "motherPhone":
-        nextError.motherPhone = trimmedValue && isValidPhone(trimmedValue) ? "" : "Enter a valid 10-digit mother's contact number.";
+        nextError.motherPhone =
+          trimmedValue && isValidPhone(trimmedValue)
+            ? ""
+            : "Enter a valid 10-digit mother's contact number.";
         break;
       case "dob":
-        nextError.dob = trimmedValue && isValidDob(trimmedValue) ? "" : "Enter a valid date of birth.";
+        nextError.dob =
+          trimmedValue && isValidDob(trimmedValue) ? "" : "Enter a valid date of birth.";
         break;
       case "gender":
         nextError.gender = trimmedValue ? "" : "Please select your gender.";
         break;
       case "address":
-        nextError.address = trimmedValue && isValidAddress(trimmedValue) ? "" : "Enter your complete address.";
+        nextError.address =
+          trimmedValue && isValidAddress(trimmedValue) ? "" : "Enter your complete address.";
         break;
       case "city":
-        nextError.city = trimmedValue && isValidCity(trimmedValue) ? "" : "Enter a valid city name.";
+        nextError.city =
+          trimmedValue && isValidCity(trimmedValue) ? "" : "Enter a valid city name.";
         break;
       case "state":
-        nextError.state = trimmedValue && INDIAN_STATES.includes(trimmedValue) ? "" : "Please select your state.";
+        nextError.state =
+          trimmedValue && INDIAN_STATES.includes(trimmedValue) ? "" : "Please select your state.";
         break;
       case "country":
         nextError.country = trimmedValue === "India" ? "" : "Country is required.";
         break;
       case "pincode":
-        nextError.pincode = trimmedValue && isValidPincode(trimmedValue) ? "" : "Enter a valid 6-digit PIN code.";
+        nextError.pincode =
+          trimmedValue && isValidPincode(trimmedValue) ? "" : "Enter a valid 6-digit PIN code.";
         break;
       case "stream":
-        nextError.stream = trimmedValue && VALID_STREAMS.includes(trimmedValue) ? "" : "Please select your stream.";
+        nextError.stream =
+          trimmedValue && VALID_STREAMS.includes(trimmedValue) ? "" : "Please select your stream.";
         break;
       case "studentClass":
-        nextError.studentClass = trimmedValue && VALID_CLASSES.includes(trimmedValue) ? "" : "Please select your class.";
+        nextError.studentClass =
+          trimmedValue && VALID_CLASSES.includes(trimmedValue) ? "" : "Please select your class.";
         break;
       case "school":
-        nextError.school = trimmedValue && isValidSchool(trimmedValue) ? "" : "Enter a valid school or college name.";
+        nextError.school =
+          trimmedValue && isValidSchool(trimmedValue)
+            ? ""
+            : "Enter a valid school or college name.";
         break;
       case "profilePhoto":
         nextError.profilePhoto = trimmedValue ? "" : "Please upload your profile photo.";
@@ -294,271 +325,377 @@ function Profile() {
 
   if (loading) {
     return (
-      <>
+      <div className="min-h-screen bg-slate-100 text-slate-900">
         <Navbar />
-        <div className="flex h-[80vh] items-center justify-center">
-          <h2 className="text-2xl font-semibold">Loading Profile...</h2>
+        <div className="mx-auto flex min-h-[70vh] max-w-7xl items-center justify-center px-4">
+          <div className="rounded-2xl border border-slate-200 bg-white px-10 py-8 text-center shadow-md shadow-slate-200/70">
+            <div className="mx-auto mb-5 h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-cyan-700" />
+            <h2 className="text-xl font-bold text-slate-950">Loading Profile</h2>
+            <p className="mt-2 text-sm text-slate-500">Retrieving your student record.</p>
+          </div>
         </div>
-      </>
+      </div>
     );
   }
 
   return (
-    <>
+    <div className="min-h-screen bg-slate-100 text-slate-900">
       <Navbar />
 
-      <div className="min-h-screen bg-gray-100 py-10">
-        <div className="mx-auto max-w-5xl rounded-xl bg-white p-8 shadow-lg">
-          <h1 className="mb-8 text-center text-3xl font-bold text-[#103f7c]">
-            Student Profile
-          </h1>
-
-          <div className="mb-10 flex flex-col items-center">
-            <img
-              src={profile.profilePhoto ? profile.profilePhoto : "https://via.placeholder.com/150"}
-              alt="Profile"
-              className="h-40 w-40 rounded-full border-4 border-blue-600 object-cover shadow-md"
-            />
-
-            <label className="mt-4 inline-block">
-              <input type="file" className="hidden" onChange={handlePhoto} />
-
-              <span className="cursor-pointer rounded-lg bg-blue-600 px-6 py-3 font-medium text-white shadow transition hover:bg-blue-700">
-                📷 Change Profile Photo
-              </span>
-            </label>
-            {errors.profilePhoto && <p className="mt-2 text-sm text-red-600">{errors.profilePhoto}</p>}
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg shadow-slate-200/70">
+          <div className="bg-slate-950 px-6 py-8 text-white sm:px-8">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-300">
+              Student Records
+            </p>
+            <div className="mt-4 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <h1 className="text-3xl font-bold md:text-4xl">Student Profile</h1>
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
+                  Keep your personal, guardian, address, and academic details accurate before
+                  examination registration.
+                </p>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 px-5 py-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+                  Record Status
+                </p>
+                <p className="mt-2 font-semibold text-cyan-200">Verification details required</p>
+              </div>
+            </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            <FormField
-              label="Full Name"
-              name="name"
-              value={profile.name || ""}
-              onChange={handleChange}
-              placeholder="Full Name"
-              required
-              disabled
-              error={errors.name}
-            />
+          <div className="grid gap-8 p-6 lg:grid-cols-[280px_1fr] sm:p-8">
+            <aside>
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
+                <img
+                  src={
+                    profile.profilePhoto
+                      ? profile.profilePhoto
+                      : "https://via.placeholder.com/150"
+                  }
+                  alt="Profile"
+                  className="mx-auto h-36 w-36 rounded-full border-4 border-white object-cover shadow-md"
+                />
 
-            <FormField
-              label="Email"
-              name="email"
-              value={profile.email || ""}
-              onChange={handleChange}
-              placeholder="Email"
-              required
-              disabled
-              error={errors.email}
-            />
+                <h2 className="mt-5 text-xl font-bold text-slate-950">
+                  {profile.name || "Student"}
+                </h2>
+                <p className="mt-1 break-words text-sm text-slate-500">
+                  {profile.email || "No email provided"}
+                </p>
 
-            <FormField
-              label="Phone Number"
-              name="phone"
-              value={profile.phone || ""}
-              onChange={handleChange}
-              placeholder="Phone Number"
-              required
-              error={errors.phone}
-            />
+                <label className="mt-5 inline-block">
+                  <input type="file" className="hidden" onChange={handlePhoto} />
 
-            <FormField
-              label="Alternate Email"
-              name="alternateEmail"
-              value={profile.alternateEmail || ""}
-              onChange={handleChange}
-              placeholder="Alternate Email"
-              required
-              error={errors.alternateEmail}
-            />
+                  <span className="cursor-pointer rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-200 transition hover:bg-cyan-700">
+                    Change Profile Photo
+                  </span>
+                </label>
+                {errors.profilePhoto && (
+                  <p className="mt-3 text-sm text-red-600">{errors.profilePhoto}</p>
+                )}
+              </div>
 
-            <FormField
-              label="Aadhaar Number"
-              name="aadhaar"
-              value={profile.aadhaar || ""}
-              onChange={handleChange}
-              placeholder="Aadhaar Number"
-              required
-              error={errors.aadhaar}
-            />
+              <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-5">
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-700">
+                  Academic
+                </p>
+                <div className="mt-4 space-y-3 text-sm">
+                  <p className="flex justify-between gap-4">
+                    <span className="text-slate-500">Stream</span>
+                    <span className="font-semibold text-slate-950">{profile.stream || "--"}</span>
+                  </p>
+                  <p className="flex justify-between gap-4">
+                    <span className="text-slate-500">Class</span>
+                    <span className="font-semibold text-slate-950">
+                      {profile.studentClass || "--"}
+                    </span>
+                  </p>
+                  <p className="flex justify-between gap-4">
+                    <span className="text-slate-500">State</span>
+                    <span className="font-semibold text-slate-950">{profile.state || "--"}</span>
+                  </p>
+                </div>
+              </div>
+            </aside>
 
-            <FormField
-              label="Parent/Guardian Name"
-              name="fatherName"
-              value={profile.fatherName || ""}
-              onChange={handleChange}
-              placeholder="Parent/Guardian Name"
-              required
-              error={errors.fatherName}
-            />
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <section>
+                <div className="mb-5 border-b border-slate-200 pb-4">
+                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-700">
+                    Personal Details
+                  </p>
+                  <h2 className="mt-2 text-2xl font-bold text-slate-950">Identity Information</h2>
+                </div>
 
-            <FormField
-              label="Parent Contact Number"
-              name="fatherPhone"
-              value={profile.fatherPhone || ""}
-              onChange={handleChange}
-              placeholder="Parent Contact Number"
-              required
-              error={errors.fatherPhone}
-            />
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                  <FormField
+                    label="Full Name"
+                    name="name"
+                    value={profile.name || ""}
+                    onChange={handleChange}
+                    placeholder="Full Name"
+                    required
+                    disabled
+                    error={errors.name}
+                  />
 
-            <FormField
-              label="Mother Name"
-              name="motherName"
-              value={profile.motherName || ""}
-              onChange={handleChange}
-              placeholder="Mother Name"
-              required
-              error={errors.motherName}
-            />
+                  <FormField
+                    label="Email"
+                    name="email"
+                    value={profile.email || ""}
+                    onChange={handleChange}
+                    placeholder="Email"
+                    required
+                    disabled
+                    error={errors.email}
+                  />
 
-            <FormField
-              label="Mother Phone"
-              name="motherPhone"
-              value={profile.motherPhone || ""}
-              onChange={handleChange}
-              placeholder="Mother Phone"
-              required
-              error={errors.motherPhone}
-            />
+                  <FormField
+                    label="Phone Number"
+                    name="phone"
+                    value={profile.phone || ""}
+                    onChange={handleChange}
+                    placeholder="Phone Number"
+                    required
+                    error={errors.phone}
+                  />
 
-            <FormField
-              label="Date of Birth"
-              name="dob"
-              type="date"
-              value={profile.dob ? profile.dob.split("T")[0] : ""}
-              onChange={handleChange}
-              required
-              error={errors.dob}
-            />
+                  <FormField
+                    label="Alternate Email"
+                    name="alternateEmail"
+                    value={profile.alternateEmail || ""}
+                    onChange={handleChange}
+                    placeholder="Alternate Email"
+                    required
+                    error={errors.alternateEmail}
+                  />
 
-            <FormField
-              label="Gender"
-              name="gender"
-              type="select"
-              value={profile.gender || ""}
-              onChange={handleChange}
-              required
-              error={errors.gender}
-              options={[
-                { value: "", label: "Select Gender" },
-                { value: "Male", label: "Male" },
-                { value: "Female", label: "Female" },
-                { value: "Other", label: "Other" },
-              ]}
-            />
+                  <FormField
+                    label="Aadhaar Number"
+                    name="aadhaar"
+                    value={profile.aadhaar || ""}
+                    onChange={handleChange}
+                    placeholder="Aadhaar Number"
+                    required
+                    error={errors.aadhaar}
+                  />
 
-            <FormField
-              label="Address"
-              name="address"
-              value={profile.address || ""}
-              onChange={handleChange}
-              placeholder="Address"
-              required
-              error={errors.address}
-              fullWidth
-            />
+                  <FormField
+                    label="Date of Birth"
+                    name="dob"
+                    type="date"
+                    value={profile.dob ? profile.dob.split("T")[0] : ""}
+                    onChange={handleChange}
+                    required
+                    error={errors.dob}
+                  />
 
-            <FormField
-              label="City"
-              name="city"
-              value={profile.city || ""}
-              onChange={handleChange}
-              placeholder="City"
-              required
-              error={errors.city}
-            />
+                  <FormField
+                    label="Gender"
+                    name="gender"
+                    type="select"
+                    value={profile.gender || ""}
+                    onChange={handleChange}
+                    required
+                    error={errors.gender}
+                    options={[
+                      { value: "", label: "Select Gender" },
+                      { value: "Male", label: "Male" },
+                      { value: "Female", label: "Female" },
+                      { value: "Other", label: "Other" },
+                    ]}
+                  />
+                </div>
+              </section>
 
-            <FormField
-              label="State"
-              name="state"
-              type="select"
-              value={profile.state || ""}
-              onChange={handleChange}
-              required
-              error={errors.state}
-              options={[
-                { value: "", label: "Select State" },
-                ...INDIAN_STATES.map((state) => ({ value: state, label: state })),
-              ]}
-            />
+              <section>
+                <div className="mb-5 border-b border-slate-200 pb-4">
+                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-700">
+                    Guardian Details
+                  </p>
+                  <h2 className="mt-2 text-2xl font-bold text-slate-950">Parent Information</h2>
+                </div>
 
-            <FormField
-              label="Country"
-              name="country"
-              value={profile.country || "India"}
-              onChange={handleChange}
-              placeholder="Country"
-              required
-              error={errors.country}
-            />
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                  <FormField
+                    label="Parent/Guardian Name"
+                    name="fatherName"
+                    value={profile.fatherName || ""}
+                    onChange={handleChange}
+                    placeholder="Parent/Guardian Name"
+                    required
+                    error={errors.fatherName}
+                  />
 
-            <FormField
-              label="Pincode"
-              name="pincode"
-              value={profile.pincode || ""}
-              onChange={handleChange}
-              placeholder="Pincode"
-              required
-              error={errors.pincode}
-            />
+                  <FormField
+                    label="Parent Contact Number"
+                    name="fatherPhone"
+                    value={profile.fatherPhone || ""}
+                    onChange={handleChange}
+                    placeholder="Parent Contact Number"
+                    required
+                    error={errors.fatherPhone}
+                  />
 
-            <FormField
-              label="Stream"
-              name="stream"
-              type="select"
-              value={profile.stream || ""}
-              onChange={handleChange}
-              required
-              error={errors.stream}
-              options={[
-                { value: "", label: "Select Stream" },
-                { value: "JEE", label: "JEE" },
-                { value: "NEET", label: "NEET" },
-                { value: "CUET", label: "CUET" },
-                { value: "MAT", label: "MAT" },
-              ]}
-            />
+                  <FormField
+                    label="Mother Name"
+                    name="motherName"
+                    value={profile.motherName || ""}
+                    onChange={handleChange}
+                    placeholder="Mother Name"
+                    required
+                    error={errors.motherName}
+                  />
 
-            <FormField
-              label="Class"
-              name="studentClass"
-              type="select"
-              value={profile.studentClass || ""}
-              onChange={handleChange}
-              required
-              error={errors.studentClass}
-              options={[
-                { value: "", label: "Select Class" },
-                { value: "11", label: "11" },
-                { value: "12", label: "12" },
-                { value: "Dropper", label: "Dropper" },
-              ]}
-            />
+                  <FormField
+                    label="Mother Phone"
+                    name="motherPhone"
+                    value={profile.motherPhone || ""}
+                    onChange={handleChange}
+                    placeholder="Mother Phone"
+                    required
+                    error={errors.motherPhone}
+                  />
+                </div>
+              </section>
 
-            <FormField
-              label="School/College Name"
-              name="school"
-              value={profile.school || ""}
-              onChange={handleChange}
-              placeholder="School / College"
-              required
-              error={errors.school}
-              fullWidth
-            />
+              <section>
+                <div className="mb-5 border-b border-slate-200 pb-4">
+                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-700">
+                    Address Details
+                  </p>
+                  <h2 className="mt-2 text-2xl font-bold text-slate-950">Communication Address</h2>
+                </div>
 
-            <button
-              type="submit"
-              disabled={saving}
-              className="rounded-lg bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-400 md:col-span-2"
-            >
-              {saving ? "Saving..." : "Save Changes"}
-            </button>
-          </form>
-        </div>
-      </div>
-    </>
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                  <FormField
+                    label="Address"
+                    name="address"
+                    value={profile.address || ""}
+                    onChange={handleChange}
+                    placeholder="Address"
+                    required
+                    error={errors.address}
+                    fullWidth
+                  />
+
+                  <FormField
+                    label="City"
+                    name="city"
+                    value={profile.city || ""}
+                    onChange={handleChange}
+                    placeholder="City"
+                    required
+                    error={errors.city}
+                  />
+
+                  <FormField
+                    label="State"
+                    name="state"
+                    type="select"
+                    value={profile.state || ""}
+                    onChange={handleChange}
+                    required
+                    error={errors.state}
+                    options={[
+                      { value: "", label: "Select State" },
+                      ...INDIAN_STATES.map((state) => ({ value: state, label: state })),
+                    ]}
+                  />
+
+                  <FormField
+                    label="Country"
+                    name="country"
+                    value={profile.country || "India"}
+                    onChange={handleChange}
+                    placeholder="Country"
+                    required
+                    error={errors.country}
+                  />
+
+                  <FormField
+                    label="Pincode"
+                    name="pincode"
+                    value={profile.pincode || ""}
+                    onChange={handleChange}
+                    placeholder="Pincode"
+                    required
+                    error={errors.pincode}
+                  />
+                </div>
+              </section>
+
+              <section>
+                <div className="mb-5 border-b border-slate-200 pb-4">
+                  <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-700">
+                    Academic Details
+                  </p>
+                  <h2 className="mt-2 text-2xl font-bold text-slate-950">School Information</h2>
+                </div>
+
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                  <FormField
+                    label="Stream"
+                    name="stream"
+                    type="select"
+                    value={profile.stream || ""}
+                    onChange={handleChange}
+                    required
+                    error={errors.stream}
+                    options={[
+                      { value: "", label: "Select Stream" },
+                      { value: "JEE", label: "JEE" },
+                      { value: "NEET", label: "NEET" },
+                      { value: "CUET", label: "CUET" },
+                      { value: "MAT", label: "MAT" },
+                    ]}
+                  />
+
+                  <FormField
+                    label="Class"
+                    name="studentClass"
+                    type="select"
+                    value={profile.studentClass || ""}
+                    onChange={handleChange}
+                    required
+                    error={errors.studentClass}
+                    options={[
+                      { value: "", label: "Select Class" },
+                      { value: "11", label: "11" },
+                      { value: "12", label: "12" },
+                      { value: "Dropper", label: "Dropper" },
+                    ]}
+                  />
+
+                  <FormField
+                    label="School/College Name"
+                    name="school"
+                    value={profile.school || ""}
+                    onChange={handleChange}
+                    placeholder="School / College"
+                    required
+                    error={errors.school}
+                    fullWidth
+                  />
+                </div>
+              </section>
+
+              <div className="sticky bottom-4 rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-xl shadow-slate-300/60 backdrop-blur">
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="w-full rounded-xl bg-slate-950 py-3.5 font-semibold text-white shadow-lg shadow-slate-200 transition hover:bg-cyan-700 disabled:cursor-not-allowed disabled:bg-slate-400 disabled:shadow-none"
+                >
+                  {saving ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
   );
 }
 
