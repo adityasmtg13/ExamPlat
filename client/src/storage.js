@@ -3,14 +3,14 @@ export const getStudent = () => {
     const stored = localStorage.getItem("student");
     if (!stored) return null;
     return JSON.parse(stored);
-  } catch (error) {
+  } catch {
     return null;
   }
 };
 
 export const setStudent = (student) => {
   try {
-    if (student === undefined || student === null) {
+    if (student == null) {
       localStorage.removeItem("student");
     } else {
       localStorage.setItem("student", JSON.stringify(student));
@@ -19,4 +19,16 @@ export const setStudent = (student) => {
   } catch (error) {
     console.error("Failed to write student to storage", error);
   }
+};
+
+export const getToken = () => {
+  return localStorage.getItem("token");
+};
+
+export const setToken = (token) => {
+  localStorage.setItem("token", token);
+};
+
+export const removeToken = () => {
+  localStorage.removeItem("token");
 };

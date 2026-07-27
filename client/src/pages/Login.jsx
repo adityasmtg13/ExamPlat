@@ -6,6 +6,7 @@ import { FaEnvelope, FaLock } from "react-icons/fa";
 import { setStudent } from "../storage";
 import { EMAIL_REGEX } from "../utils/validation";
 import logo from "../assets/logo.png";
+import { isProfileComplete } from "../utils/profileUtils";
 
 function Login() {
   const navigate = useNavigate();
@@ -60,8 +61,13 @@ function Login() {
         duration: 5000,
       });
 
-      const fromPath = location.state?.from?.pathname;
-      navigate(fromPath || "/dashboard", { replace: true });
+      if (isProfileComplete(res.data.student)) {
+        const fromPath = location.state?.from?.pathname;
+        navigate(fromPath || "/dashboard", { replace: true });
+      } else {
+        toast.info("Please complete your profile to continue.");
+        navigate("/profile", { replace: true });
+      }
     } catch (err) {
       toast.error(err.response?.data?.message || "Login Failed");
     }

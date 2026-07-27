@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Navbar from "../components/Navbar";
 import FormField from "../components/FormField";
@@ -24,6 +25,7 @@ import {
 } from "../utils/validation";
 
 function Profile() {
+  const navigate = useNavigate();
   const [profile, setProfile] = useState({
     name: "",
     email: "",
@@ -315,6 +317,14 @@ function Profile() {
       localStorage.setItem("student", JSON.stringify(res.student));
       window.dispatchEvent(new Event("studentUpdated"));
       toast.success("Profile Updated Successfully");
+
+// Refresh navbar/profile data
+window.dispatchEvent(new Event("studentUpdated"));
+
+// If profile is now complete, take the user to dashboard
+if (Object.keys(validateProfile(res.student)).length === 0) {
+  navigate("/dashboard", { replace: true });
+}
     } catch (err) {
       console.log(err);
       toast.error(err.response?.data?.message || "Update Failed");
