@@ -271,7 +271,7 @@ function Home() {
                     {index === 0 && "📝 JEE Main Examination"}
                     {index === 1 && "🔬 NEET UG Examination"}
                     {index === 2 && "💻 Computer Based Test"}
-                    {index === 3 && "📚 Preparation Resources"}
+                    {index === 3 && "📚 AI Analytics & Rank Prediction"}
                   </p>
                 </div>
               </div>
@@ -288,7 +288,7 @@ function Home() {
                     {index === 0 && "📝 JEE Main Examination"}
                     {index === 1 && "🔬 NEET UG Examination"}
                     {index === 2 && "💻 Computer Based Test"}
-                    {index === 3 && "📚 Preparation Resources"}
+                    {index === 3 && "📚 AI Analytics & Rank Prediction"}
                   </p>
                 </div>
               </div>
@@ -671,7 +671,7 @@ function Home() {
             <p className="leading-8 text-gray-300">
               India's premier examination platform providing
               AI-powered practice tests, performance analytics,
-              and personalized learning resources for students
+              and personalized resources for students
               preparing for national competitive exams.
             </p>
           </div>
