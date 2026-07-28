@@ -68,7 +68,7 @@ function Home() {
             <div>
 
               <h1 className="text-4xl font-bold text-[#103f7c]">
-                National Exam Platform
+                ExamPlat - e-Examination Platform
               </h1>
 
             </div>
@@ -135,14 +135,14 @@ function Home() {
 
             <h1 className="text-6xl font-bold text-white mb-5">
 
-              National Exam Platform
+              ExamPlat - e-Examination Platform
 
             </h1>
 
             <p className="text-2xl text-gray-200 mb-8 max-w-2xl">
 
               India's very own Examination Platform
-              for National Level Competitive Examinations.
+              for ExamPlat - e-Examination Platform Level Competitive Examinations.
 
             </p>
 
@@ -190,7 +190,7 @@ function Home() {
 
           <marquee className="py-4 text-green-600 font-semibold">
 
-            🟢 JEE Main 2027 Registration opens on 15 September 2026 • 🟢 NEET UG Mock Tests are now available • 🟢 AI Rank Predictor launched • 🟢 Student Dashboard Version 2.0 released • 🟢 National Exam Platform welcomes all aspirants.
+            🟢 JEE Main 2027 Registration opens on 15 September 2026 • 🟢 NEET UG Mock Tests are now available • 🟢 AI Rank Predictor launched • 🟢 Student Dashboard Version 2.0 released • 🟢 ExamPlat - e-Examination Platform welcomes all aspirants.
 
           </marquee>
 
@@ -204,7 +204,7 @@ function Home() {
 
         <h2 className="text-4xl font-bold text-center mb-14">
 
-          National Services
+          ExamPlat - e-Examination Platform Services
 
         </h2>
 
@@ -293,12 +293,12 @@ function Home() {
 
         <div>
           <h2 className="text-4xl font-bold text-[#103f7c] mb-6">
-            About National Exam Platform
+            About ExamPlat - e-Examination Platform
           </h2>
 
           <p className="text-gray-700 leading-8 text-lg">
-            National Exam Platform (NEP) is an AI-powered digital examination
-            portal developed to provide a centralized ecosystem for national
+            ExamPlat - e-Examination Platform (NEP) is an AI-powered digital examination
+            portal developed to provide a centralized ecosystem for ExamPlat - e-Examination Platform
             competitive examinations such as JEE, NEET and future government
             entrance examinations.
           </p>
@@ -456,7 +456,7 @@ function Home() {
     <div>
 
     <h2 className="text-2xl font-bold mb-5">
-    National Exam Platform
+    ExamPlat - e-Examination Platform
     </h2>
 
     <p className="leading-8 text-gray-300">
@@ -506,7 +506,7 @@ function Home() {
     </h3>
 
     <p className="text-gray-300">
-    National Exam Platform
+    ExamPlat - e-Examination Platform
     </p>
 
     <p className="text-gray-300">
@@ -527,7 +527,7 @@ function Home() {
 
     <div className="border-t border-blue-700 py-5 text-center text-gray-300">
 
-    © 2026 National Exam Platform
+    © 2026 ExamPlat - e-Examination Platform
 
     </div>
 

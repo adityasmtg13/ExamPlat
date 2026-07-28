@@ -12,7 +12,7 @@ import { getMockTests } from "../services/mockTestService";
 const examDetails = {
   "JEE Main": {
     title: "JEE Main Mock Test",
-    body: "National Testing Agency",
+    body: "ExamPlat - e-Examination Platform .",
     duration: "3 Hours",
     questions: "90",
     marks: "300",
@@ -24,7 +24,7 @@ const examDetails = {
 
   NEET: {
     title: "NEET Mock Test",
-    body: "National Testing Agency",
+    body: "ExamPlat - e-Examination Platform .",
     duration: "3 Hours 20 Minutes",
     questions: "180",
     marks: "720",

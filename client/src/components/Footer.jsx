@@ -19,7 +19,7 @@ const footerCards = [
     title: "Need assistance?",
     description: "Get help with your account, exams, and platform services.",
     action: "Contact support",
-    href: "mailto:support@nationalexamplatform.in",
+    href: "mailto:support@ExamPlat.in",
   },
   {
     icon: <FaFileContract />,
@@ -62,11 +62,11 @@ function Footer() {
           <div className="flex items-center gap-3">
             <img
               src={logo}
-              alt="National Exam Platform"
+              alt="ExamPlat - e-Examination Platform"
               className="h-10 w-10 rounded-lg border border-slate-200 bg-white p-1.5"
             />
             <div>
-              <p className="font-bold text-slate-950">National Exam Platform</p>
+              <p className="font-bold text-slate-950">ExamPlat - e-Examination Platform</p>
               <p className="text-sm text-slate-500">Exam preparation, made more accessible.</p>
             </div>
           </div>
@@ -79,14 +79,14 @@ function Footer() {
             <Link to="/terms-and-conditions" className="text-slate-600 hover:text-cyan-700">
               Terms &amp; Conditions
             </Link>
-            <a href="mailto:support@nationalexamplatform.in" className="text-slate-600 hover:text-cyan-700">
+            <a href="mailto:support@ExamPlat - e-Examination Platformexamplatform.in" className="text-slate-600 hover:text-cyan-700">
               Contact Us
             </a>
           </nav>
         </div>
 
         <p className="mt-7 text-xs leading-5 text-slate-500">
-          © {year} National Exam Platform. All rights reserved. This platform provides educational and exam-preparation services.
+          © {year} ExamPlat - e-Examination Platform. All rights reserved. This platform provides educational and exam-preparation services.
         </p>
       </div>
     </footer>

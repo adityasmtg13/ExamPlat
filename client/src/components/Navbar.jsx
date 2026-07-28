@@ -46,14 +46,14 @@ function Navbar() {
           <img
             src={logo}
             className="h-12 w-12 rounded-lg border border-slate-200 bg-white p-1.5 object-contain shadow-sm"
-            alt="National Exam Platform Logo"
+            alt="ExamPlatLogo"
           />
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-700">
-              National
+              ExamPlat
             </p>
             <h1 className="text-xl font-bold text-slate-950 sm:text-2xl">
-              Exam Platform
+              e-Examination Platform
             </h1>
           </div>
         </Link>

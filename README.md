@@ -1,6 +1,6 @@
-# 🇮🇳 National Exam Platform (ExamPlat)
+# 🇮🇳 ExamPlat - e-Examination Platform (ExamPlat)
 
-An AI-powered MERN Stack based examination platform inspired by the **National Testing Agency (NTA)**. The platform enables students to register, prepare, and participate in competitive examinations such as **JEE**, **NEET**, and other national-level entrance exams through a secure government-style portal.
+An AI-powered MERN Stack based examination platform inspired by the **ExamPlat - e-Examination Platform .**. The platform enables students to register, prepare, and participate in competitive examinations such as **JEE**, **NEET**, and other ExamPlat - e-Examination Platform-level entrance exams through a secure government-style portal.
 
 ExamPlat provides secure authentication, student profile management, examination registration, mock payment gateway, downloadable PDF receipts, and a modern dashboard experience.
 
@@ -710,4 +710,4 @@ v0.7.0 Beta
 
 ---
 
-Built using the MERN Stack to provide a secure, scalable, and modern digital examination platform inspired by India's National Testing Agency (NTA).
+Built using the MERN Stack to provide a secure, scalable, and modern digital examination platform inspired by India's ExamPlat - e-Examination Platform . (NTA).

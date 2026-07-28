@@ -83,14 +83,14 @@ function Login() {
           <div className="flex items-center gap-3">
             <img
               src={logo}
-              alt="National Exam Platform logo"
+              alt="ExamPlat logo"
               className="h-12 w-12 rounded-lg bg-white p-1.5"
             />
             <div>
               <p className="text-sm font-medium uppercase tracking-[0.2em] text-cyan-300">
-                National
+                ExamPlat
               </p>
-              <h2 className="text-2xl font-bold">Exam Platform</h2>
+              <h2 className="text-2xl font-bold">e-Examination Platform</h2>
             </div>
           </div>
 
@@ -128,14 +128,14 @@ function Login() {
             <div className="mb-8 flex items-center justify-center gap-3 lg:hidden">
               <img
                 src={logo}
-                alt="National Exam Platform logo"
+                alt="ExamPlat logo"
                 className="h-12 w-12 rounded-lg bg-white p-1.5 shadow-sm"
               />
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-700">
-                  National
+                  ExamPlat - e-Examination Platform
                 </p>
-                <h2 className="text-xl font-bold text-slate-950">Exam Platform</h2>
+                <h2 className="text-xl font-bold text-slate-950">ExamPlat - e-Examination Platform</h2>
               </div>
             </div>
 

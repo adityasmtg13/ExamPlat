@@ -39,7 +39,7 @@ app.use("/api/mock-exam", mockExamRoutes);
 
 // Home Route
 app.get("/", (req, res) => {
-  res.send("Exam Platform Backend Running...");
+  res.send("ExamPlat Backend Running...");
 });
 
 // Server

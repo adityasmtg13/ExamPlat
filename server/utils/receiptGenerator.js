@@ -26,7 +26,7 @@ const createReceiptDocument = (data) => {
     size: "A4",
     info: {
       Title: `Payment Receipt - ${data.receiptNumber}`,
-      Author: "National Exam Platform",
+      Author: "ExamPlat - e-Examination Platform",
       Subject: "Payment Receipt",
     },
   });
@@ -121,7 +121,7 @@ const createReceiptDocument = (data) => {
     .font("Helvetica-Bold")
     .fontSize(20)
     .fillColor("#ffffff")
-    .text("National Exam Platform", startX + 66, 31);
+    .text("ExamPlat - e-Examination Platform", startX + 66, 31);
 
   doc
     .font("Helvetica")
@@ -293,7 +293,7 @@ const createReceiptDocument = (data) => {
     .font("Helvetica-Bold")
     .fontSize(9)
     .fillColor(colors.blue)
-    .text("National Exam Platform", startX, footerY + 38, {
+    .text("ExamPlat - e-Examination Platform", startX, footerY + 38, {
       width: contentWidth,
       align: "center",
     });

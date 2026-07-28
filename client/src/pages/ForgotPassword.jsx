@@ -71,10 +71,10 @@ function ForgotPassword() {
       <div className="grid min-h-screen lg:grid-cols-[0.95fr_1.05fr]">
         <section className="hidden bg-slate-950 px-12 py-10 text-white lg:flex lg:flex-col lg:justify-between">
           <div className="flex items-center gap-3">
-            <img src={logo} alt="National Exam Platform logo" className="h-12 w-12 rounded-lg bg-white p-1.5" />
+            <img src={logo} alt="ExamPlat logo" className="h-12 w-12 rounded-lg bg-white p-1.5" />
             <div>
-              <p className="text-sm font-medium uppercase tracking-[0.2em] text-cyan-300">National</p>
-              <h2 className="text-2xl font-bold">Exam Platform</h2>
+              <p className="text-sm font-medium uppercase tracking-[0.2em] text-cyan-300">ExamPlat</p>
+              <h2 className="text-2xl font-bold">e-Examination Platform</h2>
             </div>
           </div>
 

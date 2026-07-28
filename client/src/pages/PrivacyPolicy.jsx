@@ -5,7 +5,7 @@ function PrivacyPolicy() {
     <LegalPageLayout
       eyebrow="Legal information"
       title="Privacy Policy"
-      intro="This policy explains how National Exam Platform collects, uses, and safeguards information when you use our services."
+      intro="This policy explains how ExamPlat - e-Examination Platform collects, uses, and safeguards information when you use our services."
     >
       <LegalSection title="Information we collect">
         <p>We collect details you provide to create and manage your account, such as your name, email address, phone number, school, class, and exam preferences. We may also collect platform activity such as test attempts and performance data.</p>
@@ -20,7 +20,7 @@ function PrivacyPolicy() {
         <p>We do not sell personal information. We may share information with trusted providers that help us deliver services, or where required by law. We retain information only for as long as necessary for the purposes described in this policy and applicable legal requirements.</p>
       </LegalSection>
       <LegalSection title="Your choices and contact">
-        <p>You may request access to or correction of your account information by contacting us. For privacy questions, email <a className="font-semibold text-cyan-700 hover:text-cyan-900" href="mailto:privacy@nationalexamplatform.in">privacy@nationalexamplatform.in</a>.</p>
+        <p>You may request access to or correction of your account information by contacting us. For privacy questions, email <a className="font-semibold text-cyan-700 hover:text-cyan-900" href="mailto:privacy@ExamPlat - e-Examination Platformexamplatform.in">privacy@ExamPlat - e-Examination Platformexamplatform.in</a>.</p>
       </LegalSection>
     </LegalPageLayout>
   );

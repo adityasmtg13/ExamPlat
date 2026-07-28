@@ -123,12 +123,12 @@ function Dashboard() {
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center">
               <img
                 src={logo}
-                alt="National Exam Platform logo"
+                alt="ExamPlat logo"
                 className="h-16 w-16 rounded-xl bg-white p-2"
               />
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan-300">
-                  National Exam Platform
+                  ExamPlat - e-Examination Platform
                 </p>
                 <h1 className="mt-2 text-3xl font-bold md:text-4xl">
                   Welcome, {student?.name || "Student"}

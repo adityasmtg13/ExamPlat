@@ -5,7 +5,7 @@ function TermsAndConditions() {
     <LegalPageLayout
       eyebrow="Legal information"
       title="Terms & Conditions"
-      intro="These terms set out the rules for using National Exam Platform and its educational services."
+      intro="These terms set out the rules for using ExamPlat - e-Examination Platform and its educational services."
     >
       <LegalSection title="Acceptance of these terms">
         <p>By creating an account or using the platform, you agree to these Terms &amp; Conditions and our Privacy Policy. If you do not agree, please do not use the services.</p>
@@ -20,7 +20,7 @@ function TermsAndConditions() {
         <p>Mock tests, analytics, rank predictions, and college predictions are educational tools and estimates. They do not guarantee admission, examination outcomes, ranks, or eligibility decisions.</p>
       </LegalSection>
       <LegalSection title="Changes and contact">
-        <p>We may update these terms as the platform evolves. Continued use after an update means you accept the revised terms. For questions, contact <a className="font-semibold text-cyan-700 hover:text-cyan-900" href="mailto:support@nationalexamplatform.in">support@nationalexamplatform.in</a>.</p>
+        <p>We may update these terms as the platform evolves. Continued use after an update means you accept the revised terms. For questions, contact <a className="font-semibold text-cyan-700 hover:text-cyan-900" href="mailto:support@ExamPlat - e-Examination Platformexamplatform.in">support@ExamPlat - e-Examination Platformexamplatform.in</a>.</p>
       </LegalSection>
     </LegalPageLayout>
   );

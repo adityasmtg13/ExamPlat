@@ -43,7 +43,7 @@ style="background:#0f4c81;color:#ffffff;padding:25px;text-align:center;">
 </h1>
 
 <p style="margin-top:10px;font-size:15px;">
-National Examination Platform
+ExamPlat - e-Examination Platform Examination Platform
 </p>
 </td>
 </tr>
@@ -162,7 +162,7 @@ We wish you success in your upcoming examination.
 style="background:#0f4c81;color:#ffffff;padding:20px;text-align:center;">
 
 <p style="margin:0;">
-ExamPlat • National Examination Platform
+ExamPlat • ExamPlat - e-Examination Platform Examination Platform
 </p>
 
 <p style="margin-top:8px;font-size:13px;">
