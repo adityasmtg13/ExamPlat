@@ -39,7 +39,7 @@ style="background:#ffffff;border-radius:10px;overflow:hidden;box-shadow:0 2px 10
 <td
 style="background:#0f4c81;color:#ffffff;padding:25px;text-align:center;">
 <h1 style="margin:0;font-size:28px;">
-🇮🇳 ExamPlat
+ ExamPlat
 </h1>
 
 <p style="margin-top:10px;font-size:15px;">
@@ -63,7 +63,7 @@ style="background:#22c55e;color:#ffffff;text-align:center;padding:18px;">
 <td style="padding:35px;">
 
 <p style="font-size:16px;">
-Dear <strong>${student.fullName}</strong>,
+Dear <strong>${student.name}</strong>,
 </p>
 
 <p style="font-size:15px;line-height:1.8;color:#444;">
