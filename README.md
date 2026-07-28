@@ -750,4 +750,15 @@ v0.7.0 Beta
 
 ---
 
-Built using the MERN Stack to provide a secure, scalable, and modern digital examination platform inspired by India's National Testing Agency (NTA).
+Copyright (c) 2026 ExamPlat. All rights reserved.
+
+Strictly Confidential and Proprietary.
+
+Unauthorized copying, cloning, distribution, modification, or use of this 
+software and its source code, via any medium, is strictly prohibited. 
+
+No one may use, copy, or modify this code without explicit, written 
+permission from the copyright holder. 
+
+Legal action will be pursued against any individuals or entities who violate 
+these terms, including unauthorized cloning or hosting of this repository.
