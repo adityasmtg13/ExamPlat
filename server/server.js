@@ -1,5 +1,9 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const dns = require("dns");
+
+// Force DNS resolution through public resolvers for MongoDB Atlas SRV lookups
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
 // Load environment variables FIRST
 dotenv.config();
