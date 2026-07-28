@@ -141,8 +141,8 @@ function Home() {
 
             <p className="text-2xl text-gray-200 mb-8 max-w-2xl">
 
-              India's very own Examination Platform
-              for ExamPlat - e-Examination Platform Level Competitive Examinations.
+              Our very own Examination Platform
+              for National Level Competitive Examinations.
 
             </p>
 
@@ -297,7 +297,7 @@ function Home() {
           </h2>
 
           <p className="text-gray-700 leading-8 text-lg">
-            ExamPlat - e-Examination Platform (NEP) is an AI-powered digital examination
+            ExamPlat - e-Examination Platform (EEP) is an AI-powered digital examination
             portal developed to provide a centralized ecosystem for ExamPlat - e-Examination Platform
             competitive examinations such as JEE, NEET and future government
             entrance examinations.
