@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { completePayment } from "../services/paymentService";
 
 const MockUPIPayment = () => {
@@ -30,7 +31,7 @@ const MockUPIPayment = () => {
         },
       });
     } catch (error) {
-      alert(error.message || "Payment failed.");
+      toast.error(error.message || "Payment failed.");
     } finally {
       setLoading(false);
     }

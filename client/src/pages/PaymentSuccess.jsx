@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { downloadReceipt } from "../services/receiptService";
 
 const PaymentSuccess = () => {
@@ -16,7 +17,7 @@ const PaymentSuccess = () => {
     try {
       await downloadReceipt(payment._id);
     } catch (error) {
-      alert(error.message || "Unable to download receipt.");
+      toast.error(error.message || "Unable to download receipt.");
     }
   };
 

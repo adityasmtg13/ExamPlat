@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 import { createPayment } from "../services/paymentService";
 import { getRegistrationById } from "../services/registrationService";
@@ -19,7 +20,7 @@ const Payment = () => {
         const response = await getRegistrationById(registrationId);
         setRegistration(response.registration);
       } catch (error) {
-        alert(error.message || "Unable to load registration.");
+        toast.error(error.message || "Unable to load registration.");
         navigate("/register-exam");
       } finally {
         setPageLoading(false);
@@ -67,7 +68,7 @@ const Payment = () => {
           break;
       }
     } catch (error) {
-      alert(error.message || "Unable to create payment.");
+      toast.error(error.message || "Unable to create payment.");
     } finally {
       setLoading(false);
     }

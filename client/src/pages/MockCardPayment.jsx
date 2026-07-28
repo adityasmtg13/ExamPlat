@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { completePayment } from "../services/paymentService";
 
 const MockCardPayment = () => {
@@ -28,7 +29,7 @@ const MockCardPayment = () => {
       !expiry.trim() ||
       !cvv.trim()
     ) {
-      alert("Please fill in all card details.");
+      toast.error("Please fill in all card details.");
       return;
     }
 
@@ -46,7 +47,7 @@ const MockCardPayment = () => {
         },
       });
     } catch (error) {
-      alert(error.message || "Payment failed.");
+      toast.error(error.message || "Payment failed.");
     } finally {
       setLoading(false);
     }

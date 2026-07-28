@@ -6,6 +6,7 @@ import { FaEnvelope, FaLock } from "react-icons/fa";
 import { setStudent } from "../storage";
 import { EMAIL_REGEX } from "../utils/validation";
 import logo from "../assets/logo.png";
+import Button from "../components/Button";
 import { isProfileComplete } from "../utils/profileUtils";
 
 function Login() {
@@ -190,21 +191,26 @@ function Login() {
                   )}
                 </div>
 
-                <button
+                <Button
                   type="submit"
-                  disabled={loading}
-                  className="w-full rounded-xl bg-slate-950 p-3.5 font-semibold text-white shadow-lg shadow-slate-300 transition hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-100 disabled:cursor-not-allowed disabled:bg-slate-400 disabled:shadow-none"
+                  loading={loading}
+                  className="w-full bg-slate-950 p-3.5 text-white shadow-lg shadow-slate-300 hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-100"
                 >
                   {loading ? "Logging In..." : "Login"}
-                </button>
+                </Button>
               </form>
 
-              <p className="mt-8 text-center text-sm text-slate-500">
-                Don't have an account?
-                <Link to="/register" className="ml-2 font-semibold text-cyan-700 hover:text-cyan-800">
-                  Register
+              <div className="mt-8 flex flex-col items-center gap-2 text-sm text-slate-500">
+                <Link to="/forgot-password" className="font-semibold text-cyan-700 hover:text-cyan-800">
+                  Forgot password?
                 </Link>
-              </p>
+                <p>
+                  Don't have an account?
+                  <Link to="/register" className="ml-2 font-semibold text-cyan-700 hover:text-cyan-800">
+                    Register
+                  </Link>
+                </p>
+              </div>
             </div>
           </div>
         </main>

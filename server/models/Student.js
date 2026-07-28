@@ -39,11 +39,11 @@ const studentSchema = new mongoose.Schema(
     },
 
     aadhaar: {
-  type: String,
-  default: null,
-  unique: true,
-  sparse: true,
-},
+      type: String,
+      default: null,
+      unique: true,
+      sparse: true,
+    },
 
     fatherName: {
       type: String,
@@ -116,6 +116,21 @@ const studentSchema = new mongoose.Schema(
     school: {
       type: String,
       default: "",
+    },
+
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    otp: {
+      type: String,
+      default: null,
+    },
+
+    otpExpiresAt: {
+      type: Date,
+      default: null,
     },
   },
   {

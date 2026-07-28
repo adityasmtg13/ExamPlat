@@ -168,7 +168,7 @@ function Dashboard() {
         <div className="mt-8 grid gap-8 xl:grid-cols-[1.45fr_0.85fr]">
           <div className="space-y-8">
             <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md shadow-slate-200/70 sm:p-8">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-700">
                     Student Profile
@@ -182,7 +182,7 @@ function Dashboard() {
                 >
                   Update Profile
                 </button>
-              </div>
+              </div> 
 
               <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_1.2fr]">
                 <div className="flex items-center gap-4 rounded-xl bg-slate-50 p-5">
@@ -213,13 +213,13 @@ function Dashboard() {
                       Phone
                     </p>
                     <p className="mt-2 font-semibold text-slate-900">{student?.phone || "--"}</p>
-                  </div> */}
-                  <div className="rounded-xl border border-slate-200 bg-white p-4">
+                  </div>  
+                   {/* <div className="rounded-xl border border-slate-200 bg-white p-4">
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                       Stream
                     </p>
                     <p className="mt-2 font-semibold text-slate-900">{student?.stream || "--"}</p>
-                  </div>
+                  </div> */}
                   <div className="rounded-xl border border-slate-200 bg-white p-4">
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                       Class

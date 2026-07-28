@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
-
+import { toast } from "sonner";
 
 import { getRegistrationById } from "../services/registrationService";
 
@@ -46,7 +45,7 @@ function MockInstructions() {
       setRegistration(data.registration);
     } catch (err) {
       console.error(err);
-      alert("Unable to load examination.");
+      toast.error("Unable to load examination.");
       navigate("/mock-tests");
     } finally {
       setLoading(false);
@@ -80,14 +79,14 @@ const handleStart = async () => {
       } catch (restartErr) {
         console.log(restartErr);
 
-alert(
+toast.error(
   restartErr?.message ||
-  restartErr?.response?.data?.message ||
-  "Failed to submit the previous attempt."
+    restartErr?.response?.data?.message ||
+    "Failed to submit the previous attempt."
 );
       }
     } else {
-      alert(err.message);
+      toast.error(err.message);
     }
   } finally {
     setStarting(false);

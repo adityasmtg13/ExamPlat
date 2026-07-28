@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { registerStudent } from "../services/authService";
+import { registerStudent, resendOtp, verifyOtp } from "../services/authService";
 import { toast } from "sonner";
 import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 import {
@@ -10,6 +10,7 @@ import {
   getPasswordValidationErrors,
 } from "../utils/validation";
 import logo from "../assets/logo.png";
+import Button from "../components/Button";
 
 function Register() {
   const navigate = useNavigate();
@@ -23,6 +24,9 @@ function Register() {
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [otpStep, setOtpStep] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [registeredEmail, setRegisteredEmail] = useState("");
 
   const passwordStrength = useMemo(() => getPasswordStrength(form.password), [form.password]);
 
@@ -68,11 +72,12 @@ function Register() {
 
     try {
       const res = await registerStudent(form);
-      toast.success(`Hi ${res.data.student?.name || "User"} 👋`, {
-        description: "Registration Successful",
+      setRegisteredEmail(form.email);
+      setOtpStep(true);
+      toast.success(res.data.message || "Registration Successful", {
+        description: "Please verify your email with the OTP sent to your inbox.",
         duration: 5000,
       });
-      setTimeout(() => navigate("/login"), 5000);
     } catch (err) {
       const errorMessages = err.response?.data?.errors || [];
       if (errorMessages.length > 0) {
@@ -83,6 +88,43 @@ function Register() {
     }
 
     setLoading(false);
+  };
+
+  const handleOtpSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!otp || otp.length !== 6) {
+      toast.error("Please enter the 6-digit OTP sent to your email.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await verifyOtp({ email: registeredEmail, otp });
+      toast.success(res.data.message || "Email verified successfully.");
+      setTimeout(() => navigate("/profile"), 1200);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "OTP verification failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (!registeredEmail) {
+      toast.error("Please register again to receive a fresh OTP.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await resendOtp({ email: registeredEmail });
+      toast.success(res.data.message || "OTP resent successfully.");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Unable to resend OTP.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -159,7 +201,46 @@ function Register() {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              {otpStep ? (
+                <form onSubmit={handleOtpSubmit} className="space-y-5">
+                  <div>
+                    <label className="mb-2 block text-sm font-medium text-slate-700">
+                      Enter OTP
+                    </label>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={6}
+                      placeholder="123456"
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-slate-900 outline-none placeholder:text-slate-400"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+                      required
+                    />
+                    <p className="mt-2 text-sm text-slate-500">
+                      We sent a 6-digit code to {registeredEmail}
+                    </p>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    loading={loading}
+                    className="w-full bg-slate-950 p-3.5 text-white shadow-lg shadow-slate-300 hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-100"
+                  >
+                    {loading ? "Verifying..." : "Verify Email"}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    onClick={handleResendOtp}
+                    loading={loading}
+                    className="w-full border border-slate-200 bg-white p-3.5 text-slate-700 hover:border-cyan-500 hover:text-cyan-700"
+                  >
+                    {loading ? "Resending..." : "Resend OTP"}
+                  </Button>
+                </form>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <label className="mb-2 block text-sm font-medium text-slate-700">
                     Full name
@@ -245,14 +326,15 @@ function Register() {
                   )}
                 </div>
 
-                <button
+                <Button
                   type="submit"
-                  disabled={loading}
-                  className="w-full rounded-xl bg-slate-950 p-3.5 font-semibold text-white shadow-lg shadow-slate-300 transition hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-100 disabled:cursor-not-allowed disabled:bg-slate-400 disabled:shadow-none"
+                  loading={loading}
+                  className="w-full bg-slate-950 p-3.5 text-white shadow-lg shadow-slate-300 hover:bg-cyan-700 focus:outline-none focus:ring-4 focus:ring-cyan-100"
                 >
                   {loading ? "Registering..." : "Register"}
-                </button>
+                </Button>
               </form>
+              )}
 
               <p className="mt-8 text-center text-sm text-slate-500">
                 Already have an account?

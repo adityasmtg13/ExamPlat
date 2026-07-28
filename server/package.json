@@ -26,6 +26,7 @@
     "debug": "^4.4.3",
     "depd": "^2.0.0",
     "dotenv": "^17.4.2",
+    "crypto": "^1.1.0",
     "dunder-proto": "^1.0.1",
     "ecdsa-sig-formatter": "^1.0.11",
     "ee-first": "^1.1.1",

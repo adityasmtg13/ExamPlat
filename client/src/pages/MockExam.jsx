@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
-
+import { toast } from "sonner";
 
 import QuestionCard from "../components/QuestionCard";
 import QuestionPalette from "../components/QuestionPalette";
@@ -37,7 +36,7 @@ function MockExam() {
       setExam(response);
       setQuestions(response.questions);
     } catch (error) {
-      alert(error.message || "Unable to load exam.");
+      toast.error(error.message || "Unable to load exam.");
       navigate("/mock-tests");
     } finally {
       setLoading(false);
@@ -94,10 +93,7 @@ function MockExam() {
 
       navigate(`/mock-test/result/${attemptId}`);
     } catch (error) {
-      alert(
-        error.message ||
-          "Failed to submit mock examination."
-      );
+      toast.error(error.message || "Failed to submit mock examination.");
     } finally {
       setSubmitting(false);
     }

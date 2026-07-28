@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
@@ -35,10 +36,7 @@ function RegisterExam() {
       );
     } catch (err) {
       console.error(err);
-      alert(
-        err.response?.data?.message ||
-          "Failed to load registration details."
-      );
+      toast.error(err.response?.data?.message || "Failed to load registration details.");
     } finally {
       setPageLoading(false);
     }
@@ -60,10 +58,7 @@ function RegisterExam() {
     } catch (err) {
       console.error(err);
 
-      alert(
-        err.response?.data?.message ||
-          "Registration failed."
-      );
+      toast.error(err.response?.data?.message || "Registration failed.");
     } finally {
       setLoading(false);
     }

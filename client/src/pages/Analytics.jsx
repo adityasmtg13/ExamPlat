@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { getAnalytics } from "../services/mockTestService";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -16,7 +17,7 @@ function Analytics() {
       const response = await getAnalytics();
       setAnalytics(response);
     } catch (error) {
-      alert(error.message || "Failed to load analytics.");
+      toast.error(error.message || "Failed to load analytics.");
     } finally {
       setLoading(false);
     }
