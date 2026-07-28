@@ -549,7 +549,7 @@ function Home() {
             </p>
             <div className="flex gap-4 mt-8">
               <a
-                href="https://www.nta.ac.in/Home"
+                href=""
                 target="_blank"
                 rel="noopener noreferrer"
               >
