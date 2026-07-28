@@ -251,6 +251,46 @@ npm run dev
 
 ---
 
+
+
+These are the complete install commands for the current project based on package.json and package.json.
+
+## Frontend only
+```bash
+cd client
+npm install
+```
+
+## Backend only
+```bash
+cd server
+npm install
+```
+
+## Combined from project root
+```bash
+npm install --prefix client
+npm install --prefix server
+```
+
+## Optional explicit dependency install list
+
+### Frontend
+```bash
+cd client
+npm install axios react react-dom react-router-dom react-icons sonner react-hot-toast bootstrap jwt-decode tailwindcss @tailwindcss/vite
+npm install -D vite @vitejs/plugin-react eslint @eslint/js @types/react @types/react-dom eslint-plugin-react-hooks eslint-plugin-react-refresh globals
+```
+
+### Backend
+```bash
+cd server
+npm install express mongoose mongodb bcryptjs jsonwebtoken cors dotenv cloudinary multer multer-storage-cloudinary nodemailer body-parser
+npm install -D nodemon
+```
+
+
+
 # 📦 NPM Packages
 
 ## Frontend
@@ -710,4 +750,4 @@ v0.7.0 Beta
 
 ---
 
-Built using the MERN Stack to provide a secure, scalable, and modern digital examination platform inspired by India's ExamPlat - e-Examination Platform . (NTA).
+Built using the MERN Stack to provide a secure, scalable, and modern digital examination platform inspired by India's National Testing Agency (NTA).
