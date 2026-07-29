@@ -1,4 +1,7 @@
+const crypto = require("crypto");
+const bcrypt = require("bcryptjs");
 const Student = require("../models/Student");
+const transporter = require("../utils/mailSender");
 const {
   isValidAddress,
   isValidAadhaar,
@@ -14,6 +17,7 @@ const {
   VALID_CLASSES,
   VALID_STREAMS,
   isProfileComplete,
+  getPasswordValidationErrors,
 } = require("../utils/validation");
 
 // Get Student Profile
@@ -124,6 +128,209 @@ const validateProfilePayload = (payload) => {
   }
 
   return errors;
+};
+
+exports.sendAccountSettingsOtp = async (req, res) => {
+  try {
+    const { action, newEmail, newName, newPassword, confirmPassword } = req.body;
+
+    if (!action) {
+      return res.status(400).json({
+        success: false,
+        message: "Please select an account setting action.",
+      });
+    }
+
+    const student = await Student.findById(req.student._id);
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
+    }
+
+    const normalizedEmail = (newEmail || "").trim().toLowerCase();
+    const normalizedName = (newName || "").trim();
+
+    if (action === "email") {
+      if (!normalizedEmail || !isValidEmail(normalizedEmail)) {
+        return res.status(400).json({
+          success: false,
+          message: "Please enter a valid new email address.",
+        });
+      }
+
+      if (normalizedEmail === student.email.toLowerCase()) {
+        return res.status(400).json({
+          success: false,
+          message: "The new email must be different from your current email.",
+        });
+      }
+
+      const existingStudent = await Student.findOne({
+        email: normalizedEmail,
+        _id: { $ne: student._id },
+      });
+
+      if (existingStudent) {
+        return res.status(400).json({
+          success: false,
+          message: "This email is already in use by another student.",
+        });
+      }
+    }
+
+    if (action === "name") {
+      if (!normalizedName || !isValidName(normalizedName)) {
+        return res.status(400).json({
+          success: false,
+          message: "Please enter a valid full name.",
+        });
+      }
+    }
+
+    if (action === "password") {
+      const passwordErrors = getPasswordValidationErrors(newPassword, confirmPassword);
+      if (passwordErrors.length > 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Please fix the password errors.",
+          errors: passwordErrors,
+        });
+      }
+    }
+
+    const otp = crypto.randomInt(100000, 999999).toString();
+    const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    student.otp = otp;
+    student.otpExpiresAt = otpExpiresAt;
+    student.pendingAction = action;
+    student.pendingEmail = action === "email" ? normalizedEmail : null;
+    student.pendingName = action === "name" ? normalizedName : null;
+    student.pendingPasswordHash = action === "password" ? await bcrypt.hash(newPassword, 10) : null;
+
+    await student.save();
+
+    const recipients = [action === "email" ? normalizedEmail : student.email, process.env.BREVO_TO_EMAIL].filter(Boolean);
+    const senderAddress = process.env.BREVO_FROM_EMAIL || process.env.BREVO_SMTP_USER || "noreply@example.com";
+
+    try {
+      await transporter.sendMail({
+        from: `"ExamPlat" <${senderAddress}>`,
+        to: recipients,
+        subject: action === "email"
+          ? "Verify your new Email Address"
+          : action === "password"
+            ? "Verify your password change"
+            : action === "delete"
+              ? "Confirm account deletion"
+              : "Verify your name change",
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; border: 1px solid #e5e7eb; border-radius: 12px;">
+            <h2 style="color: #0f4c81;">Account update request</h2>
+            <p>Use the OTP below to verify this ${action === "email" ? "email change" : action === "password" ? "password change" : action === "delete" ? "deletion request" : "name change"}.</p>
+            <div style="margin: 24px 0; padding: 18px; background: #f8fafc; border-radius: 8px; text-align: center; font-size: 28px; font-weight: bold; letter-spacing: 6px;">${otp}</div>
+            <p>This code expires in 10 minutes.</p>
+          </div>
+        `,
+      });
+      console.log(`Settings OTP email sent to: ${recipients.join(", ")}`);
+    } catch (mailError) {
+      console.error("Settings OTP email failed:", mailError);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "OTP sent successfully. Please verify it to continue.",
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+exports.verifyAccountSettingsOtp = async (req, res) => {
+  try {
+    const { action, otp } = req.body;
+
+    if (!action || !otp) {
+      return res.status(400).json({
+        success: false,
+        message: "Action and OTP are required.",
+      });
+    }
+
+    const student = await Student.findById(req.student._id);
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found",
+      });
+    }
+
+    if (student.otp !== otp || new Date(student.otpExpiresAt) < new Date()) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired OTP.",
+      });
+    }
+
+    if (student.pendingAction !== action) {
+      return res.status(400).json({
+        success: false,
+        message: "This OTP is not valid for the selected action.",
+      });
+    }
+
+    if (action === "delete") {
+      await Student.findByIdAndDelete(req.student._id);
+
+      return res.status(200).json({
+        success: true,
+        message: "Account deleted successfully.",
+      });
+    }
+
+    if (action === "email") {
+      student.email = student.pendingEmail;
+      student.isEmailVerified = true;
+    } else if (action === "name") {
+      student.name = student.pendingName;
+    } else if (action === "password") {
+      student.password = student.pendingPasswordHash;
+    }
+
+    student.pendingAction = null;
+    student.pendingEmail = null;
+    student.pendingName = null;
+    student.pendingPasswordHash = null;
+    student.otp = null;
+    student.otpExpiresAt = null;
+    await student.save();
+
+    const studentData = student.toObject();
+    delete studentData.password;
+
+    res.status(200).json({
+      success: true,
+      message: action === "email"
+        ? "Email updated successfully."
+        : action === "name"
+          ? "Name updated successfully."
+          : "Password updated successfully.",
+      student: studentData,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
 };
 
 // Update Student Profile

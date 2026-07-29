@@ -28,6 +28,7 @@ import MockInstructions from "./pages/MockInstructions";
 import MockExam from "./pages/MockExam";
 import MockResult from "./pages/MockResult";
 import Analytics from "./pages/Analytics";
+import Settings from "./pages/Settings";
 
 function App() {
   return (
@@ -78,6 +79,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
             </ProtectedRoute>
           }
         />

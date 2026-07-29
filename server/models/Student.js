@@ -23,6 +23,26 @@ const studentSchema = new mongoose.Schema(
       required: true,
     },
 
+    pendingAction: {
+      type: String,
+      default: null,
+    },
+
+    pendingEmail: {
+      type: String,
+      default: null,
+    },
+
+    pendingName: {
+      type: String,
+      default: null,
+    },
+
+    pendingPasswordHash: {
+      type: String,
+      default: null,
+    },
+
     // Profile
     profilePhoto: {
       type: String,

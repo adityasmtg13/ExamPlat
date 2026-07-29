@@ -7,6 +7,8 @@ const upload = require("../middleware/uploadMiddleware");
 const {
   getProfile,
   updateProfile,
+  sendAccountSettingsOtp,
+  verifyAccountSettingsOtp,
   uploadProfilePhoto,
   deleteProfilePhoto,
 } = require("../controllers/profileController");
@@ -15,6 +17,8 @@ const {
 router.get("/", authMiddleware, getProfile);
 
 router.put("/", authMiddleware, updateProfile);
+router.post("/settings/send-otp", authMiddleware, sendAccountSettingsOtp);
+router.post("/settings/verify-otp", authMiddleware, verifyAccountSettingsOtp);
 
 // Profile Photo
 router.post(
