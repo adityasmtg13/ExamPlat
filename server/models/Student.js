@@ -15,6 +15,7 @@ const studentSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      // Primary unique identifier for student authentication
     },
 
     password: {
@@ -40,9 +41,9 @@ const studentSchema = new mongoose.Schema(
 
     aadhaar: {
       type: String,
-      default: null,
       unique: true,
       sparse: true,
+      trim: true,
     },
 
     fatherName: {

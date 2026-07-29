@@ -103,7 +103,9 @@ exports.registerStudent = async (req, res) => {
       }
     }
 
-    res.status(500).json({
+    const statusCode = err?.code === 11000 ? 400 : 500;
+
+    res.status(statusCode).json({
       success: false,
       message,
     });
@@ -149,9 +151,20 @@ exports.verifyOtp = async (req, res) => {
     student.otpExpiresAt = null;
     await student.save();
 
+    const token = jwt.sign(
+      { id: student._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    const studentData = student.toObject();
+    delete studentData.password;
+
     res.status(200).json({
       success: true,
       message: "Email verified successfully.",
+      token,
+      student: studentData,
     });
   } catch (err) {
     res.status(500).json({
@@ -306,9 +319,20 @@ exports.resetPassword = async (req, res) => {
     student.otpExpiresAt = null;
     await student.save();
 
+    const token = jwt.sign(
+      { id: student._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    const studentData = student.toObject();
+    delete studentData.password;
+
     res.status(200).json({
       success: true,
       message: "Password reset successfully.",
+      token,
+      student: studentData,
     });
   } catch (err) {
     res.status(500).json({

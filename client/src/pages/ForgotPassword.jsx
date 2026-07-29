@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import logo from "../assets/logo.png";
 import Button from "../components/Button";
+import { isProfileComplete } from "../utils/profileUtils";
+import { setStudent } from "../storage";
 import { EMAIL_REGEX } from "../utils/validation";
 
 function ForgotPassword() {
@@ -57,8 +59,17 @@ function ForgotPassword() {
     try {
       setLoading(true);
       const res = await resetPassword({ email: email.trim(), otp, password });
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
+      }
+      if (res.data?.student) {
+        setStudent(res.data.student);
+      }
       toast.success(res.data.message || "Password reset successfully.");
-      setTimeout(() => navigate("/login"), 1200);
+      const targetPath = res.data?.student && isProfileComplete(res.data.student)
+        ? "/dashboard"
+        : "/profile";
+      setTimeout(() => navigate(targetPath, { replace: true }), 1200);
     } catch (err) {
       toast.error(err.response?.data?.message || "Password reset failed.");
     } finally {

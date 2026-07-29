@@ -9,6 +9,8 @@ import {
   getPasswordStrength,
   getPasswordValidationErrors,
 } from "../utils/validation";
+import { isProfileComplete } from "../utils/profileUtils";
+import { setStudent } from "../storage";
 import logo from "../assets/logo.png";
 import Button from "../components/Button";
 
@@ -101,8 +103,17 @@ function Register() {
     try {
       setLoading(true);
       const res = await verifyOtp({ email: registeredEmail, otp });
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
+      }
+      if (res.data?.student) {
+        setStudent(res.data.student);
+      }
       toast.success(res.data.message || "Email verified successfully.");
-      setTimeout(() => navigate("/profile"), 1200);
+      const targetPath = res.data?.student && isProfileComplete(res.data.student)
+        ? "/dashboard"
+        : "/profile";
+      setTimeout(() => navigate(targetPath, { replace: true }), 1200);
     } catch (err) {
       toast.error(err.response?.data?.message || "OTP verification failed.");
     } finally {
