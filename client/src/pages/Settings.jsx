@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaCheck } from "react-icons/fa";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { sendAccountSettingsOtp, verifyAccountSettingsOtp } from "../services/profileService";
 import { setStudent } from "../storage";
+import { getPasswordValidationErrors } from "../utils/validation";
 
 function Settings() {
   const navigate = useNavigate();
@@ -18,6 +20,14 @@ function Settings() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
   const [otpSent, setOtpSent] = useState(false);
+
+  const passwordCriteria = [
+    { id: "length", label: "At least 8 characters", isMet: formData.newPassword.length >= 8 },
+    { id: "uppercase", label: "At least 1 uppercase letter", isMet: /[A-Z]/.test(formData.newPassword) },
+    { id: "lowercase", label: "At least 1 lowercase letter", isMet: /[a-z]/.test(formData.newPassword) },
+    { id: "numeric", label: "At least 1 numeric character", isMet: /\d/.test(formData.newPassword) },
+    { id: "special", label: "At least 1 special character", isMet: /[!@#$%^&*()_+\-=?.]/.test(formData.newPassword) },
+  ];
 
   const resetState = () => {
     setActiveAction(null);
@@ -34,8 +44,17 @@ function Settings() {
 
   const handleRequestOtp = async (event) => {
     event.preventDefault();
-    setLoading(true);
     setMessage({ type: "", text: "" });
+
+    if (activeAction === "password") {
+      const passwordErrors = getPasswordValidationErrors(formData.newPassword, formData.confirmPassword);
+      if (passwordErrors.length > 0) {
+        setMessage({ type: "error", text: passwordErrors[0] });
+        return;
+      }
+    }
+
+    setLoading(true);
 
     try {
       const payload = {
@@ -187,6 +206,32 @@ function Settings() {
                       className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500"
                       required
                     />
+
+                    <div className="rounded-xl border border-slate-200 bg-white p-3.5 shadow-xs">
+                      <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                        Password Requirements
+                      </p>
+                      <div className="grid grid-cols-1 gap-2 text-xs sm:grid-cols-2">
+                        {passwordCriteria.map((item) => (
+                          <div
+                            key={item.id}
+                            className={`flex items-center gap-2 transition-colors duration-200 ${
+                              item.isMet ? "font-medium text-emerald-600" : "text-slate-400"
+                            }`}
+                          >
+                            <span
+                              className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] transition-colors duration-200 ${
+                                item.isMet ? "bg-emerald-500 text-white" : "bg-slate-200 text-slate-400"
+                              }`}
+                            >
+                              <FaCheck />
+                            </span>
+                            <span>{item.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
                     <input
                       type="password"
                       value={formData.confirmPassword}

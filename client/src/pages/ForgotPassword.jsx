@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { forgotPassword, resetPassword } from "../services/authService";
 import { toast } from "sonner";
-import { FaEnvelope, FaLock } from "react-icons/fa";
+import { FaEnvelope, FaLock, FaCheck } from "react-icons/fa";
 import logo from "../assets/logo.png";
 import Button from "../components/Button";
 import { isProfileComplete } from "../utils/profileUtils";
 import { setStudent } from "../storage";
-import { EMAIL_REGEX } from "../utils/validation";
+import { EMAIL_REGEX, getPasswordValidationErrors } from "../utils/validation";
 
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -17,6 +17,14 @@ function ForgotPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const passwordCriteria = [
+    { id: "length", label: "At least 8 characters", isMet: password.length >= 8 },
+    { id: "uppercase", label: "At least 1 uppercase letter", isMet: /[A-Z]/.test(password) },
+    { id: "lowercase", label: "At least 1 lowercase letter", isMet: /[a-z]/.test(password) },
+    { id: "numeric", label: "At least 1 numeric character", isMet: /\d/.test(password) },
+    { id: "special", label: "At least 1 special character", isMet: /[!@#$%^&*()_+\-=?.]/.test(password) },
+  ];
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
@@ -46,13 +54,9 @@ function ForgotPassword() {
       return;
     }
 
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters long.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match.");
+    const passwordErrors = getPasswordValidationErrors(password, confirmPassword);
+    if (passwordErrors.length > 0) {
+      toast.error(passwordErrors[0]);
       return;
     }
 
@@ -164,6 +168,31 @@ function ForgotPassword() {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                       />
+                    </div>
+
+                    <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3.5 shadow-xs">
+                      <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                        Password Requirements
+                      </p>
+                      <div className="grid grid-cols-1 gap-2 text-xs sm:grid-cols-2">
+                        {passwordCriteria.map((item) => (
+                          <div
+                            key={item.id}
+                            className={`flex items-center gap-2 transition-colors duration-200 ${
+                              item.isMet ? "font-medium text-emerald-600" : "text-slate-400"
+                            }`}
+                          >
+                            <span
+                              className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] transition-colors duration-200 ${
+                                item.isMet ? "bg-emerald-500 text-white" : "bg-slate-200 text-slate-400"
+                              }`}
+                            >
+                              <FaCheck />
+                            </span>
+                            <span>{item.label}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
