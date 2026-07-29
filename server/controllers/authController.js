@@ -64,7 +64,7 @@ exports.registerStudent = async (req, res) => {
       const recipients = [email, process.env.BREVO_TO_EMAIL].filter(Boolean);
       const senderAddress = process.env.BREVO_FROM_EMAIL || process.env.BREVO_SMTP_USER || "noreply@example.com";
       await transporter.sendMail({
-        from: `"ExamPlat Support" <${senderAddress}>`,
+        from: `"ExamPlat Verification" <${senderAddress}>`,
         to: recipients,
         subject: "Verify your ExamPlat account",
         html: `

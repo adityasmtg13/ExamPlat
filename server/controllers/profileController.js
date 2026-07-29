@@ -218,7 +218,7 @@ exports.sendAccountSettingsOtp = async (req, res) => {
 
     try {
       await transporter.sendMail({
-        from: `"ExamPlat" <${senderAddress}>`,
+        from: `"ExamPlat Security" <${senderAddress}>`,
         to: recipients,
         subject: action === "email"
           ? "Verify your new Email Address"

@@ -41,7 +41,7 @@ const sendPaymentConfirmation = async ({
     const senderAddress = process.env.BREVO_FROM_EMAIL || process.env.BREVO_SMTP_USER || "noreply@example.com";
 
     await transporter.sendMail({
-      from: `"ExamPlat" <${senderAddress}>`,
+      from: `"ExamPlat Payments" <${senderAddress}>`,
       to: recipients,
       subject: email.subject,
       html: email.html,
