@@ -228,12 +228,61 @@ exports.sendAccountSettingsOtp = async (req, res) => {
               ? "Confirm account deletion"
               : "Verify your name change",
         html: `
-          <div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; border: 1px solid #e5e7eb; border-radius: 12px;">
-            <h2 style="color: #0f4c81;">Account update request</h2>
-            <p>Use the OTP below to verify this ${action === "email" ? "email change" : action === "password" ? "password change" : action === "delete" ? "deletion request" : "name change"}.</p>
-            <div style="margin: 24px 0; padding: 18px; background: #f8fafc; border-radius: 8px; text-align: center; font-size: 28px; font-weight: bold; letter-spacing: 6px;">${otp}</div>
-            <p>This code expires in 10 minutes.</p>
-          </div>
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+  <div style="background: #0f4c81; padding: 24px 32px; text-align: center;">
+    <a href="http://localhost:5173/" style="color: #ffffff; font-size: 24px; font-weight: 700; text-decoration: none;">
+      ExamPlat
+    </a>
+    <div style="margin-top: 6px; color: #dbeafe; font-size: 14px;">
+      e-Examination Platform
+    </div>
+  </div>
+
+  <div style="padding: 32px;">
+    <h2 style="margin: 0 0 16px; color: #1f2937; font-size: 22px;">
+      Verify your account update
+    </h2>
+
+    <p style="margin: 0 0 16px; color: #4b5563; font-size: 15px; line-height: 1.6;">
+      We received a request to verify this
+      ${
+        action === "email"
+          ? "email address change"
+          : action === "password"
+            ? "password change"
+            : action === "delete"
+              ? "account deletion request"
+              : "name change"
+      }.
+    </p>
+
+    <p style="margin: 0; color: #4b5563; font-size: 15px; line-height: 1.6;">
+      Please use the following One-Time Password (OTP):
+    </p>
+
+    <div style="margin: 24px 0; padding: 20px; background: #f0f7ff; border: 1px dashed #0f4c81; border-radius: 8px; color: #0f4c81; text-align: center; font-size: 30px; font-weight: 700; letter-spacing: 8px;">
+      ${otp}
+    </div>
+
+    <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px; line-height: 1.6;">
+      This OTP expires in <strong>10 minutes</strong>. Do not share this code with anyone.
+    </p>
+
+    <p style="margin: 0; color: #6b7280; font-size: 14px; line-height: 1.6;">
+      If you did not request this change, please ignore this email or contact ExamPlat support immediately.
+    </p>
+  </div>
+
+  <div style="padding: 20px 32px; background: #f8fafc; border-top: 1px solid #e5e7eb; text-align: center;">
+    <p style="margin: 0 0 8px; color: #6b7280; font-size: 13px;">
+      © ${new Date().getFullYear()} ExamPlat. All rights reserved.
+    </p>
+
+    <a href="http://localhost:5173/" style="color: #0f4c81; font-size: 13px; text-decoration: none;">
+      ExamPlat — e-Examination Platform
+    </a>
+  </div>
+</div>
         `,
       });
       console.log(`Settings OTP email sent to: ${recipients.join(", ")}`);

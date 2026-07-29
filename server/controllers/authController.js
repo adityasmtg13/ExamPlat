@@ -64,16 +64,52 @@ exports.registerStudent = async (req, res) => {
       const recipients = [email, process.env.BREVO_TO_EMAIL].filter(Boolean);
       const senderAddress = process.env.BREVO_FROM_EMAIL || process.env.BREVO_SMTP_USER || "noreply@example.com";
       await transporter.sendMail({
-        from: `"ExamPlat" <${senderAddress}>`,
+        from: `"ExamPlat Support" <${senderAddress}>`,
         to: recipients,
         subject: "Verify your ExamPlat account",
         html: `
-          <div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; border: 1px solid #e5e7eb; border-radius: 12px;">
-            <h2 style="color: #0f4c81;">Welcome to ExamPlat</h2>
-            <p>Use the OTP below to verify your email address and complete your registration.</p>
-            <div style="margin: 24px 0; padding: 18px; background: #f8fafc; border-radius: 8px; text-align: center; font-size: 28px; font-weight: bold; letter-spacing: 6px;">${otp}</div>
-            <p>This code expires in 10 minutes.</p>
-          </div>
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+  <div style="background: #0f4c81; padding: 24px 32px; text-align: center;">
+    <a href="http://localhost:5173/" style="color: #ffffff; font-size: 24px; font-weight: 700; text-decoration: none;">
+      ExamPlat
+    </a>
+    <div style="margin-top: 6px; color: #dbeafe; font-size: 14px;">
+      e-Examination Platform
+    </div>
+  </div>
+
+  <div style="padding: 32px;">
+    <h2 style="margin: 0 0 16px; color: #1f2937; font-size: 22px;">
+      Welcome to ExamPlat
+    </h2>
+
+    <p style="margin: 0; color: #4b5563; font-size: 15px; line-height: 1.6;">
+      Thank you for registering with ExamPlat. Please verify your email address using the One-Time Password (OTP) below to complete your registration:
+    </p>
+
+    <div style="margin: 24px 0; padding: 20px; background: #f0f7ff; border: 1px dashed #0f4c81; border-radius: 8px; color: #0f4c81; text-align: center; font-size: 30px; font-weight: 700; letter-spacing: 8px;">
+      ${otp}
+    </div>
+
+    <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px; line-height: 1.6;">
+      This OTP expires in <strong>10 minutes</strong>. Please do not share it with anyone.
+    </p>
+
+    <p style="margin: 0; color: #6b7280; font-size: 14px; line-height: 1.6;">
+      If you did not create an ExamPlat account, you can safely ignore this email.
+    </p>
+  </div>
+
+  <div style="padding: 20px 32px; background: #f8fafc; border-top: 1px solid #e5e7eb; text-align: center;">
+    <p style="margin: 0 0 8px; color: #6b7280; font-size: 13px;">
+      © ${new Date().getFullYear()} ExamPlat. All rights reserved.
+    </p>
+
+    <a href="http://localhost:5173/" style="color: #0f4c81; font-size: 13px; text-decoration: none;">
+      ExamPlat — e-Examination Platform
+    </a>
+  </div>
+</div>
         `,
       });
       console.log(`OTP email sent to: ${recipients.join(", ")}`);
@@ -209,12 +245,48 @@ exports.resendOtp = async (req, res) => {
       to: recipients,
       subject: "Your ExamPlat OTP",
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; border: 1px solid #e5e7eb; border-radius: 12px;">
-          <h2 style="color: #0f4c81;">New verification code</h2>
-          <p>Use the OTP below to continue.</p>
-          <div style="margin: 24px 0; padding: 18px; background: #f8fafc; border-radius: 8px; text-align: center; font-size: 28px; font-weight: bold; letter-spacing: 6px;">${otp}</div>
-          <p>This code expires in 10 minutes.</p>
-        </div>
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+  <div style="background: #0f4c81; padding: 24px 32px; text-align: center;">
+    <a href="http://localhost:5173/" style="color: #ffffff; font-size: 24px; font-weight: 700; text-decoration: none;">
+      ExamPlat
+    </a>
+    <div style="margin-top: 6px; color: #dbeafe; font-size: 14px;">
+      e-Examination Platform
+    </div>
+  </div>
+
+  <div style="padding: 32px;">
+    <h2 style="margin: 0 0 16px; color: #1f2937; font-size: 22px;">
+      New verification code
+    </h2>
+
+    <p style="margin: 0; color: #4b5563; font-size: 15px; line-height: 1.6;">
+      Here is your new One-Time Password (OTP). Use it to securely continue your request:
+    </p>
+
+    <div style="margin: 24px 0; padding: 20px; background: #f0f7ff; border: 1px dashed #0f4c81; border-radius: 8px; color: #0f4c81; text-align: center; font-size: 30px; font-weight: 700; letter-spacing: 8px;">
+      ${otp}
+    </div>
+
+    <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px; line-height: 1.6;">
+      This OTP expires in <strong>10 minutes</strong>. For your security, never share this code with anyone.
+    </p>
+
+    <p style="margin: 0; color: #6b7280; font-size: 14px; line-height: 1.6;">
+      If you did not request this code, you can safely ignore this email.
+    </p>
+  </div>
+
+  <div style="padding: 20px 32px; background: #f8fafc; border-top: 1px solid #e5e7eb; text-align: center;">
+    <p style="margin: 0 0 8px; color: #6b7280; font-size: 13px;">
+      © ${new Date().getFullYear()} ExamPlat. All rights reserved.
+    </p>
+
+    <a href="http://localhost:5173/" style="color: #0f4c81; font-size: 13px; text-decoration: none;">
+      ExamPlat — e-Examination Platform
+    </a>
+  </div>
+</div>
       `,
     });
     console.log(`Resend OTP email sent to: ${recipients.join(", ")}`);
@@ -261,16 +333,52 @@ exports.forgotPassword = async (req, res) => {
     const recipients = [email, process.env.BREVO_TO_EMAIL].filter(Boolean);
     const senderAddress = process.env.BREVO_FROM_EMAIL || process.env.BREVO_SMTP_USER || "noreply@example.com";
     await transporter.sendMail({
-      from: `"ExamPlat" <${senderAddress}>`,
+      from: `"ExamPlat Support" <${senderAddress}>`,
       to: recipients,
       subject: "Reset your ExamPlat password",
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; padding: 24px; border: 1px solid #e5e7eb; border-radius: 12px;">
-          <h2 style="color: #0f4c81;">Password reset request</h2>
-          <p>Use the OTP below to reset your password.</p>
-          <div style="margin: 24px 0; padding: 18px; background: #f8fafc; border-radius: 8px; text-align: center; font-size: 28px; font-weight: bold; letter-spacing: 6px;">${otp}</div>
-          <p>This code expires in 10 minutes.</p>
-        </div>
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
+  <div style="background: #0f4c81; padding: 24px 32px; text-align: center;">
+    <a href="http://localhost:5173/" style="color: #ffffff; font-size: 24px; font-weight: 700; text-decoration: none;">
+      ExamPlat
+    </a>
+    <div style="margin-top: 6px; color: #dbeafe; font-size: 14px;">
+      e-Examination Platform
+    </div>
+  </div>
+
+  <div style="padding: 32px;">
+    <h2 style="margin: 0 0 16px; color: #1f2937; font-size: 22px;">
+      Password reset request
+    </h2>
+
+    <p style="margin: 0; color: #4b5563; font-size: 15px; line-height: 1.6;">
+      We received a request to reset your ExamPlat account password. Use the One-Time Password (OTP) below to continue:
+    </p>
+
+    <div style="margin: 24px 0; padding: 20px; background: #f0f7ff; border: 1px dashed #0f4c81; border-radius: 8px; color: #0f4c81; text-align: center; font-size: 30px; font-weight: 700; letter-spacing: 8px;">
+      ${otp}
+    </div>
+
+    <p style="margin: 0 0 12px; color: #4b5563; font-size: 15px; line-height: 1.6;">
+      This OTP expires in <strong>10 minutes</strong>. Do not share this code with anyone.
+    </p>
+
+    <p style="margin: 0; color: #6b7280; font-size: 14px; line-height: 1.6;">
+      If you did not request a password reset, you can safely ignore this email. Your password will remain unchanged.
+    </p>
+  </div>
+
+  <div style="padding: 20px 32px; background: #f8fafc; border-top: 1px solid #e5e7eb; text-align: center;">
+    <p style="margin: 0 0 8px; color: #6b7280; font-size: 13px;">
+      © ${new Date().getFullYear()} ExamPlat. All rights reserved.
+    </p>
+
+    <a href="http://localhost:5173/" style="color: #0f4c81; font-size: 13px; text-decoration: none;">
+      ExamPlat — e-Examination Platform
+    </a>
+  </div>
+</div>
       `,
     });
     console.log(`Password reset OTP email sent to: ${recipients.join(", ")}`);
