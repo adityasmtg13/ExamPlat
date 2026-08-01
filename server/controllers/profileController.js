@@ -71,12 +71,22 @@ const validateProfilePayload = (payload) => {
     errors.fatherPhone = "Enter a valid 10-digit parent contact number.";
   }
 
+  if (!payload.fatherAadhaar || !isValidAadhaar(payload.fatherAadhaar)) {
+    errors.fatherAadhaar =
+      "Enter a valid 12-digit Father / Guardian Aadhaar Number.";
+  }
+
   if (!payload.motherName || !isValidLetterName(payload.motherName)) {
     errors.motherName = "Enter a valid mother's name.";
   }
 
   if (!payload.motherPhone || !isValidPhone(payload.motherPhone)) {
     errors.motherPhone = "Enter a valid 10-digit mother's contact number.";
+  }
+
+  if (!payload.motherAadhaar || !isValidAadhaar(payload.motherAadhaar)) {
+    errors.motherAadhaar =
+      "Enter a valid 12-digit Mother Aadhaar Number.";
   }
 
   if (!payload.dob || !isValidDob(payload.dob)) {
@@ -137,8 +147,10 @@ exports.updateProfile = async (req, res) => {
       aadhaar: req.body.aadhaar,
       fatherName: req.body.fatherName,
       fatherPhone: req.body.fatherPhone,
+      fatherAadhaar: req.body.fatherAadhaar,
       motherName: req.body.motherName,
       motherPhone: req.body.motherPhone,
+      motherAadhaar: req.body.motherAadhaar,
       dob: req.body.dob || null,
       gender: req.body.gender,
       address: req.body.address,
@@ -171,8 +183,10 @@ exports.updateProfile = async (req, res) => {
         aadhaar: payload.aadhaar,
         fatherName: payload.fatherName,
         fatherPhone: payload.fatherPhone,
+        fatherAadhaar: payload.fatherAadhaar,
         motherName: payload.motherName,
         motherPhone: payload.motherPhone,
+        motherAadhaar: payload.motherAadhaar,
         dob: payload.dob || null,
         gender: payload.gender,
         address: payload.address,

@@ -35,8 +35,10 @@ function Profile() {
     aadhaar: "",
     fatherName: "",
     fatherPhone: "",
+    fatherAadhaar: "",
     motherName: "",
     motherPhone: "",
+    motherAadhaar: "",
     dob: "",
     gender: "",
     address: "",
@@ -96,11 +98,16 @@ function Profile() {
     }
 
     if (!values.fatherName || !isValidLetterName(values.fatherName)) {
-      nextErrors.fatherName = "Enter a valid parent or guardian name.";
+      nextErrors.fatherName = "Enter a valid Father or guardian name.";
     }
 
     if (!values.fatherPhone || !isValidPhone(values.fatherPhone)) {
-      nextErrors.fatherPhone = "Enter a valid 10-digit parent contact number.";
+      nextErrors.fatherPhone = "Enter a valid 10-digit father contact number.";
+    }
+
+    if (!values.fatherAadhaar || !isValidAadhaar(values.fatherAadhaar)) {
+      nextErrors.fatherAadhaar =
+        "Enter a valid 12-digit Father/Guardian Aadhaar number.";
     }
 
     if (!values.motherName || !isValidLetterName(values.motherName)) {
@@ -109,6 +116,11 @@ function Profile() {
 
     if (!values.motherPhone || !isValidPhone(values.motherPhone)) {
       nextErrors.motherPhone = "Enter a valid 10-digit mother's contact number.";
+    }
+
+    if (!values.motherAadhaar || !isValidAadhaar(values.motherAadhaar)) {
+      nextErrors.motherAadhaar =
+        "Enter a valid 12-digit Mother Aadhaar number.";
     }
 
     if (!values.dob || !isValidDob(values.dob)) {
@@ -195,13 +207,19 @@ function Profile() {
         nextError.fatherName =
           trimmedValue && isValidLetterName(trimmedValue)
             ? ""
-            : "Enter a valid parent or guardian name.";
+            : "Enter a valid Father or guardian name.";
         break;
       case "fatherPhone":
         nextError.fatherPhone =
           trimmedValue && isValidPhone(trimmedValue)
             ? ""
-            : "Enter a valid 10-digit parent contact number.";
+            : "Enter a valid 10-digit father contact number.";
+        break;
+      case "fatherAadhaar":
+        nextError.fatherAadhaar =
+          trimmedValue && isValidAadhaar(trimmedValue)
+            ? ""
+            : "Enter a valid 12-digit Father/Guardian Aadhaar number.";
         break;
       case "motherName":
         nextError.motherName =
@@ -212,6 +230,12 @@ function Profile() {
           trimmedValue && isValidPhone(trimmedValue)
             ? ""
             : "Enter a valid 10-digit mother's contact number.";
+        break;
+      case "motherAadhaar":
+        nextError.motherAadhaar =
+          trimmedValue && isValidAadhaar(trimmedValue)
+            ? ""
+            : "Enter a valid 12-digit Mother Aadhaar number.";
         break;
       case "dob":
         nextError.dob =
@@ -532,23 +556,33 @@ if (Object.keys(validateProfile(res.student)).length === 0) {
 
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                   <FormField
-                    label="Parent/Guardian Name"
+                    label="Father / Guardian Name"
                     name="fatherName"
                     value={profile.fatherName || ""}
                     onChange={handleChange}
-                    placeholder="Parent/Guardian Name"
+                    placeholder="Father / Guardian Name"
                     required
                     error={errors.fatherName}
                   />
 
                   <FormField
-                    label="Parent Contact Number"
+                    label="Father Contact Number"
                     name="fatherPhone"
                     value={profile.fatherPhone || ""}
                     onChange={handleChange}
-                    placeholder="Parent Contact Number"
+                    placeholder="Father Contact Number"
                     required
                     error={errors.fatherPhone}
+                  />
+
+                  <FormField
+                    label="Father / Guardian Aadhaar Number"
+                    name="fatherAadhaar"
+                    value={profile.fatherAadhaar || ""}
+                    onChange={handleChange}
+                    placeholder="Father / Guardian Aadhaar Number"
+                    required
+                    error={errors.fatherAadhaar}
                   />
 
                   <FormField
@@ -569,6 +603,16 @@ if (Object.keys(validateProfile(res.student)).length === 0) {
                     placeholder="Mother Phone"
                     required
                     error={errors.motherPhone}
+                  />
+
+                  <FormField
+                    label="Mother Aadhaar Number"
+                    name="motherAadhaar"
+                    value={profile.motherAadhaar || ""}
+                    onChange={handleChange}
+                    placeholder="Mother Aadhaar Number"
+                    required
+                    error={errors.motherAadhaar}
                   />
                 </div>
               </section>

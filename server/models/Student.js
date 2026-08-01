@@ -55,12 +55,22 @@ const studentSchema = new mongoose.Schema(
       default: "",
     },
 
+    fatherAadhaar: {
+      type: String,
+      default: "",
+    },
+
     motherName: {
       type: String,
       default: "",
     },
 
     motherPhone: {
+      type: String,
+      default: "",
+    },
+
+    motherAadhaar: {
       type: String,
       default: "",
     },
@@ -103,7 +113,7 @@ const studentSchema = new mongoose.Schema(
 
     stream: {
       type: String,
-      enum: ["", "JEE", "NEET"],
+      enum: ["", "JEE", "NEET", "CUET", "MAT"],
       default: "",
     },
 

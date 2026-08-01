@@ -106,27 +106,32 @@ const isValidDob = (value) => {
 const isProfileComplete = (student = {}) => {
   if (!student) return false;
   const fields = [
-    { key: "name", validate: isValidName },
-    { key: "email", validate: isValidEmail },
-    { key: "phone", validate: isValidPhone },
-    { key: "alternateEmail", validate: isValidEmail },
-    { key: "aadhaar", validate: isValidAadhaar },
-    { key: "fatherName", validate: isValidLetterName },
-    { key: "fatherPhone", validate: isValidPhone },
-    { key: "motherName", validate: isValidLetterName },
-    { key: "motherPhone", validate: isValidPhone },
-    { key: "dob", validate: isValidDob },
-    { key: "gender" },
-    { key: "address", validate: isValidAddress },
-    { key: "city", validate: isValidCity },
-    { key: "state" },
-    { key: "country" },
-    { key: "pincode", validate: isValidPincode },
-    { key: "stream" },
-    { key: "studentClass" },
-    { key: "school", validate: isValidSchool },
-    { key: "profilePhoto" },
-  ];
+  { key: "name", validate: isValidName },
+  { key: "email", validate: isValidEmail },
+  { key: "phone", validate: isValidPhone },
+  { key: "alternateEmail", validate: isValidEmail },
+  { key: "aadhaar", validate: isValidAadhaar },
+
+  { key: "fatherName", validate: isValidLetterName },
+  { key: "fatherPhone", validate: isValidPhone },
+  { key: "fatherAadhaar", validate: isValidAadhaar },
+
+  { key: "motherName", validate: isValidLetterName },
+  { key: "motherPhone", validate: isValidPhone },
+  { key: "motherAadhaar", validate: isValidAadhaar },
+
+  { key: "dob", validate: isValidDob },
+  { key: "gender" },
+  { key: "address", validate: isValidAddress },
+  { key: "city", validate: isValidCity },
+  { key: "state" },
+  { key: "country" },
+  { key: "pincode", validate: isValidPincode },
+  { key: "stream" },
+  { key: "studentClass" },
+  { key: "school", validate: isValidSchool },
+  { key: "profilePhoto" },
+];
 
   return fields.every(({ key, validate }) => {
     const value = typeof student[key] === "string" ? student[key].trim() : student[key];
