@@ -121,7 +121,7 @@ const createReceiptDocument = (data) => {
     .font("Helvetica-Bold")
     .fontSize(20)
     .fillColor("#ffffff")
-    .text("ExamPlat - e-Examination Platform", startX + 66, 31);
+    .text("ExamPlat", startX + 66, 31);
 
   doc
     .font("Helvetica")

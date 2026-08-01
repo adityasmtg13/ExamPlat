@@ -55,3 +55,25 @@ export const deleteProfilePhoto = async () => {
 
   return response.data;
 };
+
+// Send OTP for profile settings actions
+export const sendAccountSettingsOtp = async (data) => {
+  const response = await axios.post(
+    `${API}/settings/send-otp`,
+    data,
+    authHeader()
+  );
+
+  return response.data;
+};
+
+// Verify OTP for profile settings actions
+export const verifyAccountSettingsOtp = async (data) => {
+  const response = await axios.post(
+    `${API}/settings/verify-otp`,
+    data,
+    authHeader()
+  );
+
+  return response.data;
+};

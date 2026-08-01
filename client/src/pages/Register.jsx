@@ -2,13 +2,15 @@ import { useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { registerStudent, resendOtp, verifyOtp } from "../services/authService";
 import { toast } from "sonner";
-import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaLock, FaCheck } from "react-icons/fa";
 import {
   EMAIL_REGEX,
   NAME_REGEX,
   getPasswordStrength,
   getPasswordValidationErrors,
 } from "../utils/validation";
+import { isProfileComplete } from "../utils/profileUtils";
+import { setStudent } from "../storage";
 import logo from "../assets/logo.png";
 import Button from "../components/Button";
 
@@ -29,6 +31,14 @@ function Register() {
   const [registeredEmail, setRegisteredEmail] = useState("");
 
   const passwordStrength = useMemo(() => getPasswordStrength(form.password), [form.password]);
+
+  const passwordCriteria = [
+    { id: "length", label: "At least 8 characters", isMet: form.password.length >= 8 },
+    { id: "uppercase", label: "At least 1 uppercase letter", isMet: /[A-Z]/.test(form.password) },
+    { id: "lowercase", label: "At least 1 lowercase letter", isMet: /[a-z]/.test(form.password) },
+    { id: "numeric", label: "At least 1 numeric character", isMet: /\d/.test(form.password) },
+    { id: "special", label: "At least 1 special character", isMet: /[!@#$%^&*()_+\-=?.]/.test(form.password) },
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -101,8 +111,17 @@ function Register() {
     try {
       setLoading(true);
       const res = await verifyOtp({ email: registeredEmail, otp });
+      if (res.data?.token) {
+        localStorage.setItem("token", res.data.token);
+      }
+      if (res.data?.student) {
+        setStudent(res.data.student);
+      }
       toast.success(res.data.message || "Email verified successfully.");
-      setTimeout(() => navigate("/profile"), 1200);
+      const targetPath = res.data?.student && isProfileComplete(res.data.student)
+        ? "/dashboard"
+        : "/profile";
+      setTimeout(() => navigate(targetPath, { replace: true }), 1200);
     } catch (err) {
       toast.error(err.response?.data?.message || "OTP verification failed.");
     } finally {
@@ -296,6 +315,32 @@ function Register() {
                     />
                   </div>
                   {errors.password && <p className="mt-2 text-sm text-red-600">{errors.password}</p>}
+                  
+                  <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3.5 shadow-xs">
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                      Password Requirements
+                    </p>
+                    <div className="grid grid-cols-1 gap-2 text-xs sm:grid-cols-2">
+                      {passwordCriteria.map((item) => (
+                        <div
+                          key={item.id}
+                          className={`flex items-center gap-2 transition-colors duration-200 ${
+                            item.isMet ? "font-medium text-emerald-600" : "text-slate-400"
+                          }`}
+                        >
+                          <span
+                            className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] transition-colors duration-200 ${
+                              item.isMet ? "bg-emerald-500 text-white" : "bg-slate-200 text-slate-400"
+                            }`}
+                          >
+                            <FaCheck />
+                          </span>
+                          <span>{item.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
                   {form.password && (
                     <div className="mt-3 rounded-lg bg-slate-50 px-3 py-2">
                       <p className={`text-sm font-medium ${passwordStrength.color}`}>

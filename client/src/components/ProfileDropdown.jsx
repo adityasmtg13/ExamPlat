@@ -77,17 +77,17 @@ function ProfileDropdown({
           My Profile
         </Link>
 
-        <button
-        className="w-full flex items-center gap-4 px-6 py-3 text-gray-800 hover:bg-blue-50 hover:text-blue-700 transition text-left font-medium"
+        <Link
+          to="/settings"
+          onClick={closeDropdown}
+          className="w-full flex items-center gap-4 px-6 py-3 text-gray-800 hover:bg-blue-50 hover:text-blue-700 transition text-left font-medium"
         >
-        <FaCog className="text-gray-600" />
-
-        <span>Settings</span>
-
-        <span className="ml-auto text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full">
-            Soon
-        </span>
-        </button>
+          <FaCog className="text-gray-600" />
+          <span>Settings</span>
+          <span className="ml-auto text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+            Secure
+          </span>
+        </Link>
 
       </div>
 

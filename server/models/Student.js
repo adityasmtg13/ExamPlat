@@ -15,11 +15,32 @@ const studentSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      // Primary unique identifier for student authentication
     },
 
     password: {
       type: String,
       required: true,
+    },
+
+    pendingAction: {
+      type: String,
+      default: null,
+    },
+
+    pendingEmail: {
+      type: String,
+      default: null,
+    },
+
+    pendingName: {
+      type: String,
+      default: null,
+    },
+
+    pendingPasswordHash: {
+      type: String,
+      default: null,
     },
 
     // Profile
@@ -40,9 +61,9 @@ const studentSchema = new mongoose.Schema(
 
     aadhaar: {
       type: String,
-      default: null,
       unique: true,
       sparse: true,
+      trim: true,
     },
 
     fatherName: {

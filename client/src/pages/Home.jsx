@@ -15,6 +15,7 @@ import {
   FaArrowLeft,
 } from "react-icons/fa";
 import { MdEmojiEvents } from "react-icons/md";
+import logo from "../assets/logo.png";
 
 function Home() {
   const heroRef = useRef(null);
@@ -193,15 +194,17 @@ function Home() {
       {/* ===================== NAVBAR ===================== */}
       <nav className="bg-white shadow-lg sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <img
-              src="src/assets/logo.png"
-              className="w-20 h-auto"
-              alt="National Exam Platform Logo"
+              src={logo}
+              alt="ExamPlat logo"
+              className="h-12 w-12 rounded-lg bg-white p-1.5"
             />
             <div>
-              <h1 className="text-3xl font-bold text-[#0d2d62]">National Exam Platform</h1>
-              <p className="text-xs text-gray-500">India's Premier Examination Portal</p>
+              <p className="text-sm font-medium uppercase tracking-[0.2em] text-black">
+                ExamPlat
+              </p>
+              <h2 className="text-2xl font-bold">e-Examination Platform</h2>
             </div>
           </div>
           <div className="flex gap-8 font-semibold text-[#0d2d62]">
@@ -233,7 +236,7 @@ function Home() {
                 </div>
               </div>
               <h1 className="text-6xl font-bold text-white mb-5 leading-tight">
-                National Exam <br />Platform
+                EXAMPLAT <br />e-Examination Platform
               </h1>
               <p className="text-2xl text-gray-200 mb-8">
                 India's Premier Digital Examination Platform for JEE, NEET &amp; National Level Competitive Exams
@@ -535,10 +538,10 @@ function Home() {
               <span className="text-[#0d2d62] font-semibold">About Us</span>
             </div>
             <h2 className="text-4xl font-bold text-[#0d2d62] mb-6">
-              About National Exam Platform
+              About EXAMPLAT
             </h2>
             <p className="text-gray-700 leading-8 text-lg">
-              National Exam Platform (NEP) is a premier AI-powered digital examination
+              EXAMPLAT is a premier AI-powered e-Examination
               portal designed to provide a centralized ecosystem for national
               competitive examinations including JEE, NEET, and other entrance tests.
             </p>
@@ -549,7 +552,7 @@ function Home() {
             </p>
             <div className="flex gap-4 mt-8">
               <a
-                href="https://www.nta.ac.in/Home"
+                href=""
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -665,11 +668,15 @@ function Home() {
         <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-3 gap-12">
           <div>
             <div className="flex items-center gap-3 mb-5">
-              <img src="src/assets/logo.png" className="w-16 h-auto" alt="Logo" />
-              <h2 className="text-2xl font-bold">National Exam Platform</h2>
+              <img
+                            src={logo}
+                            alt="ExamPlat logo"
+                            className="h-12 w-12 rounded-lg bg-white p-1.5"
+              />
+              <h2 className="text-2xl font-bold">EXAMPLAT</h2>
             </div>
             <p className="leading-8 text-gray-300">
-              India's premier examination platform providing
+              India's premier e-Examination platform providing
               AI-powered practice tests, performance analytics,
               and personalized resources for students
               preparing for national competitive exams.
@@ -687,14 +694,14 @@ function Home() {
           </div>
           <div>
             <h3 className="text-xl font-bold mb-5">Contact Information</h3>
-            <p className="text-gray-300">National Exam Platform</p>
-            <p className="text-gray-300">New Delhi - 110001</p>
-            <p className="text-gray-300 mt-3">📧 support@nexam.in</p>
+            <p className="text-gray-300">EXAMPLAT</p>
+            <p className="text-gray-300">Amaravati - 522237</p>
+            <p className="text-gray-300 mt-3" href="mailto:support@examplat.in">📧 support@examplat.in</p>
             <p className="text-gray-300">☎ 1800-000-0000</p>
           </div>
         </div>
         <div className="border-t border-blue-700 py-5 text-center text-gray-300">
-          <p>© 2026 National Exam Platform • All Rights Reserved</p>
+          <p>© 2026 EXAMPLAT • All Rights Reserved</p>
         </div>
       </footer>
 
