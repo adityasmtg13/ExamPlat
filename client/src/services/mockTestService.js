@@ -44,11 +44,11 @@ export const getMockTests = async () => {
  * Get Mock Attempt History
  */
 export const getMockAttemptHistory = async (
-  registrationId
+  testId
 ) => {
   try {
     const { data } = await axios.get(
-      `${MOCK_TEST_API}/history/${registrationId}`,
+      `${MOCK_TEST_API}/history/${testId}`,
       authConfig()
     );
 
@@ -73,11 +73,11 @@ export const getMockAttemptHistory = async (
  * Start Mock Attempt
  */
 export const startMockAttempt = async (
-  registrationId
+  testId
 ) => {
   try {
     const { data } = await axios.post(
-      `${MOCK_TEST_API}/start/${registrationId}`,
+      `${MOCK_TEST_API}/start/${testId}`,
       {},
       authConfig()
     );
@@ -166,11 +166,11 @@ export const submitMockExam = async (
 };
 
 export const submitAndRestartMockAttempt = async (
-  registrationId
+  testId
 ) => {
   try {
     const { data } = await axios.post(
-      `${MOCK_TEST_API}/submit-and-restart/${registrationId}`,
+      `${MOCK_TEST_API}/submit-and-restart/${testId}`,
       {},
       authConfig()
     );
@@ -209,6 +209,24 @@ export const getMockResult = async (attemptId) => {
       error.response?.data || {
         success: false,
         message: "Unable to fetch mock test result.",
+      }
+    );
+  }
+};
+
+export const getMockTestById = async (testId) => {
+  try {
+    const { data } = await axios.get(
+      `${MOCK_TEST_API}/detail/${testId}`,
+      authConfig()
+    );
+
+    return data;
+  } catch (error) {
+    throw (
+      error.response?.data || {
+        success: false,
+        message: "Unable to fetch mock test details.",
       }
     );
   }

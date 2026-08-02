@@ -13,7 +13,23 @@ const mockAttemptSchema = new mongoose.Schema(
     registrationId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "ExamRegistration",
+      default: null,
+    },
+
+    // Mock Test Reference
+    testId: {
+      type: String,
       required: true,
+      trim: true,
+      index: true,
+    },
+
+    // Mongo Test Document Reference
+    testMongoId: {
+      type: String,
+      default: null,
+      trim: true,
+      index: true,
     },
 
     // Exam Name
@@ -91,6 +107,20 @@ const mockAttemptSchema = new mongoose.Schema(
       default: Date.now,
     },
 
+    // Mock Test Title
+    testTitle: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    // Exam Category (JEE / NEET)
+    examCategory: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
     // Submission Time
     submittedAt: {
       type: Date,
@@ -102,14 +132,18 @@ const mockAttemptSchema = new mongoose.Schema(
   }
 );
 
-// Prevent duplicate attempt numbers for the same registration
+// Prevent duplicate attempt numbers for the same test and student
 mockAttemptSchema.index(
   {
-    registrationId: 1,
+    studentId: 1,
+    testId: 1,
     attemptNumber: 1,
   },
   {
     unique: true,
+    partialFilterExpression: {
+      testId: { $type: "string" },
+    },
   }
 );
 

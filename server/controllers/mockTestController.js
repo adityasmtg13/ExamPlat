@@ -1,5 +1,72 @@
+const Test = require("../models/Test");
 const ExamRegistration = require("../models/ExamRegistration");
 const MockAttempt = require("../models/MockAttempt");
+
+const examCategoryFromRegistration = (examType) => {
+  if (examType === "JEE Main") {
+    return "JEE";
+  }
+
+  if (examType === "NEET") {
+    return "NEET";
+  }
+
+  return examType;
+};
+
+const examTypeFromCategory = (examCategory) => {
+  if (examCategory === "JEE") {
+    return "JEE Main";
+  }
+
+  return examCategory;
+};
+
+const registrationExamTypesToCategories = (registrations) => {
+  return [...new Set(registrations.map((registration) => examCategoryFromRegistration(registration.examType)))];
+};
+
+const getStudentExamCategories = async (studentId) => {
+  const registrations = await ExamRegistration.find({
+    studentId,
+    status: "Registered",
+  }).sort({
+    createdAt: -1,
+  });
+
+  return {
+    registrations,
+    examCategories: registrationExamTypesToCategories(registrations),
+  };
+};
+
+const getMatchingRegistration = (registrations, examCategory) => {
+  const matchedRegistration = registrations.find(
+    (registration) => examCategoryFromRegistration(registration.examType) === examCategory
+  );
+
+  return matchedRegistration || registrations[0] || null;
+};
+
+const isTestOpen = (test) => {
+  if (["Draft", "Closed", "Archived"].includes(test.status)) {
+    return false;
+  }
+
+  const now = new Date();
+  const startAt = test.defaultStartAt ? new Date(test.defaultStartAt) : null;
+  const endAt = test.defaultEndAt ? new Date(test.defaultEndAt) : null;
+
+  if (startAt && now < startAt) {
+    return false;
+  }
+
+  if (endAt && now > endAt) {
+    return false;
+  }
+
+  return true;
+};
 
 /**
  * Get Available Mock Tests
@@ -9,47 +76,44 @@ exports.getMockTests = async (req, res) => {
   try {
     const studentId = req.student.id;
 
-    // Fetch all registrations for the student
-    const registrations = await ExamRegistration.find({
-      studentId,
-    }).sort({
-      createdAt: -1,
-    });
+    const { examCategories } = await getStudentExamCategories(studentId);
+
+    const tests = await Test.find({
+      testType: "mock",
+      examCategory: { $in: examCategories },
+      selectAllStudents: true,
+    })
+      .sort({ defaultStartAt: 1, createdAt: -1 })
+      .lean();
 
     const mockTests = [];
 
-    for (const registration of registrations) {
-      // Count completed attempts
+    for (const test of tests) {
       const completedAttempts = await MockAttempt.countDocuments({
-        registrationId: registration._id,
+        studentId,
+        testId: test.testId,
         status: "Completed",
       });
 
       const remainingAttempts = Math.max(
-        3 - completedAttempts,
+        (test.defaultAttempts || 1) - completedAttempts,
         0
       );
 
       const canAttempt =
-        registration.status === "Registered" &&
-        remainingAttempts > 0;
+        test.selectAllStudents &&
+        examCategories.includes(test.examCategory) &&
+        remainingAttempts > 0 &&
+        isTestOpen(test);
 
       mockTests.push({
-        registrationId: registration._id,
-
-        registrationNumber:
-          registration.registrationNumber,
-
-        examType: registration.examType,
-
-        registrationStatus:
-          registration.status,
+        ...test,
 
         attemptsUsed: completedAttempts,
 
         remainingAttempts,
 
-        maximumAttempts: 3,
+        maximumAttempts: test.defaultAttempts || 1,
 
         canAttempt,
       });
@@ -70,38 +134,98 @@ exports.getMockTests = async (req, res) => {
 };
 
 /**
- * Get Mock Attempt History
- * GET /api/mock-tests/history/:registrationId
+ * Get a single mock test
+ * GET /api/mock-tests/detail/:testId
  */
-exports.getMockAttemptHistory = async (req, res) => {
+exports.getMockTestById = async (req, res) => {
   try {
     const studentId = req.student.id;
-    const { registrationId } = req.params;
+    const { testId } = req.params;
 
-    // Verify registration belongs to student
-    const registration = await ExamRegistration.findOne({
-      _id: registrationId,
-      studentId,
-    });
+    const { registrations, examCategories } = await getStudentExamCategories(studentId);
 
-    if (!registration) {
+    if (examCategories.length === 0) {
       return res.status(404).json({
         success: false,
         message: "Registration not found.",
       });
     }
 
+    const test = await Test.findOne({
+      testId,
+      testType: "mock",
+      selectAllStudents: true,
+      examCategory: { $in: examCategories },
+    }).lean();
+
+    if (!test) {
+      return res.status(404).json({
+        success: false,
+        message: "Mock test not found.",
+      });
+    }
+
+    const completedAttempts = await MockAttempt.countDocuments({
+      studentId,
+      testId: test.testId,
+      status: "Completed",
+    });
+
+    const remainingAttempts = Math.max(
+      (test.defaultAttempts || 1) - completedAttempts,
+      0
+    );
+
+    res.status(200).json({
+      success: true,
+      test: {
+        ...test,
+        attemptsUsed: completedAttempts,
+        remainingAttempts,
+        canAttempt:
+          test.selectAllStudents &&
+          remainingAttempts > 0 &&
+          isTestOpen(test),
+      },
+    });
+  } catch (err) {
+    console.error("Get Mock Test Error:", err);
+
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+/**
+ * Get Mock Attempt History
+ * GET /api/mock-tests/history/:registrationId
+ */
+exports.getMockAttemptHistory = async (req, res) => {
+  try {
+    const studentId = req.student.id;
+    const { testId } = req.params;
+
+    const test = await Test.findOne({ testId }).lean();
+
+    if (!test) {
+      return res.status(404).json({
+        success: false,
+        message: "Mock test not found.",
+      });
+    }
+
     const attempts = await MockAttempt.find({
-      registrationId,
+      studentId,
+      testId,
     }).sort({
       attemptNumber: 1,
     });
 
     res.status(200).json({
       success: true,
-      registrationNumber:
-        registration.registrationNumber,
-      examType: registration.examType,
+      test,
       attempts,
     });
   } catch (err) {
@@ -120,12 +244,11 @@ exports.getMockAttemptHistory = async (req, res) => {
 exports.createMockAttempt = async (req, res) => {
   try {
     const studentId = req.student.id;
-    const { registrationId } = req.params;
+    const { testId } = req.params;
 
-    // Verify registration belongs to the student
     const registration = await ExamRegistration.findOne({
-      _id: registrationId,
       studentId,
+      status: "Registered",
     });
 
     if (!registration) {
@@ -135,18 +258,48 @@ exports.createMockAttempt = async (req, res) => {
       });
     }
 
-    // Payment must be completed
-    if (registration.status !== "Registered") {
-      return res.status(400).json({
+    const { examCategories, registrations } = await getStudentExamCategories(studentId);
+
+    const test = await Test.findOne({
+      testId,
+      testType: "mock",
+      selectAllStudents: true,
+      examCategory: { $in: examCategories.length ? examCategories : ["JEE", "NEET"] },
+    });
+
+    if (!test) {
+      return res.status(404).json({
         success: false,
-        message:
-          "Complete the registration payment before attempting the mock test.",
+        message: "Mock test not found.",
       });
     }
 
-    // Prevent multiple active attempts
+    if (!["Scheduled", "Live"].includes(test.status)) {
+      return res.status(400).json({
+        success: false,
+        message: "This mock test is not open for attempts yet.",
+      });
+    }
+
+    if (!test.selectAllStudents) {
+      return res.status(403).json({
+        success: false,
+        message: "This mock test is not open for all students.",
+      });
+    }
+
+    if (!isTestOpen(test)) {
+      return res.status(400).json({
+        success: false,
+        message: "This mock test is not open for attempts yet.",
+      });
+    }
+
+    const matchedRegistration = getMatchingRegistration(registrations, test.examCategory);
+
     const activeAttempt = await MockAttempt.findOne({
-      registrationId,
+      studentId,
+      testId,
       status: "In Progress",
     });
 
@@ -162,15 +315,16 @@ exports.createMockAttempt = async (req, res) => {
 
     // Count completed attempts
     const completedAttempts = await MockAttempt.countDocuments({
-      registrationId,
+      studentId,
+      testId,
       status: "Completed",
     });
 
-    if (completedAttempts >= 3) {
+    if (completedAttempts >= (test.defaultAttempts || 1)) {
       return res.status(400).json({
         success: false,
         message:
-          "Maximum of 3 mock test attempts reached.",
+          "Maximum mock test attempts reached.",
       });
     }
 
@@ -180,8 +334,14 @@ exports.createMockAttempt = async (req, res) => {
     // Create attempt
     const attempt = await MockAttempt.create({
       studentId,
-      registrationId,
-      examType: registration.examType,
+      registrationId: matchedRegistration?._id || null,
+      testId: test.testId,
+      testMongoId: String(test._id),
+      examType:
+        matchedRegistration?.examType ||
+        examTypeFromCategory(test.examCategory),
+      testTitle: test.title,
+      examCategory: test.examCategory,
       attemptNumber,
       status: "In Progress",
       startedAt: new Date(),
@@ -210,24 +370,37 @@ exports.createMockAttempt = async (req, res) => {
 exports.submitAndRestartMockAttempt = async (req, res) => {
   try {
     const studentId = req.student.id;
-    const { registrationId } = req.params;
+    const { testId } = req.params;
 
-    // Verify registration
-    const registration = await ExamRegistration.findOne({
-      _id: registrationId,
-      studentId,
+    const { examCategories, registrations } = await getStudentExamCategories(studentId);
+
+    const test = await Test.findOne({
+      testId,
+      testType: "mock",
+      selectAllStudents: true,
+      examCategory: { $in: examCategories.length ? examCategories : ["JEE", "NEET"] },
     });
 
-    if (!registration) {
+    if (!test) {
       return res.status(404).json({
         success: false,
-        message: "Registration not found.",
+        message: "Mock test not found.",
       });
     }
 
+    if (!isTestOpen(test)) {
+      return res.status(400).json({
+        success: false,
+        message: "This mock test is not open for attempts yet.",
+      });
+    }
+
+    const matchedRegistration = getMatchingRegistration(registrations, test.examCategory);
+
     // Find active attempt
     const activeAttempt = await MockAttempt.findOne({
-      registrationId,
+      studentId,
+      testId,
       status: "In Progress",
     });
 
@@ -240,22 +413,29 @@ exports.submitAndRestartMockAttempt = async (req, res) => {
 
     // Count completed attempts
     const completedAttempts = await MockAttempt.countDocuments({
-      registrationId,
+      studentId,
+      testId,
       status: "Completed",
     });
 
-    if (completedAttempts >= 3) {
+    if (completedAttempts >= (test.defaultAttempts || 1)) {
       return res.status(400).json({
         success: false,
-        message: "Maximum of 3 mock test attempts reached.",
+        message: "Maximum mock test attempts reached.",
       });
     }
 
     // Create new attempt
     const attempt = await MockAttempt.create({
       studentId,
-      registrationId,
-      examType: registration.examType,
+      registrationId: matchedRegistration?._id || null,
+      testId: test.testId,
+      testMongoId: String(test._id),
+      examType:
+        matchedRegistration?.examType ||
+        examTypeFromCategory(test.examCategory),
+      testTitle: test.title,
+      examCategory: test.examCategory,
       attemptNumber: completedAttempts + 1,
       status: "In Progress",
       startedAt: new Date(),
@@ -297,19 +477,27 @@ exports.getMockResult = async (req, res) => {
       });
     }
 
-    const registration = await ExamRegistration.findById(
-      attempt.registrationId
-    );
+    const test = await Test.findOne({
+      $or: [
+        { testId: attempt.testId },
+        { _id: attempt.testMongoId || attempt.testId },
+      ],
+    }).lean();
 
     res.status(200).json({
       success: true,
       result: {
         attemptId: attempt._id,
 
-        registrationNumber:
-          registration?.registrationNumber,
+        testId: attempt.testId,
+
+        testTitle: test?.title || attempt.testTitle,
 
         examType: attempt.examType,
+
+        examCategory: attempt.examCategory,
+
+        maximumAttempts: test?.defaultAttempts || 1,
 
         attemptNumber: attempt.attemptNumber,
 
@@ -361,11 +549,13 @@ exports.getAnalytics = async (req, res) => {
     let totalTimeTaken = 0;
 
     for (const attempt of attempts) {
-      const examType = attempt.examType;
+      const examType =
+        attempt.testTitle || attempt.testId || attempt.examType;
 
       if (!groupedAnalytics[examType]) {
         groupedAnalytics[examType] = {
           examType,
+          examCategory: attempt.examCategory || attempt.examType,
           totalAttempts: 0,
           totalScore: 0,
           totalMarks: 0,
@@ -393,6 +583,7 @@ exports.getAnalytics = async (req, res) => {
 
       group.attempts.push({
         attemptId: attempt._id,
+        testId: attempt.testId,
         attemptNumber: attempt.attemptNumber,
         submittedAt: attempt.submittedAt,
         score: attempt.score,

@@ -5,6 +5,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 const {
   getMockTests,
+  getMockTestById,
   getMockAttemptHistory,
   createMockAttempt,
   submitAndRestartMockAttempt,
@@ -20,31 +21,41 @@ const {
 router.get("/", authMiddleware, getMockTests);
 
 /**
+ * Get Single Mock Test
+ * GET /api/mock-tests/detail/:testId
+ */
+router.get(
+  "/detail/:testId",
+  authMiddleware,
+  getMockTestById
+);
+
+/**
  * Start Mock Test
- * POST /api/mock-tests/start/:registrationId
+ * POST /api/mock-tests/start/:testId
  */
 router.post(
-  "/start/:registrationId",
+  "/start/:testId",
   authMiddleware,
   createMockAttempt
 );
 
 /**
  * Submit current attempt and start a new one
- * POST /api/mock-tests/submit-and-restart/:registrationId
+ * POST /api/mock-tests/submit-and-restart/:testId
  */
 router.post(
-  "/submit-and-restart/:registrationId",
+  "/submit-and-restart/:testId",
   authMiddleware,
   submitAndRestartMockAttempt
 );
 
 /**
  * Get Mock Attempt History
- * GET /api/mock-tests/history/:registrationId
+ * GET /api/mock-tests/history/:testId
  */
 router.get(
-  "/history/:registrationId",
+  "/history/:testId",
   authMiddleware,
   getMockAttemptHistory
 );

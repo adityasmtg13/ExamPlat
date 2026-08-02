@@ -2,276 +2,181 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
-import { getRegistrationById } from "../services/registrationService";
-
-
-import {
-  startMockAttempt,
-  submitAndRestartMockAttempt,
-} from "../services/mockTestService";
-
-const examDetails = {
-  "JEE Main": {
-    duration: "3 Hours",
-    questions: 90,
-    marks: 300,
-    sections: ["Physics", "Chemistry", "Mathematics"],
-  },
-
-  NEET: {
-    duration: "3 Hours 20 Minutes",
-    questions: 180,
-    marks: 720,
-    sections: ["Physics", "Chemistry", "Botany", "Zoology"],
-  },
-};
+import { getMockTestById, startMockAttempt, submitAndRestartMockAttempt } from "../services/mockTestService";
 
 function MockInstructions() {
   const navigate = useNavigate();
-  const { registrationId } = useParams();
+  const { testId } = useParams();
 
-  const [registration, setRegistration] = useState(null);
+  const [test, setTest] = useState(null);
   const [loading, setLoading] = useState(true);
   const [accepted, setAccepted] = useState(false);
   const [starting, setStarting] = useState(false);
 
   useEffect(() => {
-    loadRegistration();
+    loadTest();
   }, []);
 
-  const loadRegistration = async () => {
+  const loadTest = async () => {
     try {
-      const data = await getRegistrationById(registrationId);
-      setRegistration(data.registration);
-    } catch (err) {
-      console.error(err);
-      toast.error("Unable to load examination.");
+      const data = await getMockTestById(testId);
+      setTest(data.test);
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message || "Unable to load mock test.");
       navigate("/mock-tests");
     } finally {
       setLoading(false);
     }
   };
 
-const handleStart = async () => {
-  try {
-    setStarting(true);
+  const handleStart = async () => {
+    try {
+      setStarting(true);
 
-    const response = await startMockAttempt(registrationId);
-
-    navigate(`/mock-test/exam/${response.attempt._id}`);
-  } catch (err) {
-    if (err.activeAttempt) {
-      const submitPrevious = window.confirm(
-        "You already have a mock test in progress.\n\nDo you want to submit it and start a new one?"
-      );
-
-      if (!submitPrevious) {
-        setStarting(false);
-        return;
-      }
-
-      try {
-        const response = await submitAndRestartMockAttempt(
-          registrationId
+      const response = await startMockAttempt(testId);
+      navigate(`/mock-test/exam/${response.attempt._id}`);
+    } catch (error) {
+      if (error.activeAttempt) {
+        const submitPrevious = window.confirm(
+          "You already have a mock test in progress. Do you want to submit it and start a new one?"
         );
 
-        navigate(`/mock-test/exam/${response.attempt._id}`);
-      } catch (restartErr) {
-        console.log(restartErr);
+        if (!submitPrevious) {
+          return;
+        }
 
-toast.error(
-  restartErr?.message ||
-    restartErr?.response?.data?.message ||
-    "Failed to submit the previous attempt."
-);
+        try {
+          const response = await submitAndRestartMockAttempt(testId);
+          navigate(`/mock-test/exam/${response.attempt._id}`);
+        } catch (restartError) {
+          toast.error(
+            restartError?.message ||
+              restartError?.response?.data?.message ||
+              "Failed to submit the previous attempt."
+          );
+        }
+      } else {
+        toast.error(error.message || "Unable to start the selected test.");
       }
-    } else {
-      toast.error(err.message);
+    } finally {
+      setStarting(false);
     }
-  } finally {
-    setStarting(false);
-  }
-};
+  };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100">
-        
-
         <div className="flex h-[70vh] items-center justify-center">
-          <h2 className="text-xl font-semibold text-[#103f7c]">
-            Loading...
-          </h2>
+          <h2 className="text-xl font-semibold text-[#103f7c]">Loading...</h2>
         </div>
       </div>
     );
   }
 
-  const exam = examDetails[registration.examType];
+  if (!test) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
-     
-
       <div className="mx-auto max-w-5xl px-4 py-10">
         <div className="rounded-3xl bg-white p-8 shadow-lg">
-
-          <h1 className="mb-2 text-3xl font-bold text-[#103f7c]">
-            Mock Test Instructions
-          </h1>
-
+          <h1 className="mb-2 text-3xl font-bold text-[#103f7c]">Mock Test Instructions</h1>
           <p className="mb-8 text-gray-600">
-            Please read all instructions carefully before
-            starting your examination.
+            Please read all instructions carefully before starting the selected test.
           </p>
 
-          {/* Candidate Details */}
-
           <div className="mb-8 rounded-xl border p-6">
-            <h2 className="mb-4 text-xl font-semibold">
-              Candidate Details
-            </h2>
-
+            <h2 className="mb-4 text-xl font-semibold">Selected Test</h2>
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <span className="font-semibold">
-                  Registration Number
-                </span>
-                <p>{registration.registrationNumber}</p>
+                <span className="font-semibold">Test ID</span>
+                <p>{test.testId}</p>
               </div>
-
               <div>
-                <span className="font-semibold">
-                  Examination
-                </span>
-                <p>{registration.examType}</p>
+                <span className="font-semibold">Title</span>
+                <p>{test.title}</p>
               </div>
-
               <div>
-                <span className="font-semibold">
-                  Registration Status
-                </span>
-                <p>{registration.status}</p>
+                <span className="font-semibold">Exam Category</span>
+                <p>{test.examCategory}</p>
               </div>
-
               <div>
-                <span className="font-semibold">
-                  Registration Fee
-                </span>
-                <p>₹{registration.registrationFee}</p>
+                <span className="font-semibold">Subject</span>
+                <p>{test.subject || "-"}</p>
+              </div>
+              <div>
+                <span className="font-semibold">Status</span>
+                <p>{test.status}</p>
+              </div>
+              <div>
+                <span className="font-semibold">Maximum Attempts</span>
+                <p>{test.maximumAttempts || test.defaultAttempts || 1}</p>
               </div>
             </div>
           </div>
 
-          {/* Exam Details */}
-
           <div className="mb-8 rounded-xl border p-6">
-            <h2 className="mb-4 text-xl font-semibold">
-              Examination Details
-            </h2>
-
+            <h2 className="mb-4 text-xl font-semibold">Schedule</h2>
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <strong>Duration</strong>
-                <p>{exam.duration}</p>
+                <span className="font-semibold">Start At</span>
+                <p>{new Date(test.defaultStartAt).toLocaleString()}</p>
               </div>
-
               <div>
-                <strong>Total Questions</strong>
-                <p>{exam.questions}</p>
+                <span className="font-semibold">End At</span>
+                <p>{new Date(test.defaultEndAt).toLocaleString()}</p>
               </div>
-
               <div>
-                <strong>Maximum Marks</strong>
-                <p>{exam.marks}</p>
+                <span className="font-semibold">Attempts Used</span>
+                <p>{test.attemptsUsed}</p>
               </div>
-
               <div>
-                <strong>Question Type</strong>
-                <p>Multiple Choice Questions (MCQ)</p>
-              </div>
-
-              <div>
-                <strong>Negative Marking</strong>
-                <p>Yes (-1 for incorrect answer)</p>
-              </div>
-
-              <div>
-                <strong>Maximum Attempts</strong>
-                <p>3</p>
-              </div>
-            </div>
-
-            <div className="mt-5">
-              <strong>Sections</strong>
-
-              <div className="mt-3 flex flex-wrap gap-2">
-                {exam.sections.map((section) => (
-                  <span
-                    key={section}
-                    className="rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-700"
-                  >
-                    {section}
-                  </span>
-                ))}
+                <span className="font-semibold">Attempts Remaining</span>
+                <p>{test.remainingAttempts}</p>
               </div>
             </div>
           </div>
 
-          {/* Instructions */}
-
           <div className="mb-8 rounded-xl border p-6">
-            <h2 className="mb-4 text-xl font-semibold">
-              General Instructions
-            </h2>
-
+            <h2 className="mb-4 text-xl font-semibold">General Instructions</h2>
             <ol className="list-decimal space-y-3 pl-5 text-gray-700">
               <li>Read every question carefully before answering.</li>
-              <li>Practice mode has no countdown timer.</li>
-              <li>Each correct answer carries +4 marks.</li>
-              <li>Each incorrect answer carries -1 mark.</li>
-              <li>Unanswered questions carry 0 marks.</li>
               <li>Responses are stored locally until submission.</li>
+              <li>Use the navigation buttons to move between questions.</li>
               <li>Submit the examination once completed.</li>
-              <li>Maximum three attempts are allowed.</li>
+              <li>Only eligible mapped students can attempt this test.</li>
             </ol>
           </div>
-
-          {/* Declaration */}
 
           <div className="rounded-xl border bg-gray-50 p-6">
             <label className="flex cursor-pointer items-start gap-3">
               <input
                 type="checkbox"
                 checked={accepted}
-                onChange={(e) =>
-                  setAccepted(e.target.checked)
-                }
+                onChange={(event) => setAccepted(event.target.checked)}
                 className="mt-1 h-5 w-5"
               />
-
               <span className="text-gray-700">
-                I hereby declare that I have read and
-                understood all the instructions. I agree to
-                attempt this mock examination fairly.
+                I have read and understood the instructions for this selected mock test.
               </span>
             </label>
           </div>
 
           <div className="mt-8 flex justify-end">
             <button
-              disabled={!accepted || starting}
+              disabled={!accepted || starting || !test.canAttempt}
               onClick={handleStart}
               className={`rounded-xl px-8 py-3 font-semibold text-white transition ${
-                accepted && !starting
+                accepted && !starting && test.canAttempt
                   ? "bg-green-600 hover:bg-green-700"
                   : "cursor-not-allowed bg-gray-400"
               }`}
             >
-              {starting ? "Starting..." : "Start Mock Test"}
+              {starting ? "Starting..." : test.canAttempt ? "Start Test" : "Not Available"}
             </button>
           </div>
-
         </div>
       </div>
     </div>

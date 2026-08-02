@@ -110,16 +110,15 @@ const MockResult = () => {
         <div className="grid md:grid-cols-2 gap-4">
 
           <div>
-            <strong>Registration Number:</strong>{" "}
-            {result.registrationNumber}
+            <strong>Test ID:</strong> {result.testId}
           </div>
 
           <div>
-            <strong>Exam:</strong> {result.examType}
+            <strong>Exam:</strong> {result.testTitle || result.examType}
           </div>
 
           <div>
-            <strong>Attempt:</strong> {result.attemptNumber} / 3
+            <strong>Attempt:</strong> {result.attemptNumber} / {result.maximumAttempts || 1}
           </div>
 
           <div>

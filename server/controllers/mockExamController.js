@@ -1,7 +1,84 @@
-const fs = require("fs");
-const path = require("path");
+const mongoose = require("mongoose");
 
 const MockAttempt = require("../models/MockAttempt");
+const Question = require("../models/Question");
+const Test = require("../models/Test");
+
+const getQuestionField = (question, primaryField, fallbackField) => {
+  if (question[primaryField] !== undefined && question[primaryField] !== null) {
+    return question[primaryField];
+  }
+
+  return question[fallbackField];
+};
+
+const buildTestIdQuery = (attempt, test) => {
+  const stringIds = new Set();
+  const objectIds = [];
+
+  const addValue = (value) => {
+    if (value === undefined || value === null || value === "") {
+      return;
+    }
+
+    const asString = String(value);
+    stringIds.add(asString);
+
+    if (mongoose.Types.ObjectId.isValid(asString)) {
+      objectIds.push(new mongoose.Types.ObjectId(asString));
+    }
+  };
+
+  addValue(attempt?.testId);
+  addValue(attempt?.testMongoId);
+  addValue(test?.testId);
+  addValue(test?._id);
+
+  const orConditions = [];
+
+  if (stringIds.size > 0) {
+    orConditions.push({ testId: { $in: [...stringIds] } });
+  }
+
+  if (objectIds.length > 0) {
+    orConditions.push({ testId: { $in: objectIds } });
+  }
+
+  return orConditions.length > 0 ? { $or: orConditions } : null;
+};
+
+const findQuestionsForTest = async (attempt, test) => {
+  const testIdQuery = buildTestIdQuery(attempt, test);
+
+  if (!testIdQuery) {
+    return [];
+  }
+
+  return Question.find(testIdQuery)
+    .sort({ createdAt: 1, questionId: 1 })
+    .lean();
+};
+
+const getExamDuration = (attempt) => {
+  const examType = attempt.examType;
+  const examCategory = attempt.examCategory;
+
+  if (examType === "JEE Main" || examType === "JEE" || examCategory === "JEE") {
+    return 180;
+  }
+
+  if (examType === "NEET" || examCategory === "NEET") {
+    return 200;
+  }
+
+  return null;
+};
+
+const getQuestionMarks = (question) => question.marks ?? 4;
+
+const getQuestionNegativeMarks = (question) => question.negativeMarks ?? 1;
+
+const isSupportedExamType = (attempt) => getExamDuration(attempt) !== null;
 
 /**
  * GET /api/mock-exam/questions/:attemptId
@@ -33,29 +110,37 @@ exports.getMockQuestions = async (req, res) => {
       });
     }
 
-    let filePath;
-    let duration;
+    const duration = getExamDuration(attempt);
 
-    if (attempt.examType === "JEE Main") {
-      filePath = path.join(__dirname, "../data/jeeQuestions.json");
-      duration = 180;
-    } else if (attempt.examType === "NEET") {
-      filePath = path.join(__dirname, "../data/neetQuestions.json");
-      duration = 200;
-    } else {
+    if (!isSupportedExamType(attempt)) {
       return res.status(400).json({
         success: false,
         message: "Unsupported exam type.",
       });
     }
 
-    const questions = JSON.parse(
-      fs.readFileSync(filePath, "utf-8")
-    );
+    const test = await Test.findOne({
+      $or: [
+        { testId: attempt.testId },
+        { _id: attempt.testMongoId || attempt.testId },
+      ],
+    }).lean();
 
-    const safeQuestions = questions.map(
-      ({ correctAnswer, ...question }) => question
-    );
+    const questions = await findQuestionsForTest(attempt, test);
+
+    const safeQuestions = questions.map((question) => ({
+      id: String(getQuestionField(question, "questionId", "_id")),
+      question:
+        getQuestionField(question, "questionText", "question") ||
+        getQuestionField(question, "question", "questionText"),
+      options: question.options || [],
+      subject: question.subject || "",
+      topic: question.topic || "",
+      marks: getQuestionMarks(question),
+      negativeMarks: getQuestionNegativeMarks(question),
+      correctAnswer:
+        question.correctOption ?? question.correctAnswer ?? null,
+    }));
 
     return res.status(200).json({
       success: true,
@@ -111,28 +196,21 @@ exports.submitMockExam = async (req, res) => {
       });
     }
 
-    let filePath;
-
-    if (attempt.examType === "JEE Main") {
-      filePath = path.join(
-        __dirname,
-        "../data/jeeQuestions.json"
-      );
-    } else if (attempt.examType === "NEET") {
-      filePath = path.join(
-        __dirname,
-        "../data/neetQuestions.json"
-      );
-    } else {
+    if (!isSupportedExamType(attempt)) {
       return res.status(400).json({
         success: false,
         message: "Unsupported exam type.",
       });
     }
 
-    const questions = JSON.parse(
-      fs.readFileSync(filePath, "utf-8")
-    );
+    const test = await Test.findOne({
+      $or: [
+        { testId: attempt.testId },
+        { _id: attempt.testMongoId || attempt.testId },
+      ],
+    }).lean();
+
+    const questions = await findQuestionsForTest(attempt, test);
 
     let correctAnswers = 0;
     let wrongAnswers = 0;
@@ -140,27 +218,34 @@ exports.submitMockExam = async (req, res) => {
     let score = 0;
 
     for (const question of questions) {
-      const selected = answers?.[question.id];
+      const questionId = String(
+        getQuestionField(question, "questionId", "_id")
+      );
+      const selected = answers?.[questionId];
+      const correctOption = question.correctOption ?? question.correctAnswer;
+      const marks = getQuestionMarks(question);
+      const negativeMarks = getQuestionNegativeMarks(question);
 
       if (selected === undefined) {
         unanswered++;
-      } else if (selected === question.correctAnswer) {
+      } else if (selected === correctOption) {
         correctAnswers++;
-        score += question.marks;
+        score += marks;
       } else {
         wrongAnswers++;
-        score -= question.negativeMarks;
+        score -= negativeMarks;
       }
     }
 
     const totalMarks = questions.reduce(
-      (sum, question) => sum + question.marks,
+      (sum, question) => sum + getQuestionMarks(question),
       0
     );
 
-    const percentage = Number(
-      ((score / totalMarks) * 100).toFixed(2)
-    );
+    const percentage =
+      totalMarks > 0
+        ? Number(((score / totalMarks) * 100).toFixed(2))
+        : 0;
 
     const submittedAt = new Date();
 

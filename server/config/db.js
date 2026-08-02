@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const Student = require("../models/Student");
+const MockAttempt = require("../models/MockAttempt");
+const seedMockQuestions = require("../utils/seedMockQuestions");
 
 const connectDB = async () => {
   try {
@@ -15,6 +17,19 @@ const connectDB = async () => {
       }
 
       await Student.syncIndexes();
+      await MockAttempt.syncIndexes();
+
+      const mockAttemptCollection = mongoose.connection.collection("mockattempts");
+      const mockAttemptIndexes = await mockAttemptCollection.indexes();
+      const staleAttemptIndex = mockAttemptIndexes.find(
+        (index) => index.name === "registrationId_1_attemptNumber_1"
+      );
+
+      if (staleAttemptIndex) {
+        await mockAttemptCollection.dropIndex("registrationId_1_attemptNumber_1");
+      }
+
+      await seedMockQuestions();
     } catch (indexError) {
       console.error("Index sync warning:", indexError.message);
     }

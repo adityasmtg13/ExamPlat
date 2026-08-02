@@ -102,7 +102,7 @@ function App() {
         />
 
         <Route
-          path="/mock-test/instructions/:registrationId"
+          path="/mock-test/instructions/:testId"
           element={<MockInstructions />}
         />
 
