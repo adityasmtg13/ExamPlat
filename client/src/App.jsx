@@ -8,6 +8,8 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import RegisterExam from "./pages/RegisterExam";
 import MockTests from "./pages/MockTests";
+import MockTestsJEE from "./pages/MockTestsJEE";
+import MockTestsNEET from "./pages/MockTestsNEET";
 import ComingSoon from "./pages/ComingSoon";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
@@ -171,6 +173,24 @@ function App() {
           element={
             <ProtectedRoute>
               <MockTests />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/mock-tests/jee"
+          element={
+            <ProtectedRoute>
+              <MockTestsJEE />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/mock-tests/neet"
+          element={
+            <ProtectedRoute>
+              <MockTestsNEET />
             </ProtectedRoute>
           }
         />

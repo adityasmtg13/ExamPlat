@@ -237,6 +237,9 @@ exports.submitMockExam = async (req, res) => {
       }
     }
 
+    // Ensure score never goes below 0 (schema has min: 0 validation)
+    score = Math.max(0, score);
+
     const totalMarks = questions.reduce(
       (sum, question) => sum + getQuestionMarks(question),
       0

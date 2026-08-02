@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FaCaretDown, FaCaretRight } from "react-icons/fa";
 import { toast } from "sonner";
 import { getAnalytics } from "../services/mockTestService";
 import Navbar from "../components/Navbar";
@@ -7,10 +8,7 @@ import Footer from "../components/Footer";
 function Analytics() {
   const [loading, setLoading] = useState(true);
   const [analytics, setAnalytics] = useState(null);
-
-  useEffect(() => {
-    fetchAnalytics();
-  }, []);
+  const [expandedExams, setExpandedExams] = useState(() => new Set());
 
   const fetchAnalytics = async () => {
     try {
@@ -23,6 +21,10 @@ function Analytics() {
     }
   };
 
+  useEffect(() => {
+    fetchAnalytics();
+  }, []);
+
   const formatTime = (seconds = 0) => {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
@@ -32,6 +34,18 @@ function Analytics() {
     }
 
     return `${mins} min`;
+  };
+
+  const toggleExpand = (examType) => {
+    setExpandedExams((prev) => {
+      const next = new Set(prev);
+      if (next.has(examType)) {
+        next.delete(examType);
+      } else {
+        next.add(examType);
+      }
+      return next;
+    });
   };
 
   if (loading) {
@@ -56,7 +70,6 @@ function Analytics() {
 
   const { overall } = analytics;
 
-  
     return (
   <div className="min-h-screen bg-gray-100">
     <Navbar />
@@ -110,103 +123,141 @@ function Analytics() {
 
         {/* Exam-wise Analytics */}
 
-        {Object.values(analytics.analytics).map((exam) => (
+        {Object.values(analytics.analytics).map((exam) => {
+          const isExpanded = expandedExams.has(exam.examType);
+
+          return (
           <div
             key={exam.examType}
-            className="mb-10 rounded-xl bg-white p-6 shadow"
+            className={`mb-10 overflow-hidden rounded-xl bg-white shadow transition ${
+              isExpanded
+                ? "ring-2 ring-[#103f7c]"
+                : "hover:shadow-lg"
+            }`}
           >
-            <h2 className="text-2xl font-bold text-[#103f7c]">
-              {exam.examType}
-            </h2>
-
-            <div className="mt-6 grid gap-5 md:grid-cols-4">
-
-              <div className="rounded-lg bg-blue-50 p-4">
-                <p className="text-gray-600">Attempts</p>
-                <h3 className="mt-2 text-2xl font-bold">
-                  {exam.totalAttempts}
-                </h3>
+            {/* Preview row */}
+            <div className="flex items-center gap-4 p-6">
+              <div className="min-w-0 flex-1">
+                <h2 className="text-2xl font-bold text-[#103f7c]">
+                  {exam.examType}
+                </h2>
+                <p className="mt-1 text-sm text-gray-500">
+                  {exam.totalAttempts} attempt{exam.totalAttempts === 1 ? "" : "s"} · Best {exam.bestPercentage}% · Avg {exam.averagePercentage}%
+                </p>
               </div>
 
-              <div className="rounded-lg bg-green-50 p-4">
-                <p className="text-gray-600">Average Score</p>
-                <h3 className="mt-2 text-2xl font-bold">
-                  {exam.averageScore}
-                </h3>
-              </div>
-
-              <div className="rounded-lg bg-yellow-50 p-4">
-                <p className="text-gray-600">Average Percentage</p>
-                <h3 className="mt-2 text-2xl font-bold">
-                  {exam.averagePercentage}%
-                </h3>
-              </div>
-
-              <div className="rounded-lg bg-purple-50 p-4">
-                <p className="text-gray-600">Best Percentage</p>
-                <h3 className="mt-2 text-2xl font-bold">
-                  {exam.bestPercentage}%
-                </h3>
-              </div>
-
+              <button
+                type="button"
+                onClick={() => toggleExpand(exam.examType)}
+                aria-label={
+                  isExpanded
+                    ? "Collapse attempt history"
+                    : "Expand attempt history"
+                }
+                aria-expanded={isExpanded}
+                title={isExpanded ? "Collapse details" : "View full details"}
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xl transition ${
+                  isExpanded
+                    ? "bg-[#103f7c] text-white"
+                    : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                }`}
+              >
+                {isExpanded ? <FaCaretDown /> : <FaCaretRight />}
+              </button>
             </div>
 
-            {/* Attempt History */}
+            {/* Stats Grid & Attempt History (only when expanded) */}
+            {isExpanded && (
+              <>
+              <div className="grid gap-5 px-6 pb-6 md:grid-cols-4">
+                <div className="rounded-lg bg-blue-50 p-4">
+                  <p className="text-gray-600">Attempts</p>
+                  <h3 className="mt-2 text-2xl font-bold">
+                    {exam.totalAttempts}
+                  </h3>
+                </div>
 
-            <div className="mt-8 overflow-x-auto">
+                <div className="rounded-lg bg-green-50 p-4">
+                  <p className="text-gray-600">Average Score</p>
+                  <h3 className="mt-2 text-2xl font-bold">
+                    {exam.averageScore}
+                  </h3>
+                </div>
 
-              <table className="min-w-full border border-gray-200">
+                <div className="rounded-lg bg-yellow-50 p-4">
+                  <p className="text-gray-600">Average Percentage</p>
+                  <h3 className="mt-2 text-2xl font-bold">
+                    {exam.averagePercentage}%
+                  </h3>
+                </div>
 
-                <thead className="bg-[#103f7c] text-white">
+                <div className="rounded-lg bg-purple-50 p-4">
+                  <p className="text-gray-600">Best Percentage</p>
+                  <h3 className="mt-2 text-2xl font-bold">
+                    {exam.bestPercentage}%
+                  </h3>
+                </div>
+              </div>
 
-                  <tr>
-                    <th className="px-4 py-3 text-left">Attempt</th>
-                    <th className="px-4 py-3 text-left">Date</th>
-                    <th className="px-4 py-3 text-left">Score</th>
-                    <th className="px-4 py-3 text-left">Percentage</th>
-                    <th className="px-4 py-3 text-left">Time Taken</th>
-                  </tr>
+              <div className="border-t border-gray-100 bg-gray-50/60 p-6">
+                <div className="overflow-x-auto">
 
-                </thead>
+                  <table className="min-w-full border border-gray-200">
 
-                <tbody>
+                    <thead className="bg-[#103f7c] text-white">
 
-                  {exam.attempts.map((attempt) => (
-                    <tr
-                      key={attempt.attemptId}
-                      className="border-t hover:bg-gray-50"
-                    >
-                      <td className="px-4 py-3">
-                        Attempt {attempt.attemptNumber}
-                      </td>
+                      <tr>
+                        <th className="px-4 py-3 text-left">Attempt</th>
+                        <th className="px-4 py-3 text-left">Date</th>
+                        <th className="px-4 py-3 text-left">Score</th>
+                        <th className="px-4 py-3 text-left">Percentage</th>
+                        <th className="px-4 py-3 text-left">Time Taken</th>
+                      </tr>
 
-                      <td className="px-4 py-3">
-                        {new Date(
-                          attempt.submittedAt
-                        ).toLocaleDateString()}
-                      </td>
+                    </thead>
 
-                      <td className="px-4 py-3">
-                        {attempt.score}/{attempt.totalMarks}
-                      </td>
+                    <tbody>
 
-                      <td className="px-4 py-3 font-semibold">
-                        {attempt.percentage}%
-                      </td>
+                      {exam.attempts.map((attempt) => (
+                        <tr
+                          key={attempt.attemptId}
+                          className="border-t hover:bg-gray-50"
+                        >
+                          <td className="px-4 py-3 bg-white">
+                            Attempt {attempt.attemptNumber}
+                          </td>
 
-                      <td className="px-4 py-3">
-                        {formatTime(attempt.timeTaken)}
-                      </td>
-                    </tr>
-                  ))}
+                          <td className="px-4 py-3 bg-white">
+                            {new Date(
+                              attempt.submittedAt
+                            ).toLocaleDateString()}
+                          </td>
 
-                </tbody>
+                          <td className="px-4 py-3 bg-white">
+                            {attempt.score}/{attempt.totalMarks}
+                          </td>
 
-              </table>
+                          <td className="px-4 py-3 bg-white font-semibold">
+                            {attempt.percentage}%
+                          </td>
 
-            </div>
+                          <td className="px-4 py-3 bg-white">
+                            {formatTime(attempt.timeTaken)}
+                          </td>
+                        </tr>
+                      ))}
+
+                    </tbody>
+
+                  </table>
+
+                </div>
+              </div>
+              </>
+            )}
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
     <Footer />
