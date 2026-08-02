@@ -1,6 +1,7 @@
 const Test = require("../models/Test");
 const ExamRegistration = require("../models/ExamRegistration");
 const MockAttempt = require("../models/MockAttempt");
+const AllowedCandidate = require("../models/AllowedCandidate");
 
 const examCategoryFromRegistration = (examType) => {
   if (examType === "JEE Main") {
@@ -48,6 +49,70 @@ const getMatchingRegistration = (registrations, examCategory) => {
   return matchedRegistration || registrations[0] || null;
 };
 
+const getStudentHallTicketNos = (registrations) => {
+  return registrations
+    .map((registration) => registration.registrationNumber)
+    .filter(Boolean);
+};
+
+const getStudentAllowedTestIds = async (hallTicketNos) => {
+  if (hallTicketNos.length === 0) {
+    return [];
+  }
+
+  const allowedCandidates = await AllowedCandidate.find({
+    hallTicketNo: { $in: hallTicketNos },
+  })
+    .select("testId")
+    .lean();
+
+  return allowedCandidates.map((candidate) => candidate.testId);
+};
+
+const isStudentAllowedForTest = (test, hallTicketNos, allowedTestIds) => {
+  if (test.selectAllStudents) {
+    return true;
+  }
+
+  if (hallTicketNos.length === 0 && allowedTestIds.length === 0) {
+    return false;
+  }
+
+  // Check embedded allowedCandidates array (legacy support)
+  const isInEmbeddedCandidates = (test.allowedCandidates || []).some(
+    (candidate) => hallTicketNos.includes(candidate)
+  );
+
+  if (isInEmbeddedCandidates) {
+    return true;
+  }
+
+  // Check allowedcandidates collection
+  return allowedTestIds.some(
+    (testId) => String(testId) === String(test._id)
+  );
+};
+
+const buildTestAccessQuery = (hallTicketNos, allowedTestIds) => {
+  const conditions = [{ selectAllStudents: true }];
+
+  if (hallTicketNos.length > 0) {
+    conditions.push({
+      selectAllStudents: false,
+      allowedCandidates: { $in: hallTicketNos },
+    });
+  }
+
+  if (allowedTestIds.length > 0) {
+    conditions.push({
+      selectAllStudents: false,
+      _id: { $in: allowedTestIds },
+    });
+  }
+
+  return { $or: conditions };
+};
+
 const isTestOpen = (test) => {
   if (["Draft", "Closed", "Archived"].includes(test.status)) {
     return false;
@@ -76,12 +141,16 @@ exports.getMockTests = async (req, res) => {
   try {
     const studentId = req.student.id;
 
-    const { examCategories } = await getStudentExamCategories(studentId);
+    const { registrations, examCategories } = await getStudentExamCategories(studentId);
+
+    const hallTicketNos = getStudentHallTicketNos(registrations);
+
+    const allowedTestIds = await getStudentAllowedTestIds(hallTicketNos);
 
     const tests = await Test.find({
       testType: "mock",
       examCategory: { $in: examCategories },
-      selectAllStudents: true,
+      ...buildTestAccessQuery(hallTicketNos, allowedTestIds),
     })
       .sort({ defaultStartAt: 1, createdAt: -1 })
       .lean();
@@ -101,7 +170,7 @@ exports.getMockTests = async (req, res) => {
       );
 
       const canAttempt =
-        test.selectAllStudents &&
+        isStudentAllowedForTest(test, hallTicketNos, allowedTestIds) &&
         examCategories.includes(test.examCategory) &&
         remainingAttempts > 0 &&
         isTestOpen(test);
@@ -151,11 +220,15 @@ exports.getMockTestById = async (req, res) => {
       });
     }
 
+    const hallTicketNos = getStudentHallTicketNos(registrations);
+
+    const allowedTestIds = await getStudentAllowedTestIds(hallTicketNos);
+
     const test = await Test.findOne({
       testId,
       testType: "mock",
-      selectAllStudents: true,
       examCategory: { $in: examCategories },
+      ...buildTestAccessQuery(hallTicketNos, allowedTestIds),
     }).lean();
 
     if (!test) {
@@ -183,7 +256,7 @@ exports.getMockTestById = async (req, res) => {
         attemptsUsed: completedAttempts,
         remainingAttempts,
         canAttempt:
-          test.selectAllStudents &&
+          isStudentAllowedForTest(test, hallTicketNos, allowedTestIds) &&
           remainingAttempts > 0 &&
           isTestOpen(test),
       },
@@ -260,11 +333,15 @@ exports.createMockAttempt = async (req, res) => {
 
     const { examCategories, registrations } = await getStudentExamCategories(studentId);
 
+    const hallTicketNos = getStudentHallTicketNos(registrations);
+
+    const allowedTestIds = await getStudentAllowedTestIds(hallTicketNos);
+
     const test = await Test.findOne({
       testId,
       testType: "mock",
-      selectAllStudents: true,
       examCategory: { $in: examCategories.length ? examCategories : ["JEE", "NEET"] },
+      ...buildTestAccessQuery(hallTicketNos, allowedTestIds),
     });
 
     if (!test) {
@@ -281,10 +358,10 @@ exports.createMockAttempt = async (req, res) => {
       });
     }
 
-    if (!test.selectAllStudents) {
+    if (!isStudentAllowedForTest(test, hallTicketNos, allowedTestIds)) {
       return res.status(403).json({
         success: false,
-        message: "This mock test is not open for all students.",
+        message: "This mock test is not open for you.",
       });
     }
 
@@ -374,17 +451,28 @@ exports.submitAndRestartMockAttempt = async (req, res) => {
 
     const { examCategories, registrations } = await getStudentExamCategories(studentId);
 
+    const hallTicketNos = getStudentHallTicketNos(registrations);
+
+    const allowedTestIds = await getStudentAllowedTestIds(hallTicketNos);
+
     const test = await Test.findOne({
       testId,
       testType: "mock",
-      selectAllStudents: true,
       examCategory: { $in: examCategories.length ? examCategories : ["JEE", "NEET"] },
+      ...buildTestAccessQuery(hallTicketNos, allowedTestIds),
     });
 
     if (!test) {
       return res.status(404).json({
         success: false,
         message: "Mock test not found.",
+      });
+    }
+
+    if (!isStudentAllowedForTest(test, hallTicketNos, allowedTestIds)) {
+      return res.status(403).json({
+        success: false,
+        message: "This mock test is not open for you.",
       });
     }
 

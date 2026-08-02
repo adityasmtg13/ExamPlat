@@ -67,6 +67,11 @@ const testSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    allowedCandidates: {
+      type: [String],
+      default: [],
+      index: true,
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Admin",
