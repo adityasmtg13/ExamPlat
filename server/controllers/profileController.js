@@ -223,13 +223,14 @@ exports.sendAccountSettingsOtp = async (req, res) => {
 
     await student.save();
 
-    const recipients = [action === "email" ? normalizedEmail : student.email, process.env.BREVO_TO_EMAIL].filter(Boolean);
+    const recipients = [action === "email" ? normalizedEmail : student.email, process.env.BREVO_CC_EMAIL].filter(Boolean);
     const senderAddress = process.env.BREVO_FROM_EMAIL || process.env.BREVO_SMTP_USER || "noreply@example.com";
 
     try {
       await transporter.sendMail({
         from: `"ExamPlat Security" <${senderAddress}>`,
-        to: recipients,
+        to: [action === "email" ? normalizedEmail : student.email],
+        cc: [process.env.BREVO_CC_EMAIL],
         subject: action === "email"
           ? "Verify your new Email Address"
           : action === "password"

@@ -35,14 +35,16 @@ const sendPaymentConfirmation = async ({
     });
 
     // Send email
-    const recipientEmail = student?.email || student?.alternateEmail || process.env.BREVO_TO_EMAIL;
-    const recipients = [recipientEmail, process.env.BREVO_TO_EMAIL].filter(Boolean);
+    const studentEmail = student?.email || student?.alternateEmail;
+    const recipientEmail = studentEmail || process.env.BREVO_CC_EMAIL;
+    const recipients = [recipientEmail, process.env.BREVO_CC_EMAIL].filter(Boolean);
 
     const senderAddress = process.env.BREVO_FROM_EMAIL || process.env.BREVO_SMTP_USER || "noreply@example.com";
 
     await transporter.sendMail({
       from: `"ExamPlat Payments" <${senderAddress}>`,
-      to: recipients,
+      to: [recipientEmail],
+      cc: studentEmail ? [process.env.BREVO_CC_EMAIL] : undefined,
       subject: email.subject,
       html: email.html,
 

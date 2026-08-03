@@ -61,11 +61,12 @@ exports.registerStudent = async (req, res) => {
     });
 
     try {
-      const recipients = [email, process.env.BREVO_TO_EMAIL].filter(Boolean);
+      const recipients = [email, process.env.BREVO_CC_EMAIL].filter(Boolean);
       const senderAddress = process.env.BREVO_FROM_EMAIL || process.env.BREVO_SMTP_USER || "noreply@example.com";
       await transporter.sendMail({
         from: `"ExamPlat Verification" <${senderAddress}>`,
-        to: recipients,
+        to: [email],
+        cc: [process.env.BREVO_CC_EMAIL],
         subject: "Verify your ExamPlat account",
         html: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
@@ -238,11 +239,12 @@ exports.resendOtp = async (req, res) => {
     student.isEmailVerified = false;
     await student.save();
 
-    const recipients = [email, process.env.BREVO_TO_EMAIL].filter(Boolean);
+    const recipients = [email, process.env.BREVO_CC_EMAIL].filter(Boolean);
     const senderAddress = process.env.BREVO_FROM_EMAIL || process.env.BREVO_SMTP_USER || "noreply@example.com";
     await transporter.sendMail({
       from: `"ExamPlat" <${senderAddress}>`,
-      to: recipients,
+      to: [email],
+      cc: [process.env.BREVO_CC_EMAIL],
       subject: "Your ExamPlat OTP",
       html: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
@@ -330,11 +332,12 @@ exports.forgotPassword = async (req, res) => {
     student.otpExpiresAt = otpExpiresAt;
     await student.save();
 
-    const recipients = [email, process.env.BREVO_TO_EMAIL].filter(Boolean);
+    const recipients = [email, process.env.BREVO_CC_EMAIL].filter(Boolean);
     const senderAddress = process.env.BREVO_FROM_EMAIL || process.env.BREVO_SMTP_USER || "noreply@example.com";
     await transporter.sendMail({
       from: `"ExamPlat Support" <${senderAddress}>`,
-      to: recipients,
+      to: [email],
+      cc: [process.env.BREVO_CC_EMAIL],
       subject: "Reset your ExamPlat password",
       html: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
