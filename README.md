@@ -19,6 +19,7 @@ ExamPlat provides secure authentication, student profile management, examination
 - React Hot Toast
 - Sonner
 - JWT Decode
+- Recharts
 
 ---
 
@@ -35,6 +36,7 @@ ExamPlat provides secure authentication, student profile management, examination
 - Multer
 - Cloudinary
 - PDFKit
+- Nodemailer
 
 ---
 
@@ -49,115 +51,146 @@ ExamPlat/
 │   │   └── favicon.ico
 │   │
 │   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   │   ├── Button.jsx
+│   │   │   ├── ChartSection.jsx
+│   │   │   ├── ExamAnalyticsCard.jsx
+│   │   │   ├── Footer.jsx
+│   │   │   ├── FormField.jsx
+│   │   │   ├── Input.jsx
+│   │   │   ├── MetricCard.jsx
+│   │   │   ├── MockTestList.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── NavigationButtons.jsx
+│   │   │   ├── ProfileDropdown.jsx
+│   │   │   ├── ProfileForm.jsx
+│   │   │   ├── ProfilePhoto.jsx
+│   │   │   ├── ProtectedRoute.jsx
+│   │   │   ├── PublicRoute.jsx
+│   │   │   ├── QuestionCard.jsx
+│   │   │   ├── QuestionPalette.jsx
+│   │   │   ├── QuickServiceCard.jsx
+│   │   │   ├── RankPredictionModal.jsx
+│   │   │   ├── RegistrationForm.jsx
+│   │   │   ├── RegistrationHistory.jsx
+│   │   │   ├── ScrollToTop.jsx
+│   │   │   └── ...
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── Analytics.jsx
+│   │   │   ├── AnalyticsDashboard.jsx
+│   │   │   ├── ComingSoon.jsx
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── ForgotPassword.jsx
+│   │   │   ├── Home.jsx
+│   │   │   ├── Login.jsx
+│   │   │   ├── Marks.jsx
+│   │   │   ├── MockCardPayment.jsx
+│   │   │   ├── MockExam.jsx
+│   │   │   ├── MockInstructions.jsx
+│   │   │   ├── MockQRCode.jsx
+│   │   │   ├── MockResult.jsx
+│   │   │   ├── MockTestPayment.jsx
+│   │   │   ├── MockTests.jsx
+│   │   │   ├── MockTestsJEE.jsx
+│   │   │   ├── MockTestsNEET.jsx
+│   │   │   ├── Payment.jsx
+│   │   │   ├── PaymentSuccess.jsx
+│   │   │   ├── PrivacyPolicy.jsx
+│   │   │   ├── Profile.jsx
+│   │   │   ├── Register.jsx
+│   │   │   ├── RegisterExam.jsx
+│   │   │   ├── Settings.jsx
+│   │   │   ├── TermsAndConditions.jsx
+│   │   │   └── ...
+│   │   │
+│   │   ├── services/
+│   │   │   ├── authService.js
+│   │   │   ├── mockTestService.js
+│   │   │   ├── paymentService.js
+│   │   │   ├── profileService.js
+│   │   │   ├── registrationService.js
+│   │   │   └── ...
+│   │   ├── utils/
+│   │   │   ├── helpers.js
+│   │   │   ├── storage.js
+│   │   │   └── ...
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   ├── main.jsx
+│   │   └── storage.js
 │   │
-│   ├── assets/
-│   │
-│   ├── components/
-│   │   ├── Navbar.jsx
-│   │   ├── ProtectedRoute.jsx
-│   │   ├── PublicRoute.jsx
-│   │   ├── ProfileForm.jsx
-│   │   ├── ProfileDropdown.jsx
-│   │   ├── ProfilePhoto.jsx
-│   │   ├── RegistrationForm.jsx
-│   │   ├── RegistrationHistory.jsx
-│   │   ├── MockTestCard.jsx
-│   │   ├── MockQuestionPalette.jsx
-│   │   ├── QuickServiceCard.jsx
-│   │   └── ...
-│   │
-│   ├── pages/
-│   │   ├── Home.jsx
-│   │   ├── Login.jsx
-│   │   ├── Register.jsx
-│   │   ├── Dashboard.jsx
-│   │   ├── Profile.jsx
-│   │   ├── RegisterExam.jsx
-│   │   ├── RegistrationHistory.jsx
-│   │   ├── Payment.jsx
-│   │   ├── MockUPIPayment.jsx
-│   │   ├── MockQRCode.jsx
-│   │   ├── MockCardPayment.jsx
-│   │   ├── PaymentSuccess.jsx
-│   │   ├── MockTests.jsx
-│   │   ├── MockInstructions.jsx
-│   │   ├── MockExam.jsx
-│   │   ├── MockResult.jsx
-│   │   ├── Analytics.jsx
-│   │   ├── RankPredictor.jsx
-│   │   └── CollegePredictor.jsx
-│   │
-│   ├── services/
-│   │   ├── authService.js
-│   │   ├── profileService.js
-│   │   ├── registrationService.js
-│   │   ├── paymentService.js
-│   │   ├── receiptService.js
-│   │   ├── mockTestService.js
-│   │   └── examService.js
-│   │
-│   ├── storage/
-│   │   ├── authStorage.js
-│   │   └── index.js
-│   │
-│   ├── utils/
-│   │   ├── profileUtils.js
-│   │   ├── constants.js
-│   │   └── helpers.js
-│   │
-│   ├── App.jsx
-│   ├── main.jsx
-│   └── index.css
+│   ├── package.json
+│   ├── vite.config.js
+│   └── index.html
 │
 ├── server/
 │   ├── config/
+│   │   ├── cloudinary.js
 │   │   ├── db.js
-│   │   └── cloudinary.js
+│   │   └── ...
 │   │
 │   ├── controllers/
 │   │   ├── authController.js
-│   │   ├── profileController.js
-│   │   ├── registrationController.js
-│   │   ├── paymentController.js
-│   │   ├── receiptController.js
+│   │   ├── mockExamController.js
 │   │   ├── mockTestController.js
-│   │   └── examController.js
+│   │   ├── paymentController.js
+│   │   ├── profileController.js
+│   │   ├── receiptController.js
+│   │   ├── registrationController.js
+│   │   └── ...
+│   │
+│   ├── data/
+│   │   ├── jeeQuestions.json
+│   │   ├── neetQuestions.json
+│   │   └── ...
 │   │
 │   ├── middleware/
 │   │   ├── authMiddleware.js
 │   │   ├── uploadMiddleware.js
-│   │   └── errorMiddleware.js
+│   │   └── ...
 │   │
 │   ├── models/
-│   │   ├── Student.js
+│   │   ├── AllowedCandidate.js
 │   │   ├── ExamRegistration.js
-│   │   ├── Payment.js
 │   │   ├── MockAttempt.js
+│   │   ├── Payment.js
 │   │   ├── Question.js
-│   │   └── Exam.js
+│   │   ├── Student.js
+│   │   ├── Test.js
+│   │   └── ...
 │   │
 │   ├── routes/
 │   │   ├── authRoutes.js
-│   │   ├── profileRoutes.js
-│   │   ├── registrationRoutes.js
-│   │   ├── paymentRoutes.js
-│   │   ├── receiptRoutes.js
+│   │   ├── mockExamRoutes.js
 │   │   ├── mockTestRoutes.js
-│   │   └── examRoutes.js
+│   │   ├── paymentRoutes.js
+│   │   ├── profileRoutes.js
+│   │   ├── receiptRoutes.js
+│   │   ├── registrationRoutes.js
+│   │   └── ...
+│   │
+│   ├── scripts/
+│   │   ├── cleanupMockAttempts.js
+│   │   └── ...
 │   │
 │   ├── utils/
-│   │   ├── validation.js
-│   │   ├── generateRegistrationNumber.js
-│   │   ├── generatePaymentNumber.js
 │   │   ├── generateTransactionId.js
-│   │   └── receiptGenerator.js
-│   │
-│   ├── .env
+│   │   ├── mailSender.js
+│   │   ├── paymentEmail.js
+│   │   ├── receiptGenerator.js
+│   │   ├── seedMockQuestions.js
+│   │   ├── sendPaymentConfirmation.js
+│   │   ├── validation.js
+│   │   └── ...
 │   ├── package.json
-│   └── server.js
+│   ├── server.js
+│   └── .env
 │
 ├── README.md
 ├── LICENSE
+├── package.json
 └── .gitignore
 ```
 
@@ -190,7 +223,7 @@ npm install
 or
 
 ```bash
-npm install express mongoose cors dotenv bcryptjs jsonwebtoken multer cloudinary pdfkit cookie-parser
+npm install express mongoose cors dotenv bcryptjs jsonwebtoken multer cloudinary pdfkit cookie-parser nodemailer
 ```
 
 ### Development Dependency
@@ -215,6 +248,9 @@ CLOUDINARY_CLOUD_NAME=YOUR_CLOUD_NAME
 CLOUDINARY_API_KEY=YOUR_API_KEY
 
 CLOUDINARY_API_SECRET=YOUR_API_SECRET
+
+EMAIL_USER=YOUR_EMAIL
+EMAIL_PASS=YOUR_EMAIL_PASSWORD
 ```
 
 ### Start Backend
@@ -240,7 +276,7 @@ npm install
 or
 
 ```bash
-npm install react-router-dom axios react-icons react-hot-toast sonner jwt-decode bootstrap tailwindcss @tailwindcss/vite
+npm install react-router-dom axios react-icons react-hot-toast sonner jwt-decode bootstrap tailwindcss @tailwindcss/vite recharts
 ```
 
 ### Start Frontend
@@ -251,45 +287,43 @@ npm run dev
 
 ---
 
+## Complete Install Commands
 
-
-These are the complete install commands for the current project based on package.json and package.json.
-
-## Frontend only
+### Frontend only
 ```bash
 cd client
 npm install
 ```
 
-## Backend only
+### Backend only
 ```bash
 cd server
 npm install
 ```
 
-## Combined from project root
+### Combined from project root
 ```bash
 npm install --prefix client
 npm install --prefix server
 ```
 
-## Optional explicit dependency install list
+### Optional explicit dependency install list
 
-### Frontend
+#### Frontend
 ```bash
 cd client
-npm install axios react react-dom react-router-dom react-icons sonner react-hot-toast bootstrap jwt-decode tailwindcss @tailwindcss/vite
+npm install axios react react-dom react-router-dom react-icons sonner react-hot-toast bootstrap jwt-decode tailwindcss @tailwindcss/vite recharts
 npm install -D vite @vitejs/plugin-react eslint @eslint/js @types/react @types/react-dom eslint-plugin-react-hooks eslint-plugin-react-refresh globals
 ```
 
-### Backend
+#### Backend
 ```bash
 cd server
-npm install express mongoose mongodb bcryptjs jsonwebtoken cors dotenv cloudinary multer multer-storage-cloudinary nodemailer body-parser
+npm install express mongoose mongodb bcryptjs jsonwebtoken cors dotenv cloudinary multer multer-storage-cloudinary nodemailer pdfkit body-parser
 npm install -D nodemon
 ```
 
-
+---
 
 # 📦 NPM Packages
 
@@ -307,6 +341,7 @@ npm install -D nodemon
 | React Hot Toast | Notifications |
 | Sonner | Toast Notifications |
 | JWT Decode | JWT Parsing |
+| Recharts | Interactive Charting and Analytics Visuals |
 
 ---
 
@@ -324,17 +359,23 @@ npm install -D nodemon
 | Multer | File Uploads |
 | Cloudinary | Image Storage |
 | PDFKit | PDF Receipt Generation |
+| Nodemailer | Email Notifications and Confirmation |
 | Cookie Parser | Cookie Handling |
 | Nodemon | Development Server |
+
+---
+
 # ✨ Features
 
 ## 🔐 Authentication
 
+- Improved JWT Route Protection
+- Protected Dashboard Access
+- Proper Login / Register Routing
+- Public and Private Route Handling
+- Authentication Flow Improvements
 - Student Registration
 - Student Login
-- JWT Authentication
-- Protected Routes
-- Public Routes
 - Password Encryption (bcryptjs)
 
 ---
@@ -352,6 +393,18 @@ npm install -D nodemon
 
 ## 👤 Student Profile
 
+- Mandatory Profile Validation
+- Real-time Field Validation
+- Aadhaar Number Validation (12 digits)
+- Mobile Number Validation
+- PIN Code Validation
+- Email Validation
+- Password Strength Validation
+- Father / Guardian Aadhaar Number
+- Mother Aadhaar Number
+- Improved Error Messages
+- Mandatory Government Standard Profile Fields
+- Profile Completion Verification before Exam Registration
 - View Profile
 - Edit Profile
 - Upload Profile Photo
@@ -365,8 +418,13 @@ npm install -D nodemon
 
 ---
 
-## 📝 Examination Registration
+## 📝 Exam Registration
 
+- Register for Exam Quick Action
+- Registration disabled until profile is 100% complete
+- Hover tooltip and warning notification for incomplete profiles
+- Real-time profile completion verification
+- Secure route protection before registration
 - Register for JEE Main
 - Register for NEET
 - Automatic Registration Number Generation
@@ -382,28 +440,57 @@ EX202600001
 
 ---
 
-## 💳 Mock Payment Gateway
+## 📚 Mock Tests
 
-Three payment options are available.
+- Official JEE Main Mock Test Interface
+- Official NEET Mock Test Interface
+- Attempt Tracking
+- National Exam Pattern Layout
+- Improved Mock Test Dashboard
 
-### UPI Payment
+---
 
-- Simulated UPI payment
-- Transaction generation
+## 📊 Marks Module
 
-### QR Code Payment
+- Overall Examination Statistics
+- Total Attempts
+- Best Percentage
+- Average Percentage
+- Practice Time
+- Expandable Attempt History
+- Exam-wise Performance
+- Detailed Marks Table
+- Time Taken Analysis
 
-- QR Code based payment simulation
+---
 
-### Card Payment
+## 📈 Analytics Dashboard
 
-- Card Number
-- Card Holder Name
-- Expiry
-- CVV
+- Interactive Performance Dashboard
+- Performance Trend Graph
+- Exam-wise Attempt Analysis
+- Best vs Average Performance Charts
+- Practice Time Distribution
+- Overall Performance Summary
+- Visual Analytics using Recharts
+- Predict Rank Interface
+- Estimated Rank Placeholder
+- Predicted College 1 Placeholder
+- Predicted College 2 Placeholder
+- Predicted College 3 Placeholder
 
-Features
+> Rank prediction and college prediction UI have been implemented. AI prediction logic will be integrated in a future update.
 
+---
+
+## 💳 Payment Module
+
+- Mock Payment Flow
+- Payment Confirmation Screen
+- Email Confirmation Support
+- PDF Receipt Generation
+- Receipt Download Support
+- Multiple payment options including UPI, QR Code, and Card payment
 - Payment Number Generation
 - Transaction ID Generation
 - Payment Status Tracking
@@ -457,9 +544,13 @@ RCPT202600001
 
 ## 🏠 Landing Page
 
+- Government-inspired Hero Section
+- Improved UI Theme
+- Interactive JEE Practice Sandbox
+- Interactive NEET Practice Sandbox
+- Sample Questions with Solutions
+- Enhanced Responsive Design
 - Ministry of Education Inspired
-- Responsive Design
-- Government Theme
 - Modern UI
 
 ---
@@ -482,6 +573,7 @@ RCPT202600001
 - PDF Receipt Generator
 - Authentication Middleware
 - Multer Integration
+- Email Notification Support
 
 ---
 
@@ -499,6 +591,9 @@ RCPT202600001
 - Navbar
 - Toast Notifications
 - Government Inspired Design
+- Recharts Analytics Dashboard
+- Rank Prediction UI
+- College Prediction UI
 
 ---
 
@@ -555,7 +650,7 @@ npm install
 Install Dependencies
 
 ```bash
-npm install react-router-dom axios react-icons react-hot-toast sonner jwt-decode bootstrap tailwindcss @tailwindcss/vite
+npm install react-router-dom axios react-icons react-hot-toast sonner jwt-decode bootstrap tailwindcss @tailwindcss/vite recharts
 ```
 
 Run Frontend
@@ -649,13 +744,19 @@ GET    /api/receipt/:paymentId
 - Payment Success
 - PDF Receipt
 - Responsive Navigation
+- Analytics Dashboard
+- Marks Module
+- Mock Tests Dashboard
 
 ---
 
 # 🔜 Upcoming Features
 
-## Examination System
-
+- AI Rank Prediction Engine
+- AI College Recommendation Engine
+- Personalized Performance Insights
+- Admission Probability Prediction
+- Smart Study Recommendations
 - AI Question Generator
 - Online Examination Engine
 - Live Timer
@@ -664,48 +765,10 @@ GET    /api/receipt/:paymentId
 - Randomized Questions
 - Auto Submission
 - Result Generation
-
----
-
-## Student Features
-
-- Performance Analytics
-- AI Performance Recommendation
-- College Predictor
-- Rank Prediction
-- Subject-wise Analysis
-- Leaderboard
-- Exam Calendar
-- Hall Ticket Download
-
----
-
-## Administration
-
-- Admin Dashboard
-- Student Management
-- Question Bank Management
-- Examination Management
-- Result Management
-- Payment Reports
-- Receipt Management
-
----
-
-## Authentication
-
 - Forgot Password
 - OTP Verification
 - Email Verification
 - Google Login
-
----
-
-## Notifications
-
-- Email Notifications
-- SMS Notifications
-- Push Notifications
 
 ---
 
@@ -728,25 +791,25 @@ GET    /api/receipt/:paymentId
 Current Version
 
 ```text
-v0.7.0 Beta
+v0.8.0 Beta
 ```
 
 ---
 
-## 📌 Current Progress
+## 📈 Project Status Table
 
 | Module | Status |
-|----------|--------|
-| Authentication | ✅ Complete |
-| Student Profile | ✅ Complete |
-| Dashboard | ✅ Complete |
+|--------|--------|
+| Student Profile Validation | ✅ Complete |
 | Mock Tests | ✅ Complete |
-| Exam Registration | ✅ Complete |
+| Marks Module | ✅ Complete |
+| Analytics Dashboard | 🚧 In Progress |
+| Rank Prediction UI | 🚧 Frontend Complete |
+| College Prediction UI | 🚧 Frontend Complete |
 | Payment Gateway | ✅ Complete |
-| PDF Receipt Generation | ✅ Complete |
-| Admin Dashboard | 🚧 In Progress |
-| Online Examination Engine | 🚧 In Progress |
-| AI Features | 🚧 Planned |
+| PDF Receipt | ✅ Complete |
+| AI Rank Prediction Logic | 📅 Planned |
+| AI College Prediction Logic | 📅 Planned |
 
 ---
 

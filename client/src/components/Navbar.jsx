@@ -35,8 +35,8 @@ function Navbar() {
   const navLinks = [
     { label: "Dashboard", to: "/dashboard" },
     { label: "Mock Tests", to: "/mock-tests" },
+    { label: "Marks", to: "/marks" },
     { label: "Analytics", to: "/analytics" },
-    { label: "Predictor", to: "/predictor" },
   ];
 
   return (

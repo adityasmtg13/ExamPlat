@@ -22,9 +22,11 @@ function ProtectedRoute({ children }) {
           ? "Mock Tests"
           : location.pathname.startsWith("/payment")
             ? "Payments"
-            : location.pathname.startsWith("/analytics")
-              ? "Analytics"
-              : "this page";
+            : location.pathname.startsWith("/marks")
+              ? "Marks"
+              : location.pathname.startsWith("/analytics") || location.pathname.startsWith("/predictor") || location.pathname.startsWith("/rank-predictor") || location.pathname.startsWith("/college-predictor")
+                ? "Analytics"
+                : "this page";
 
     toast.info(`Please complete your profile to access ${pageName}.`, {
       duration: 3000,

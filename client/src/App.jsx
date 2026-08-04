@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Register from "./pages/Register";
@@ -29,7 +29,8 @@ import PublicRoute from "./components/PublicRoute";
 import MockInstructions from "./pages/MockInstructions";
 import MockExam from "./pages/MockExam";
 import MockResult from "./pages/MockResult";
-import Analytics from "./pages/Analytics";
+import Marks from "./pages/Marks";
+import AnalyticsDashboard from "./pages/AnalyticsDashboard";
 import Settings from "./pages/Settings";
 
 function App() {
@@ -196,10 +197,19 @@ function App() {
         />
 
         <Route
+          path="/marks"
+          element={
+            <ProtectedRoute>
+              <Marks />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/analytics"
           element={
             <ProtectedRoute>
-              <Analytics />
+              <AnalyticsDashboard />
             </ProtectedRoute>
           }
         />
@@ -208,10 +218,7 @@ function App() {
           path="/rank-predictor"
           element={
             <ProtectedRoute>
-              <ComingSoon
-                title="Rank Predictor"
-                description="Estimate your expected rank with AI-assisted predictions."
-              />
+              <Navigate to="/analytics" replace />
             </ProtectedRoute>
           }
         />
@@ -220,10 +227,7 @@ function App() {
           path="/college-predictor"
           element={
             <ProtectedRoute>
-              <ComingSoon
-                title="College Predictor"
-                description="Discover the best-fit colleges based on your profile and performance."
-              />
+              <Navigate to="/analytics" replace />
             </ProtectedRoute>
           }
         />
@@ -232,10 +236,7 @@ function App() {
           path="/predictor"
           element={
             <ProtectedRoute>
-              <ComingSoon
-                title="Predictor"
-                description="Compare rank and college prediction tools in one place."
-              />
+              <Navigate to="/analytics" replace />
             </ProtectedRoute>
           }
         />
