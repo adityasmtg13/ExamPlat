@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Area,
   AreaChart,
@@ -17,6 +17,9 @@ import {
   YAxis,
 } from "recharts";
 import { getAnalytics } from "../services/mockTestService";
+import { toast } from "sonner";
+import { downloadAnalyticsReport } from "../services/analyticsReportService";
+import { getStudent } from "../storage";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import MetricCard from "../components/MetricCard";
@@ -50,6 +53,13 @@ function AnalyticsDashboard() {
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedExam, setSelectedExam] = useState(null);
+  const [downloading, setDownloading] = useState(false);
+
+  const performanceTrendRef = useRef(null);
+  const examAttemptsRef = useRef(null);
+  const bestVsAverageRef = useRef(null);
+  const practiceDistributionRef = useRef(null);
+  const overallPerformanceRef = useRef(null);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -167,6 +177,41 @@ function AnalyticsDashboard() {
 
   const examCards = useMemo(() => examGroups.map((exam) => ({ ...exam })), [examGroups]);
 
+  const handleDownloadPDF = async () => {
+    if (downloading) return;
+
+    setDownloading(true);
+
+    try {
+      const student = getStudent();
+      const studentName = student?.name || "Student";
+
+      const result = await downloadAnalyticsReport({
+        studentName,
+        summary: {
+          ...summary,
+          practiceTimeFormatted: formatDuration(summary.practiceTime),
+        },
+        chartRefs: {
+          performanceTrend: performanceTrendRef.current,
+          examAttempts: examAttemptsRef.current,
+          bestVsAverage: bestVsAverageRef.current,
+          practiceDistribution: practiceDistributionRef.current,
+          overallPerformance: overallPerformanceRef.current,
+        },
+      });
+
+      if (result?.success) {
+        toast.success("Analytics report downloaded successfully.");
+      }
+    } catch (error) {
+      console.error("Failed to download analytics report:", error);
+      toast.error(error?.message || "Failed to generate analytics report.");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-100">
@@ -206,8 +251,33 @@ function AnalyticsDashboard() {
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-cyan-700">Performance Intelligence</p>
             <h1 className="mt-2 text-4xl font-bold text-slate-950">Analytics Dashboard</h1>
           </div>
-          <div className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 shadow-sm">
-            {examGroups.length} exam segments tracked
+          <div className="flex items-center gap-3">
+            <div className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 shadow-sm">
+              {examGroups.length} exam segments tracked
+            </div>
+            <button
+              type="button"
+              onClick={handleDownloadPDF}
+              disabled={downloading}
+              className="inline-flex items-center gap-2 rounded-full bg-[#103f7c] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition duration-200 hover:bg-[#0f5ec6] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+            >
+              {downloading ? (
+                <>
+                  <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Download PDF
+                </>
+              )}
+            </button>
           </div>
         </header>
 
@@ -224,7 +294,7 @@ function AnalyticsDashboard() {
 
         <div className="grid gap-6 xl:grid-cols-2">
           <ChartSection title="Performance Trend" description="Attempt vs Percentage">
-            <div className="h-72">
+            <div ref={performanceTrendRef} className="h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={performanceTrendData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#dfe7f5" />
@@ -239,7 +309,7 @@ function AnalyticsDashboard() {
           </ChartSection>
 
           <ChartSection title="Exam Attempts" description="JEE, NEET, CUET, MAT comparison">
-            <div className="h-72">
+            <div ref={examAttemptsRef} className="h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={examAttemptData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#dfe7f5" />
@@ -253,7 +323,7 @@ function AnalyticsDashboard() {
           </ChartSection>
 
           <ChartSection title="Best vs Average Performance" description="Comparison by exam">
-            <div className="h-72">
+            <div ref={bestVsAverageRef} className="h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={comparisonData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#dfe7f5" />
@@ -269,7 +339,7 @@ function AnalyticsDashboard() {
           </ChartSection>
 
           <ChartSection title="Practice Time Distribution" description="Exam-wise learning time">
-            <div className="h-72">
+            <div ref={practiceDistributionRef} className="h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie data={practiceDistributionData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} label>
@@ -287,7 +357,7 @@ function AnalyticsDashboard() {
 
         <div className="mt-6">
           <ChartSection title="Overall Performance" description="Progression across all attempts">
-            <div className="h-72">
+            <div ref={overallPerformanceRef} className="h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={overallPerformanceData}>
                   <defs>

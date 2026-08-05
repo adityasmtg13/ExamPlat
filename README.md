@@ -20,6 +20,8 @@ ExamPlat provides secure authentication, student profile management, examination
 - Sonner
 - JWT Decode
 - Recharts
+- html2canvas
+- jsPDF
 
 ---
 
@@ -276,7 +278,7 @@ npm install
 or
 
 ```bash
-npm install react-router-dom axios react-icons react-hot-toast sonner jwt-decode bootstrap tailwindcss @tailwindcss/vite recharts
+npm install react-router-dom axios react-icons react-hot-toast sonner jwt-decode bootstrap tailwindcss @tailwindcss/vite recharts html2canvas jspdf
 ```
 
 ### Start Frontend
@@ -312,7 +314,7 @@ npm install --prefix server
 #### Frontend
 ```bash
 cd client
-npm install axios react react-dom react-router-dom react-icons sonner react-hot-toast bootstrap jwt-decode tailwindcss @tailwindcss/vite recharts
+npm install axios react react-dom react-router-dom react-icons sonner react-hot-toast bootstrap jwt-decode tailwindcss @tailwindcss/vite recharts html2canvas jspdf
 npm install -D vite @vitejs/plugin-react eslint @eslint/js @types/react @types/react-dom eslint-plugin-react-hooks eslint-plugin-react-refresh globals
 ```
 
@@ -342,6 +344,8 @@ npm install -D nodemon
 | Sonner | Toast Notifications |
 | JWT Decode | JWT Parsing |
 | Recharts | Interactive Charting and Analytics Visuals |
+| html2canvas | Capture Dashboard as Image |
+| jsPDF | Analytics PDF Report Generation |
 
 ---
 
@@ -473,6 +477,12 @@ EX202600001
 - Practice Time Distribution
 - Overall Performance Summary
 - Visual Analytics using Recharts
+- Professional Analytics Report Download (PDF)
+- Student Information Summary
+- Performance Summary Cards
+- High Quality Chart Export
+- Multi-page PDF Generation
+- Government-style Report Layout
 - Predict Rank Interface
 - Estimated Rank Placeholder
 - Predicted College 1 Placeholder
@@ -526,6 +536,31 @@ Receipt includes
 - Paid Date
 
 Receipt Number
+
+---
+
+# 📊 Analytics PDF Report
+
+Students can download a professionally formatted Analytics Report directly from the Analytics Dashboard.
+
+The report includes:
+
+- Student Details
+- Report Information
+- Performance Summary
+- Total Mock Tests Attempted
+- Average Percentage
+- Highest Percentage
+- Lowest Percentage
+- Total Questions Attempted
+- Total Practice Hours
+- Performance Trend Graph
+- Exam Attempts Chart
+- Best vs Average Performance
+- Practice Time Distribution
+- Overall Performance Graph
+
+The report is generated dynamically using **html2canvas** and **jsPDF**, preserving the dashboard charts and styling in a downloadable multi-page PDF.
 
 ```text
 RCPT202600001
@@ -743,6 +778,7 @@ GET    /api/receipt/:paymentId
 - Card Payment
 - Payment Success
 - PDF Receipt
+- Analytics PDF Report
 - Responsive Navigation
 - Analytics Dashboard
 - Marks Module
@@ -791,7 +827,7 @@ GET    /api/receipt/:paymentId
 Current Version
 
 ```text
-v0.8.0 Beta
+v0.9.0 Beta
 ```
 
 ---
@@ -803,7 +839,8 @@ v0.8.0 Beta
 | Student Profile Validation | ✅ Complete |
 | Mock Tests | ✅ Complete |
 | Marks Module | ✅ Complete |
-| Analytics Dashboard | 🚧 In Progress |
+| Analytics Dashboard | ✅ Complete |
+| Analytics PDF Report | ✅ Complete |
 | Rank Prediction UI | 🚧 Frontend Complete |
 | College Prediction UI | 🚧 Frontend Complete |
 | Payment Gateway | ✅ Complete |
