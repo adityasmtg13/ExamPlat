@@ -82,6 +82,7 @@ ExamPlat/
 │   │   ├── pages/
 │   │   │   ├── Analytics.jsx
 │   │   │   ├── AnalyticsDashboard.jsx
+│   │   │   ├── AuditLogs.jsx
 │   │   │   ├── ComingSoon.jsx
 │   │   │   ├── Dashboard.jsx
 │   │   │   ├── ForgotPassword.jsx
@@ -108,6 +109,8 @@ ExamPlat/
 │   │   │   └── ...
 │   │   │
 │   │   ├── services/
+│   │   │   ├── analyticsReportService.js
+│   │   │   ├── auditService.js
 │   │   │   ├── authService.js
 │   │   │   ├── mockTestService.js
 │   │   │   ├── paymentService.js
@@ -388,9 +391,14 @@ npm install -D nodemon
 
 - Government-inspired UI
 - Personalized dashboard
-- Quick service cards
+- Quick Service cards
+- Student Details panel
+- Latest Notifications
+- Audit Logs widget
+- Complete Audit History page
+- View More navigation
 - Profile summary
-- Mock test navigation
+- Mock Test navigation
 - Examination services
 
 ---
@@ -483,6 +491,11 @@ EX202600001
 - High Quality Chart Export
 - Multi-page PDF Generation
 - Government-style Report Layout
+- One-click Analytics Report Download
+- Student Information Header
+- Automatically Generated Report Date & Time
+- Multi-page Report Export
+- Printable Performance Summary
 - Predict Rank Interface
 - Estimated Rank Placeholder
 - Predicted College 1 Placeholder
@@ -568,6 +581,34 @@ RCPT202600001
 
 ---
 
+## 📋 Audit Logs
+
+Students can view all important account activities directly from the dashboard.
+
+Audit logs currently record:
+
+- Student Login
+- Student Logout
+- Dashboard Access
+- Mock Tests Access
+- Marks Page Access
+- Analytics Dashboard Access
+- Profile Page Access
+- Settings Page Access
+- Exam Registration Access
+- Payment Page Access
+
+Features include:
+
+- Latest 3 activities on Dashboard
+- Dedicated Audit Logs page
+- Timestamp for every activity
+- Success Status Indicator
+- Reverse Chronological Ordering
+- Automatic Logging through Backend APIs
+
+---
+
 ## ☁️ Profile Photo
 
 - Upload Photo
@@ -606,6 +647,8 @@ RCPT202600001
 - Payment APIs
 - Receipt APIs
 - PDF Receipt Generator
+- Audit Log APIs
+- Activity Tracking
 - Authentication Middleware
 - Multer Integration
 - Email Notification Support
@@ -629,6 +672,9 @@ RCPT202600001
 - Recharts Analytics Dashboard
 - Rank Prediction UI
 - College Prediction UI
+- Audit Logs Dashboard
+- Audit History Page
+- Analytics Report Download
 
 ---
 
@@ -763,6 +809,15 @@ GET    /api/receipt/:paymentId
 
 ---
 
+## Audit Logs
+
+```http
+GET    /api/audit
+GET    /api/audit/recent
+```
+
+---
+
 # 📷 Application Screens
 
 - Landing Page
@@ -779,6 +834,9 @@ GET    /api/receipt/:paymentId
 - Payment Success
 - PDF Receipt
 - Analytics PDF Report
+- Audit Logs
+- Complete Audit History
+- Analytics Report Download
 - Responsive Navigation
 - Analytics Dashboard
 - Marks Module
@@ -827,7 +885,7 @@ GET    /api/receipt/:paymentId
 Current Version
 
 ```text
-v0.9.0 Beta
+v1.0.0 Beta
 ```
 
 ---
@@ -841,6 +899,7 @@ v0.9.0 Beta
 | Marks Module | ✅ Complete |
 | Analytics Dashboard | ✅ Complete |
 | Analytics PDF Report | ✅ Complete |
+| Audit Logs | ✅ Complete |
 | Rank Prediction UI | 🚧 Frontend Complete |
 | College Prediction UI | 🚧 Frontend Complete |
 | Payment Gateway | ✅ Complete |
