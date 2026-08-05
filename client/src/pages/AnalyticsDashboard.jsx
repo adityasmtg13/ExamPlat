@@ -11,10 +11,20 @@ import {
   LineChart,
   Pie,
   PieChart,
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
+  Radar,
+  RadarChart,
+  RadialBar,
+  RadialBarChart,
   ResponsiveContainer,
+  Scatter,
+  ScatterChart,
   Tooltip,
   XAxis,
   YAxis,
+  ZAxis,
 } from "recharts";
 import { getAnalytics } from "../services/mockTestService";
 import { toast } from "sonner";
@@ -60,7 +70,12 @@ function AnalyticsDashboard() {
   const examAttemptsRef = useRef(null);
   const bestVsAverageRef = useRef(null);
   const practiceDistributionRef = useRef(null);
-  const overallPerformanceRef = useRef(null);
+  const timeEfficiencyRef = useRef(null);
+  const scoreDistributionRef = useRef(null);
+  const examRadarRef = useRef(null);
+  const cumulativeTrendRef = useRef(null);
+  const weekdayActivityRef = useRef(null);
+  const consistencyRef = useRef(null);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -168,14 +183,96 @@ function AnalyticsDashboard() {
     [examGroups]
   );
 
-  const overallPerformanceData = useMemo(
+  const timeEfficiencyData = useMemo(
     () =>
       allAttempts.map((attempt, index) => ({
-        attempt: `Attempt ${index + 1}`,
+        name: `A${index + 1}`,
+        timeMinutes: Number(((attempt.timeTaken || 0) / 60).toFixed(1)),
         percentage: Number(attempt.percentage || 0),
       })),
     [allAttempts]
   );
+
+  const scoreDistributionData = useMemo(() => {
+    const ranges = [
+      { name: "0-20%", min: 0, max: 20, count: 0 },
+      { name: "20-40%", min: 20, max: 40, count: 0 },
+      { name: "40-60%", min: 40, max: 60, count: 0 },
+      { name: "60-80%", min: 60, max: 80, count: 0 },
+      { name: "80-100%", min: 80, max: 100, count: 0 },
+    ];
+
+    allAttempts.forEach((attempt) => {
+      const pct = Number(attempt.percentage || 0);
+      const range = ranges.find((r) => pct >= r.min && pct < r.max);
+      if (range) range.count++;
+    });
+
+    return ranges.map(({ name, count }) => ({ name, count }));
+  }, [allAttempts]);
+
+  const examRadarData = useMemo(
+    () =>
+      ["JEE", "NEET", "CUET", "MAT"].map((examName) => {
+        const exam = examGroups.find((item) => normalizeExamName(item.examType) === examName);
+        return {
+          exam: examName,
+          average: Number(exam?.averagePercentage || 0),
+          best: Number(exam?.bestPercentage || 0),
+        };
+      }),
+    [examGroups]
+  );
+
+  const cumulativeTrendData = useMemo(() => {
+    let runningSum = 0;
+    return allAttempts.map((attempt, index) => {
+      runningSum += Number(attempt.percentage || 0);
+      return {
+        name: `A${index + 1}`,
+        cumulativeAverage: Number((runningSum / (index + 1)).toFixed(1)),
+        percentage: Number(attempt.percentage || 0),
+      };
+    });
+  }, [allAttempts]);
+
+  const weekdayActivityData = useMemo(() => {
+    const days = [
+      { name: "Mon", count: 0 },
+      { name: "Tue", count: 0 },
+      { name: "Wed", count: 0 },
+      { name: "Thu", count: 0 },
+      { name: "Fri", count: 0 },
+      { name: "Sat", count: 0 },
+      { name: "Sun", count: 0 },
+    ];
+
+    allAttempts.forEach((attempt) => {
+      const date = new Date(attempt.submittedAt);
+      const dayIndex = (date.getDay() + 6) % 7; // Convert to Mon=0, Sun=6
+      days[dayIndex].count++;
+    });
+
+    return days;
+  }, [allAttempts]);
+
+  const consistencyData = useMemo(() => {
+    if (allAttempts.length === 0) {
+      return [{ name: "Consistency", value: 0, fill: "#f59e0b" }];
+    }
+
+    const percentages = allAttempts.map((attempt) => Number(attempt.percentage || 0));
+    const mean = percentages.reduce((sum, p) => sum + p, 0) / percentages.length;
+    const variance = percentages.reduce((sum, p) => sum + Math.pow(p - mean, 2), 0) / percentages.length;
+    const stdDev = Math.sqrt(variance);
+
+    // Consistency score: 100 - (stdDev * 2), capped between 0 and 100
+    const consistencyScore = Math.max(0, Math.min(100, Math.round(100 - stdDev * 2)));
+
+    const fillColor = consistencyScore >= 70 ? "#16a34a" : consistencyScore >= 40 ? "#f59e0b" : "#ef4444";
+
+    return [{ name: "Consistency", value: consistencyScore, fill: fillColor }];
+  }, [allAttempts]);
 
   const examCards = useMemo(() => examGroups.map((exam) => ({ ...exam })), [examGroups]);
 
@@ -199,7 +296,12 @@ function AnalyticsDashboard() {
           examAttempts: examAttemptsRef.current,
           bestVsAverage: bestVsAverageRef.current,
           practiceDistribution: practiceDistributionRef.current,
-          overallPerformance: overallPerformanceRef.current,
+          timeEfficiency: timeEfficiencyRef.current,
+          scoreDistribution: scoreDistributionRef.current,
+          examRadar: examRadarRef.current,
+          cumulativeTrend: cumulativeTrendRef.current,
+          weekdayActivity: weekdayActivityRef.current,
+          consistency: consistencyRef.current,
         },
       });
 
@@ -366,23 +468,130 @@ function AnalyticsDashboard() {
           </ChartSection>
         </div>
 
-        <div className="mt-6">
-          <ChartSection title="Overall Performance" description="Progression across all attempts">
-            <div ref={overallPerformanceRef} className="h-72">
+        <div className="mt-6 grid gap-6 xl:grid-cols-2">
+          <ChartSection title="Time Efficiency" description="Time spent vs Score percentage">
+            <div ref={timeEfficiencyRef} className="h-72">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={overallPerformanceData}>
+                <ScatterChart>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#dfe7f5" />
+                  <XAxis
+                    type="number"
+                    dataKey="timeMinutes"
+                    name="Time (min)"
+                    stroke="#475569"
+                    domain={[0, "dataMax + 5"]}
+                    label={{ value: "Time (minutes)", position: "insideBottom", offset: -5, fontSize: 12 }}
+                  />
+                  <YAxis
+                    type="number"
+                    dataKey="percentage"
+                    name="Percentage"
+                    stroke="#475569"
+                    domain={[0, 100]}
+                    label={{ value: "Score %", angle: -90, position: "insideLeft", fontSize: 12 }}
+                  />
+                  <ZAxis range={[80, 80]} />
+                  <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={(value, name) => [name === "Time (min)" ? `${value} min` : `${value}%`, name]} />
+                  <Scatter data={timeEfficiencyData} fill="#8b5cf6" name="Attempts" />
+                </ScatterChart>
+              </ResponsiveContainer>
+            </div>
+          </ChartSection>
+
+          <ChartSection title="Score Distribution" description="Attempts by percentage range">
+            <div ref={scoreDistributionRef} className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={scoreDistributionData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#dfe7f5" />
+                  <XAxis dataKey="name" stroke="#475569" />
+                  <YAxis stroke="#475569" allowDecimals={false} />
+                  <Tooltip />
+                  <Bar dataKey="count" radius={[10, 10, 0, 0]} name="Attempts">
+                    {scoreDistributionData.map((entry, index) => (
+                      <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </ChartSection>
+
+          <ChartSection title="Exam-wise Performance Radar" description="Average & best across exams">
+            <div ref={examRadarRef} className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart data={examRadarData} outerRadius={90}>
+                  <PolarGrid stroke="#dfe7f5" />
+                  <PolarAngleAxis dataKey="exam" stroke="#475569" />
+                  <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="#94a3b8" />
+                  <Radar name="Average" dataKey="average" stroke="#0f5ec6" fill="#0f5ec6" fillOpacity={0.4} />
+                  <Radar name="Best" dataKey="best" stroke="#16a34a" fill="#16a34a" fillOpacity={0.2} />
+                  <Legend />
+                  <Tooltip />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
+          </ChartSection>
+
+          <ChartSection title="Cumulative Average Trend" description="Running average across attempts">
+            <div ref={cumulativeTrendRef} className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={cumulativeTrendData}>
                   <defs>
-                    <linearGradient id="performanceGradient" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="5%" stopColor="#0f5ec6" stopOpacity={0.28} />
-                      <stop offset="95%" stopColor="#0f5ec6" stopOpacity={0.02} />
+                    <linearGradient id="cumulativeGradient" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#14b8a6" stopOpacity={0.02} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#dfe7f5" />
-                  <XAxis dataKey="attempt" stroke="#475569" />
+                  <XAxis dataKey="name" stroke="#475569" />
                   <YAxis stroke="#475569" domain={[0, 100]} />
                   <Tooltip />
-                  <Area type="monotone" dataKey="percentage" stroke="#0f5ec6" strokeWidth={3} fill="url(#performanceGradient)" name="Performance" />
+                  <Legend />
+                  <Area type="monotone" dataKey="cumulativeAverage" stroke="#14b8a6" strokeWidth={3} fill="url(#cumulativeGradient)" name="Cumulative Avg %" />
+                  <Line type="monotone" dataKey="percentage" stroke="#f59e0b" strokeWidth={2} strokeDasharray="5 5" name="Individual %" dot={false} />
                 </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </ChartSection>
+
+          <ChartSection title="Practice Activity by Day" description="Attempts per weekday">
+            <div ref={weekdayActivityRef} className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={weekdayActivityData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#dfe7f5" />
+                  <XAxis dataKey="name" stroke="#475569" />
+                  <YAxis stroke="#475569" allowDecimals={false} />
+                  <Tooltip />
+                  <Bar dataKey="count" radius={[10, 10, 0, 0]} name="Attempts">
+                    {weekdayActivityData.map((entry, index) => (
+                      <Cell key={index} fill={entry.count > 0 ? COLORS[index % COLORS.length] : "#e2e8f0"} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </ChartSection>
+
+          <ChartSection title="Consistency Score" description="Score stability across attempts">
+            <div ref={consistencyRef} className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <RadialBarChart
+                  cx="50%"
+                  cy="50%"
+                  innerRadius="30%"
+                  outerRadius="90%"
+                  barSize={20}
+                  data={consistencyData}
+                  startAngle={90}
+                  endAngle={-270}
+                >
+                  <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
+                  <RadialBar dataKey="value" cornerRadius={10} fill={consistencyData[0]?.fill} />
+                  <Tooltip formatter={(value) => [`${value}%`, "Consistency"]} />
+                  <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="text-3xl font-bold" fill="#0f172a">
+                    {consistencyData[0]?.value}%
+                  </text>
+                </RadialBarChart>
               </ResponsiveContainer>
             </div>
           </ChartSection>

@@ -90,7 +90,12 @@ const buildReportHTML = ({
     { title: "Exam Attempts", description: "JEE, NEET, CUET, MAT comparison", image: chartImages.examAttempts },
     { title: "Best vs Average Performance", description: "Comparison by exam", image: chartImages.bestVsAverage },
     { title: "Practice Time Distribution", description: "Exam-wise learning time", image: chartImages.practiceDistribution },
-    { title: "Overall Performance", description: "Progression across all attempts", image: chartImages.overallPerformance },
+    { title: "Time Efficiency", description: "Time spent vs Score percentage", image: chartImages.timeEfficiency },
+    { title: "Score Distribution", description: "Attempts by percentage range", image: chartImages.scoreDistribution },
+    { title: "Exam-wise Performance Radar", description: "Average & best across exams", image: chartImages.examRadar },
+    { title: "Cumulative Average Trend", description: "Running average across attempts", image: chartImages.cumulativeTrend },
+    { title: "Practice Activity by Day", description: "Attempts per weekday", image: chartImages.weekdayActivity },
+    { title: "Consistency Score", description: "Score stability across attempts", image: chartImages.consistency },
   ];
 
   const metricCards = metrics
@@ -200,7 +205,7 @@ const captureElement = async (element) => {
  * @param {string} options.studentName - Student's name
  * @param {Object} options.summary - Summary metrics
  * @param {Object} options.chartRefs - Object containing refs to chart DOM elements
- *   { performanceTrend, examAttempts, bestVsAverage, practiceDistribution, overallPerformance }
+ *   { performanceTrend, examAttempts, bestVsAverage, practiceDistribution, timeEfficiency, scoreDistribution, examRadar, cumulativeTrend, weekdayActivity, consistency }
  */
 export const downloadAnalyticsReport = async ({
   studentName = "",
@@ -211,13 +216,18 @@ export const downloadAnalyticsReport = async ({
 
   try {
     // Capture all chart images in parallel at high quality
-    const [performanceTrendImg, examAttemptsImg, bestVsAverageImg, practiceDistributionImg, overallPerformanceImg] =
+    const [performanceTrendImg, examAttemptsImg, bestVsAverageImg, practiceDistributionImg, timeEfficiencyImg, scoreDistributionImg, examRadarImg, cumulativeTrendImg, weekdayActivityImg, consistencyImg] =
       await Promise.all([
         captureElement(chartRefs.performanceTrend),
         captureElement(chartRefs.examAttempts),
         captureElement(chartRefs.bestVsAverage),
         captureElement(chartRefs.practiceDistribution),
-        captureElement(chartRefs.overallPerformance),
+        captureElement(chartRefs.timeEfficiency),
+        captureElement(chartRefs.scoreDistribution),
+        captureElement(chartRefs.examRadar),
+        captureElement(chartRefs.cumulativeTrend),
+        captureElement(chartRefs.weekdayActivity),
+        captureElement(chartRefs.consistency),
       ]);
 
     // Build the report HTML
@@ -229,7 +239,12 @@ export const downloadAnalyticsReport = async ({
         examAttempts: examAttemptsImg,
         bestVsAverage: bestVsAverageImg,
         practiceDistribution: practiceDistributionImg,
-        overallPerformance: overallPerformanceImg,
+        timeEfficiency: timeEfficiencyImg,
+        scoreDistribution: scoreDistributionImg,
+        examRadar: examRadarImg,
+        cumulativeTrend: cumulativeTrendImg,
+        weekdayActivity: weekdayActivityImg,
+        consistency: consistencyImg,
       },
     });
 
