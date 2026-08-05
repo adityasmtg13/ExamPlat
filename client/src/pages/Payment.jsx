@@ -4,6 +4,7 @@ import { toast } from "sonner";
 
 import { createPayment } from "../services/paymentService";
 import { getRegistrationById } from "../services/registrationService";
+import { logActivity } from "../services/auditService";
 
 const Payment = () => {
   const navigate = useNavigate();
@@ -29,6 +30,7 @@ const Payment = () => {
 
     if (registrationId) {
       fetchRegistration();
+      logActivity("Viewed Payments");
     } else {
       navigate("/register-exam");
     }

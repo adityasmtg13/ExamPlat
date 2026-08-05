@@ -40,7 +40,7 @@ function ExamAnalyticsCard({ exam, onPredict }) {
         <button
           type="button"
           onClick={() => onPredict(exam)}
-          className="inline-flex items-center gap-2 rounded-full bg-[#103f7c] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0e3265]"
+          className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#103f7c] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#0e3265]"
         >
           Predict Rank
           <FaArrowRight className="text-xs" />

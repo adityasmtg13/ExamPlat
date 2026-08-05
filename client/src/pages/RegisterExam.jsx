@@ -11,6 +11,7 @@ import {
   createRegistration,
   getRegistrationHistory,
 } from "../services/registrationService";
+import { logActivity } from "../services/auditService";
 
 function RegisterExam() {
   const [student, setStudent] = useState(null);
@@ -20,6 +21,7 @@ function RegisterExam() {
 
   useEffect(() => {
     loadData();
+    logActivity("Viewed Exam Registration");
   }, []);
 
   const loadData = async () => {

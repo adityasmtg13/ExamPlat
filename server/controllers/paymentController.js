@@ -6,6 +6,7 @@ const {
 } = require("../utils/generateTransactionId");
 const Student = require("../models/Student");
 const sendPaymentConfirmation = require("../utils/sendPaymentConfirmation");
+const createAuditLog = require("../utils/createAuditLog");
 
 /**
  * Create a payment for a registration
@@ -167,6 +168,12 @@ const completePayment = async (req, res) => {
     } catch (err) {
       console.error("Email Error:", err);
     }
+
+    await createAuditLog(
+      studentId,
+      "Payment Successful",
+      "Completed Payment"
+    );
 
     res.status(200).json({
       success: true,

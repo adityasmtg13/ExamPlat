@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 
 import ProfileDropdown from "./ProfileDropdown";
 import { getStudent } from "../storage";
+import { logoutStudent } from "../services/authService";
 import logo from "../assets/logo.png";
 
 function Navbar() {
@@ -27,7 +28,13 @@ function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await logoutStudent();
+    } catch (error) {
+      console.error("Logout API Error:", error);
+    }
+
     localStorage.clear();
     navigate("/login", { replace: true });
   };

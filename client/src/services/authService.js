@@ -2,6 +2,14 @@ import axios from "axios";
 
 const API = "http://localhost:5010/api/auth";
 
+const getToken = () => localStorage.getItem("token");
+
+const authConfig = () => ({
+  headers: {
+    Authorization: `Bearer ${getToken()}`,
+  },
+});
+
 export const registerStudent = (data) => {
   return axios.post(`${API}/register`, data);
 };
@@ -24,4 +32,8 @@ export const resetPassword = (data) => {
 
 export const loginStudent = (data) => {
   return axios.post(`${API}/login`, data);
+};
+
+export const logoutStudent = () => {
+  return axios.post(`${API}/logout`, {}, authConfig());
 };

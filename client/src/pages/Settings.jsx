@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaCheck } from "react-icons/fa";
 import Navbar from "../components/Navbar";
@@ -6,10 +6,15 @@ import Footer from "../components/Footer";
 import { sendAccountSettingsOtp, verifyAccountSettingsOtp } from "../services/profileService";
 import { setStudent } from "../storage";
 import { getPasswordValidationErrors } from "../utils/validation";
+import { logActivity } from "../services/auditService";
 
 function Settings() {
   const navigate = useNavigate();
   const [activeAction, setActiveAction] = useState(null);
+
+  useEffect(() => {
+    logActivity("Viewed Settings");
+  }, []);
   const [formData, setFormData] = useState({
     newEmail: "",
     newName: "",

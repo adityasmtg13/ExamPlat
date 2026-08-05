@@ -16,6 +16,7 @@ const paymentRoutes = require("./routes/paymentRoutes");
 const receiptRoutes = require("./routes/receiptRoutes");
 const mockTestRoutes = require("./routes/mockTestRoutes");
 const mockExamRoutes = require("./routes/mockExamRoutes");
+const auditRoutes = require("./routes/auditRoutes");
 
 connectDB();
 
@@ -36,6 +37,7 @@ app.use("/api/payment", paymentRoutes);
 app.use("/api/receipt", receiptRoutes);
 app.use("/api/mock-tests", mockTestRoutes);
 app.use("/api/mock-exam", mockExamRoutes);
+app.use("/api/audit", auditRoutes);
 
 // Home Route
 app.get("/", (req, res) => {

@@ -2,6 +2,7 @@ const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const Student = require("../models/Student");
 const transporter = require("../utils/mailSender");
+const createAuditLog = require("../utils/createAuditLog");
 const {
   isValidAddress,
   isValidAadhaar,
@@ -373,6 +374,16 @@ exports.verifyAccountSettingsOtp = async (req, res) => {
     student.otpExpiresAt = null;
     await student.save();
 
+    await createAuditLog(
+      student._id,
+      "Profile Updated",
+      action === "email"
+        ? "Updated Email Address"
+        : action === "name"
+          ? "Updated Name"
+          : "Updated Password"
+    );
+
     const studentData = student.toObject();
     delete studentData.password;
 
@@ -476,6 +487,12 @@ exports.updateProfile = async (req, res) => {
       });
     }
 
+    await createAuditLog(
+      updatedStudent._id,
+      "Profile Updated",
+      "Updated Profile Information"
+    );
+
     res.status(200).json({
       success: true,
       message: "Profile Updated Successfully",
@@ -517,6 +534,12 @@ exports.uploadProfilePhoto = async (req, res) => {
       });
     }
 
+    await createAuditLog(
+      updatedStudent._id,
+      "Profile Photo Uploaded",
+      "Uploaded Profile Photo"
+    );
+
     res.status(200).json({
       success: true,
       message: "Profile photo uploaded successfully",
@@ -550,6 +573,12 @@ exports.deleteProfilePhoto = async (req, res) => {
         message: "Student not found",
       });
     }
+
+    await createAuditLog(
+      updatedStudent._id,
+      "Profile Photo Deleted",
+      "Deleted Profile Photo"
+    );
 
     res.status(200).json({
       success: true,

@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { getAnalytics } from "../services/mockTestService";
+import { logActivity } from "../services/auditService";
 
 function Marks() {
   const [loading, setLoading] = useState(true);
@@ -23,6 +24,7 @@ function Marks() {
 
   useEffect(() => {
     fetchAnalytics();
+    logActivity("Viewed Marks");
   }, []);
 
   const formatTime = (seconds = 0) => {

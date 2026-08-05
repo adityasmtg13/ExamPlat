@@ -15,6 +15,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { getMockTests } from "../services/mockTestService";
 import { getRegistrationHistory } from "../services/registrationService";
+import { logActivity } from "../services/auditService";
 import { getTestDisplayState, isTestAvailable } from "../utils/mockTestUtils";
 
 const examConfigs = {
@@ -72,6 +73,7 @@ function MockTests() {
 
   useEffect(() => {
     loadData();
+    logActivity("Viewed Mock Tests");
   }, []);
 
   // Determine which exams the user has paid for (status "Registered")

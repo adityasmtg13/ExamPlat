@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const MockAttempt = require("../models/MockAttempt");
 const Question = require("../models/Question");
 const Test = require("../models/Test");
+const createAuditLog = require("../utils/createAuditLog");
 
 const getQuestionField = (question, primaryField, fallbackField) => {
   if (question[primaryField] !== undefined && question[primaryField] !== null) {
@@ -267,6 +268,12 @@ exports.submitMockExam = async (req, res) => {
     attempt.timeTaken = timeTaken;
 
     await attempt.save();
+
+    await createAuditLog(
+      studentId,
+      "Submitted Mock Test",
+      `Submitted ${attempt.testTitle || "Mock Test"}`
+    );
 
     return res.status(200).json({
       success: true,

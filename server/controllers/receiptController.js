@@ -2,6 +2,7 @@ const Payment = require("../models/Payment");
 const ExamRegistration = require("../models/ExamRegistration");
 const Student = require("../models/Student");
 const { generateReceipt } = require("../utils/receiptGenerator");
+const createAuditLog = require("../utils/createAuditLog");
 
 /**
  * Generate and download payment receipt
@@ -74,6 +75,12 @@ const downloadReceipt = async (req, res) => {
         payment,
       },
       res
+    );
+
+    await createAuditLog(
+      studentId,
+      "Receipt Download",
+      "Downloaded Payment Receipt"
     );
   } catch (error) {
     console.error("Receipt Generation Error:", error);

@@ -32,6 +32,7 @@ import MockResult from "./pages/MockResult";
 import Marks from "./pages/Marks";
 import AnalyticsDashboard from "./pages/AnalyticsDashboard";
 import Settings from "./pages/Settings";
+import AuditLogs from "./pages/AuditLogs";
 
 function App() {
   return (
@@ -249,6 +250,15 @@ function App() {
                 title="Notifications"
                 description="Stay updated with the latest announcements and exam updates."
               />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/audit-logs"
+          element={
+            <ProtectedRoute>
+              <AuditLogs />
             </ProtectedRoute>
           }
         />

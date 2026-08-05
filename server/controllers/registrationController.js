@@ -1,4 +1,5 @@
 const ExamRegistration = require("../models/ExamRegistration");
+const createAuditLog = require("../utils/createAuditLog");
 
 /**
  * Generate Registration Number
@@ -80,6 +81,14 @@ exports.createRegistration = async (req, res) => {
         examType,
         registrationFee,
       });
+
+    await createAuditLog(
+      studentId,
+      "Exam Registration",
+      examType === "JEE Main"
+        ? "Registered for JEE Main"
+        : "Registered for NEET"
+    );
 
     res.status(201).json({
       success: true,

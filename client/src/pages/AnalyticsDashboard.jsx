@@ -19,6 +19,7 @@ import {
 import { getAnalytics } from "../services/mockTestService";
 import { toast } from "sonner";
 import { downloadAnalyticsReport } from "../services/analyticsReportService";
+import { logAuditEvent, logActivity } from "../services/auditService";
 import { getStudent } from "../storage";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -74,6 +75,7 @@ function AnalyticsDashboard() {
     };
 
     fetchAnalytics();
+    logActivity("Viewed Analytics Dashboard");
   }, []);
 
   const examGroups = useMemo(() => Object.values(analytics?.analytics || {}), [analytics]);
@@ -203,6 +205,15 @@ function AnalyticsDashboard() {
 
       if (result?.success) {
         toast.success("Analytics report downloaded successfully.");
+
+        try {
+          await logAuditEvent(
+            "Downloaded Analytics PDF",
+            "Downloaded Analytics Report"
+          );
+        } catch (auditError) {
+          console.error("Audit Log Error:", auditError);
+        }
       }
     } catch (error) {
       console.error("Failed to download analytics report:", error);

@@ -2,6 +2,7 @@ const Test = require("../models/Test");
 const ExamRegistration = require("../models/ExamRegistration");
 const MockAttempt = require("../models/MockAttempt");
 const AllowedCandidate = require("../models/AllowedCandidate");
+const createAuditLog = require("../utils/createAuditLog");
 
 const examCategoryFromRegistration = (examType) => {
   if (examType === "JEE Main") {
@@ -424,6 +425,12 @@ exports.createMockAttempt = async (req, res) => {
       startedAt: new Date(),
     });
 
+    await createAuditLog(
+      studentId,
+      "Started Mock Test",
+      `Started ${test.title || "Mock Test"}`
+    );
+
     res.status(201).json({
       success: true,
       message: "Mock test started successfully.",
@@ -571,6 +578,12 @@ exports.getMockResult = async (req, res) => {
         { _id: attempt.testMongoId || attempt.testId },
       ],
     }).lean();
+
+    await createAuditLog(
+      studentId,
+      "Viewed Result",
+      `Viewed result for ${attempt.testTitle || "Mock Test"}`
+    );
 
     res.status(200).json({
       success: true,

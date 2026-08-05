@@ -3,6 +3,7 @@ const Student = require("../models/Student");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const transporter = require("../utils/mailSender");
+const createAuditLog = require("../utils/createAuditLog");
 const { isValidEmail, isValidName, getPasswordValidationErrors } = require("../utils/validation");
 
 // Register Student
@@ -188,6 +189,12 @@ exports.verifyOtp = async (req, res) => {
     student.otpExpiresAt = null;
     await student.save();
 
+    await createAuditLog(
+      student._id,
+      "Student Registered",
+      "Successfully created account."
+    );
+
     const token = jwt.sign(
       { id: student._id },
       process.env.JWT_SECRET,
@@ -332,6 +339,12 @@ exports.forgotPassword = async (req, res) => {
     student.otpExpiresAt = otpExpiresAt;
     await student.save();
 
+    await createAuditLog(
+      student._id,
+      "Forgot Password",
+      "Requested Password Reset"
+    );
+
     const recipients = [email, process.env.BREVO_CC_EMAIL].filter(Boolean);
     const senderAddress = process.env.BREVO_FROM_EMAIL || process.env.BREVO_SMTP_USER || "noreply@example.com";
     await transporter.sendMail({
@@ -430,6 +443,12 @@ exports.resetPassword = async (req, res) => {
     student.otpExpiresAt = null;
     await student.save();
 
+    await createAuditLog(
+      student._id,
+      "Password Reset",
+      "Password Updated"
+    );
+
     const token = jwt.sign(
       { id: student._id },
       process.env.JWT_SECRET,
@@ -444,6 +463,29 @@ exports.resetPassword = async (req, res) => {
       message: "Password reset successfully.",
       token,
       student: studentData,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+// Logout Student
+exports.logoutStudent = async (req, res) => {
+  try {
+    const studentId = req.student.id;
+
+    await createAuditLog(
+      studentId,
+      "Student Logout",
+      "Logged out of ExamPlat."
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Logged out successfully.",
     });
   } catch (err) {
     res.status(500).json({
@@ -487,6 +529,12 @@ exports.loginStudent = async (req, res) => {
       { id: student._id },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
+    );
+
+    await createAuditLog(
+      student._id,
+      "Student Login",
+      "Logged into ExamPlat."
     );
 
     const studentData = student.toObject();

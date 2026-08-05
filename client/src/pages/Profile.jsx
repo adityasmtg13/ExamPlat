@@ -9,6 +9,7 @@ import {
   updateProfile,
   uploadProfilePhoto,
 } from "../services/profileService";
+import { logActivity } from "../services/auditService";
 import {
   isValidAddress,
   isValidAadhaar,
@@ -72,6 +73,7 @@ function Profile() {
 
   useEffect(() => {
     fetchProfile();
+    logActivity("Viewed Profile");
   }, []);
 
   const validateProfile = (values) => {

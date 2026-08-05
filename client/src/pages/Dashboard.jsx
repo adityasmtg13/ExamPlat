@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import Navbar from "../components/Navbar";
 import QuickServiceCard from "../components/QuickServiceCard";
 import { getAnalytics } from "../services/mockTestService";
+import { getAuditLogs, logActivity } from "../services/auditService";
+import { getRegistrationHistory } from "../services/registrationService";
 import Footer from "../components/Footer";
 import {
   FaUserCircle,
@@ -13,15 +15,79 @@ import {
   FaUniversity,
   FaCheckCircle,
   FaFileAlt,
+  FaSignInAlt,
+  FaUserEdit,
+  FaMoneyCheckAlt,
+  FaChartLine,
+  FaFilePdf,
+  FaClipboardCheck,
+  FaHistory,
+  FaChevronRight,
 } from "react-icons/fa";
 import { getStudent } from "../storage";
 import { isProfileComplete } from "../utils/profileUtils";
 import logo from "../assets/logo.png";
 
+const getAuditIcon = (action) => {
+  const value = String(action || "").toLowerCase();
+
+  if (value.includes("login")) return <FaSignInAlt className="text-blue-600" />;
+  if (value.includes("register") || value.includes("registered")) return <FaUserEdit className="text-emerald-600" />;
+  if (value.includes("profile") || value.includes("updated")) return <FaUserEdit className="text-violet-600" />;
+  if (value.includes("payment")) return <FaMoneyCheckAlt className="text-green-600" />;
+  if (value.includes("receipt")) return <FaFilePdf className="text-red-600" />;
+  if (value.includes("mock") || value.includes("test")) return <FaClipboardCheck className="text-cyan-600" />;
+  if (value.includes("analytics")) return <FaChartLine className="text-indigo-600" />;
+  return <FaHistory className="text-slate-600" />;
+};
+
+const getAuditIconBg = (action) => {
+  const value = String(action || "").toLowerCase();
+
+  if (value.includes("login")) return "bg-blue-50";
+  if (value.includes("register") || value.includes("registered")) return "bg-emerald-50";
+  if (value.includes("profile") || value.includes("updated")) return "bg-violet-50";
+  if (value.includes("payment")) return "bg-green-50";
+  if (value.includes("receipt")) return "bg-red-50";
+  if (value.includes("mock") || value.includes("test")) return "bg-cyan-50";
+  if (value.includes("analytics")) return "bg-indigo-50";
+  return "bg-slate-50";
+};
+
+const formatRelativeTime = (dateString) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffSec = Math.floor(diffMs / 1000);
+  const diffMin = Math.floor(diffSec / 60);
+  const diffHours = Math.floor(diffMin / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffSec < 60) return "Just now";
+  if (diffMin < 60) return `${diffMin} minute${diffMin === 1 ? "" : "s"} ago`;
+  if (diffHours < 24) return `${diffHours} hour${diffHours === 1 ? "" : "s"} ago`;
+
+  if (diffDays === 1) return "Yesterday";
+  if (diffDays < 7) return `${diffDays} days ago`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} week${Math.floor(diffDays / 7) === 1 ? "" : "s"} ago`;
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)} month${Math.floor(diffDays / 30) === 1 ? "" : "s"} ago`;
+  return `${Math.floor(diffDays / 365)} year${Math.floor(diffDays / 365) === 1 ? "" : "s"} ago`;
+};
+
+const formatTime = (dateString) => {
+  return new Date(dateString).toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
+
 function Dashboard() {
   const navigate = useNavigate();
   const [student, setStudent] = useState(getStudent());
   const [analytics, setAnalytics] = useState(null);
+  const [auditLogs, setAuditLogs] = useState([]);
+  const [registeredExamsCount, setRegisteredExamsCount] = useState(0);
 
   const profileCompleted = isProfileComplete(student);
 
@@ -34,11 +100,36 @@ function Dashboard() {
     }
   };
 
+  const fetchAuditLogs = async () => {
+    try {
+      const response = await getAuditLogs();
+      setAuditLogs((response.logs || []).slice(0, 3));
+    } catch (error) {
+      console.error("Audit Logs Error:", error);
+    }
+  };
+
+  const fetchRegistrations = async () => {
+    try {
+      const response = await getRegistrationHistory();
+      const registrations = response.registrations || response || [];
+      const count = registrations.filter(
+        (reg) => reg.status === "Registered"
+      ).length;
+      setRegisteredExamsCount(count);
+    } catch (error) {
+      console.error("Registrations Error:", error);
+    }
+  };
+
   useEffect(() => {
     const syncStudent = () => setStudent(getStudent());
 
     syncStudent();
     fetchAnalytics();
+    fetchAuditLogs();
+    fetchRegistrations();
+    logActivity("Viewed Dashboard");
 
     window.addEventListener("studentUpdated", syncStudent);
 
@@ -252,34 +343,6 @@ function Dashboard() {
                 ))}
               </div>
             </section>
-
-            <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md shadow-slate-200/70 sm:p-8">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-700">
-                  Updates
-                </p>
-                <h2 className="mt-2 text-2xl font-bold text-slate-950">Latest Notifications</h2>
-              </div>
-
-              <div className="mt-6 grid gap-4 md:grid-cols-3">
-                <div className="flex items-start gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
-                  <FaCheckCircle className="mt-1 shrink-0 text-emerald-600" />
-                  <p className="text-sm font-medium text-slate-700">
-                    JEE Main Mock Test Portal Available
-                  </p>
-                </div>
-                <div className="flex items-start gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
-                  <FaCheckCircle className="mt-1 shrink-0 text-emerald-600" />
-                  <p className="text-sm font-medium text-slate-700">
-                    New Analytics Update Released
-                  </p>
-                </div>
-                <div className="flex items-start gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
-                  <FaCheckCircle className="mt-1 shrink-0 text-emerald-600" />
-                  <p className="text-sm font-medium text-slate-700">Rank Predictor Improved</p>
-                </div>
-              </div>
-            </section>
           </div>
 
           <aside className="space-y-8">
@@ -368,12 +431,96 @@ function Dashboard() {
                 <p className="flex justify-between gap-4 py-3">
                   <span className="font-semibold text-slate-500">Exams Registered</span>
                   <span className="text-right font-medium text-slate-900">
-                    {analytics?.overall?.totalRegistrations ?? 0}
+                    {registeredExamsCount}
                   </span>
                 </p>
               </div>
             </section>
           </aside>
+        </div>
+
+        <div className="mt-8 grid gap-8 xl:grid-cols-[1.45fr_0.85fr]">
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md shadow-slate-200/70 sm:p-8">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-700">
+                Updates
+              </p>
+              <h2 className="mt-2 text-2xl font-bold text-slate-950">Latest Notifications</h2>
+            </div>
+
+            <div className="mt-6 grid gap-4">
+              <div className="flex items-start gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+                <FaCheckCircle className="mt-1 shrink-0 text-emerald-600" />
+                <p className="text-sm font-medium text-slate-700">
+                  JEE Main Mock Test Portal Available
+                </p>
+              </div>
+              <div className="flex items-start gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+                <FaCheckCircle className="mt-1 shrink-0 text-emerald-600" />
+                <p className="text-sm font-medium text-slate-700">
+                  New Analytics Update Released
+                </p>
+              </div>
+              <div className="flex items-start gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+                <FaCheckCircle className="mt-1 shrink-0 text-emerald-600" />
+                <p className="text-sm font-medium text-slate-700">Rank Predictor Improved</p>
+              </div>
+            </div>
+          </section>
+
+          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-md shadow-slate-200/70 sm:p-8">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-cyan-700">
+                  Activity
+                </p>
+                <h2 className="mt-2 text-2xl font-bold text-slate-950">Audit Logs</h2>
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-3">
+              {auditLogs.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-6 text-center">
+                  <FaHistory className="mx-auto text-2xl text-slate-400" />
+                  <p className="mt-3 text-sm font-medium text-slate-500">
+                    No audit logs available.
+                  </p>
+                </div>
+              ) : (
+                auditLogs.map((log) => (
+                  <div
+                    key={log._id}
+                    className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50/60 p-4 transition hover:border-cyan-200 hover:bg-cyan-50/40"
+                  >
+                    <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm ${getAuditIconBg(log.action)}`}>
+                      {getAuditIcon(log.action)}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-slate-900">
+                        {log.action}
+                      </p>
+                      <p className="mt-0.5 text-xs text-slate-500">
+                        {formatRelativeTime(log.createdAt)} · {formatTime(log.createdAt)}
+                      </p>
+                    </div>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                      {log.status}
+                    </span>
+                  </div>
+                ))
+              )}
+            </div>
+
+                <button
+                  type="button"
+                  onClick={() => navigate("/audit-logs")}
+                  className="mt-5 inline-flex cursor-pointer items-center gap-1.5 text-sm font-semibold text-cyan-700 transition hover:text-cyan-900"
+                >
+                  View More
+                  <FaChevronRight className="text-xs" />
+                </button>
+          </section>
         </div>
       </main>
       <Footer />
