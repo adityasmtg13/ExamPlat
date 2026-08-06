@@ -88,6 +88,7 @@ function Dashboard() {
   const [analytics, setAnalytics] = useState(null);
   const [auditLogs, setAuditLogs] = useState([]);
   const [registeredExamsCount, setRegisteredExamsCount] = useState(0);
+  const [registrations, setRegistrations] = useState([]);
 
   const profileCompleted = isProfileComplete(student);
 
@@ -112,11 +113,12 @@ function Dashboard() {
   const fetchRegistrations = async () => {
     try {
       const response = await getRegistrationHistory();
-      const registrations = response.registrations || response || [];
-      const count = registrations.filter(
+      const regs = response.registrations || response || [];
+      const registered = regs.filter(
         (reg) => reg.status === "Registered"
-      ).length;
-      setRegisteredExamsCount(count);
+      );
+      setRegistrations(registered);
+      setRegisteredExamsCount(registered.length);
     } catch (error) {
       console.error("Registrations Error:", error);
     }
@@ -305,13 +307,26 @@ function Dashboard() {
                     <p className="mt-2 font-semibold text-slate-900">{student?.stream || "--"}</p>
                   </div> */}
                   <div className="rounded-xl border border-slate-200 bg-white p-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                    <p className="mb-4 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                       Class
                     </p>
                     <p className="mt-2 font-semibold text-slate-900">
                       {student?.studentClass || "--"}
                     </p>
                   </div>
+                  {registrations.map((reg) => (
+                    <div
+                      key={reg._id}
+                      className="rounded-xl border border-cyan-200 bg-cyan-50/50 p-4"
+                    >
+                      <p className="mb-4 text-center text-xs font-medium uppercase tracking-[0.16em] text-slate-500">
+                        {reg.examType} Reg. No
+                      </p>
+                      <p className="text-xs text-center font-mono font-medium text-slate-900">
+                        {reg.registrationNumber}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
             </section>

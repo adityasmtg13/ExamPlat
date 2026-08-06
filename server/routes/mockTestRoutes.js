@@ -10,6 +10,8 @@ const {
   createMockAttempt,
   submitAndRestartMockAttempt,
   getMockResult,
+  downloadMockResultPdf,
+  sendResultEmail,
   getAnalytics,
 } = require("../controllers/mockTestController");
 
@@ -68,6 +70,26 @@ router.get(
   "/result/:attemptId",
   authMiddleware,
   getMockResult
+);
+
+/**
+ * Download Mock Test Result PDF
+ * GET /api/mock-tests/result/:attemptId/pdf
+ */
+router.get(
+  "/result/:attemptId/pdf",
+  authMiddleware,
+  downloadMockResultPdf
+);
+
+/**
+ * Send Mock Test Result to Email
+ * POST /api/mock-tests/result/:attemptId/send-email
+ */
+router.post(
+  "/result/:attemptId/send-email",
+  authMiddleware,
+  sendResultEmail
 );
 
 router.get(

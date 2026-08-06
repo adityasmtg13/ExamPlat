@@ -249,3 +249,96 @@ export const getAnalytics = async () => {
     );
   }
 };
+
+/**
+ * Download Mock Test Result PDF
+ */
+export const downloadMockResultPdf = async (attemptId) => {
+  try {
+    const response = await axios.get(
+      `${MOCK_TEST_API}/result/${attemptId}/pdf`,
+      {
+        ...authConfig(),
+        responseType: "blob",
+      }
+    );
+
+    // Create a blob URL and trigger download
+    const blob = new Blob([response.data], {
+      type: "application/pdf",
+    });
+
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+
+    link.setAttribute("download", `Mock_Result_${attemptId}.pdf`);
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    window.URL.revokeObjectURL(url);
+
+    return { success: true };
+  } catch (error) {
+    console.error("Download Result PDF Error:", error);
+
+    // If error response is a blob, try to parse the JSON message
+    if (error.response?.data instanceof Blob) {
+      try {
+        const text = await error.response.data.text();
+        const json = JSON.parse(text);
+
+        throw {
+          success: false,
+          message: json.message || "Failed to download result PDF.",
+        };
+      } catch (parseError) {
+        throw (
+          parseError?.message
+            ? parseError
+            : {
+                success: false,
+                message: "Failed to download result PDF.",
+              }
+        );
+      }
+    }
+
+    throw (
+      error.response?.data || {
+        success: false,
+        message: "Failed to download result PDF.",
+      }
+    );
+  }
+};
+
+/**
+ * Send Mock Test Result to Email
+ */
+export const sendMockResultEmail = async (attemptId) => {
+  try {
+    const response = await axios.post(
+      `${MOCK_TEST_API}/result/${attemptId}/send-email`,
+      {},
+      authConfig()
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Send Result Email Error:", error);
+
+    throw (
+      error.response?.data || {
+        success: false,
+        message: "Failed to send result email.",
+      }
+    );
+  }
+};

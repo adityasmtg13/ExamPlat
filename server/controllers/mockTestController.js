@@ -2,7 +2,10 @@ const Test = require("../models/Test");
 const ExamRegistration = require("../models/ExamRegistration");
 const MockAttempt = require("../models/MockAttempt");
 const AllowedCandidate = require("../models/AllowedCandidate");
+const Student = require("../models/Student");
 const createAuditLog = require("../utils/createAuditLog");
+const { generateMockResultPdf } = require("../utils/mockResultPdf");
+const sendMockResultEmail = require("../utils/sendMockResultEmail");
 
 const examCategoryFromRegistration = (examType) => {
   if (examType === "JEE Main") {
@@ -629,6 +632,156 @@ exports.getMockResult = async (req, res) => {
     res.status(500).json({
       success: false,
       message: err.message,
+    });
+  }
+};
+
+/**
+ * Download Mock Test Result PDF
+ * GET /api/mock-tests/result/:attemptId/pdf
+ */
+exports.downloadMockResultPdf = async (req, res) => {
+  try {
+    const studentId = req.student.id;
+    const { attemptId } = req.params;
+
+    const attempt = await MockAttempt.findOne({
+      _id: attemptId,
+      studentId,
+    });
+
+    if (!attempt) {
+      return res.status(404).json({
+        success: false,
+        message: "Mock attempt not found.",
+      });
+    }
+
+    const test = await Test.findOne({
+      $or: [
+        { testId: attempt.testId },
+        { _id: attempt.testMongoId || attempt.testId },
+      ],
+    }).lean();
+
+    const student = await Student.findById(studentId);
+
+    const result = {
+      attemptId: attempt._id,
+      testId: attempt.testId,
+      testTitle: test?.title || attempt.testTitle,
+      examType: attempt.examType,
+      examCategory: attempt.examCategory,
+      maximumAttempts: test?.defaultAttempts || 1,
+      attemptNumber: attempt.attemptNumber,
+      score: attempt.score,
+      totalMarks: attempt.totalMarks,
+      percentage: attempt.percentage,
+      correctAnswers: attempt.correctAnswers,
+      wrongAnswers: attempt.wrongAnswers,
+      unanswered: attempt.unanswered,
+      startedAt: attempt.startedAt,
+      submittedAt: attempt.submittedAt,
+      timeTaken: attempt.timeTaken,
+      status: attempt.status,
+    };
+
+    await generateMockResultPdf({ result, student }, res);
+
+    try {
+      await createAuditLog(
+        studentId,
+        "Result PDF Download",
+        `Downloaded result PDF for ${attempt.testTitle || "Mock Test"}`
+      );
+    } catch (auditError) {
+      console.error("Audit log error after PDF download:", auditError);
+    }
+  } catch (error) {
+    console.error("Mock Result PDF Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server error while generating result PDF.",
+    });
+  }
+};
+
+/**
+ * Send Mock Test Result to Email
+ * POST /api/mock-tests/result/:attemptId/send-email
+ */
+exports.sendResultEmail = async (req, res) => {
+  try {
+    const studentId = req.student.id;
+    const { attemptId } = req.params;
+
+    const attempt = await MockAttempt.findOne({
+      _id: attemptId,
+      studentId,
+    });
+
+    if (!attempt) {
+      return res.status(404).json({
+        success: false,
+        message: "Mock attempt not found.",
+      });
+    }
+
+    const test = await Test.findOne({
+      $or: [
+        { testId: attempt.testId },
+        { _id: attempt.testMongoId || attempt.testId },
+      ],
+    }).lean();
+
+    const student = await Student.findById(studentId);
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found.",
+      });
+    }
+
+    const result = {
+      attemptId: attempt._id,
+      testId: attempt.testId,
+      testTitle: test?.title || attempt.testTitle,
+      examType: attempt.examType,
+      examCategory: attempt.examCategory,
+      maximumAttempts: test?.defaultAttempts || 1,
+      attemptNumber: attempt.attemptNumber,
+      score: attempt.score,
+      totalMarks: attempt.totalMarks,
+      percentage: attempt.percentage,
+      correctAnswers: attempt.correctAnswers,
+      wrongAnswers: attempt.wrongAnswers,
+      unanswered: attempt.unanswered,
+      startedAt: attempt.startedAt,
+      submittedAt: attempt.submittedAt,
+      timeTaken: attempt.timeTaken,
+      status: attempt.status,
+    };
+
+    await sendMockResultEmail({ student, result });
+
+    await createAuditLog(
+      studentId,
+      "Result Email",
+      `Sent result email for ${attempt.testTitle || "Mock Test"}`
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Mock test result sent to your email successfully.",
+    });
+  } catch (error) {
+    console.error("Send Result Email Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to send result email.",
     });
   }
 };

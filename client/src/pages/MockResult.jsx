@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getMockResult } from "../services/mockTestService";
+import { toast } from "sonner";
+import {
+  getMockResult,
+  downloadMockResultPdf,
+  sendMockResultEmail,
+} from "../services/mockTestService";
+import {
+  FaDownload,
+  FaEnvelope,
+} from "react-icons/fa";
 
 const MockResult = () => {
   const { attemptId } = useParams();
@@ -8,6 +17,8 @@ const MockResult = () => {
 
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState(null);
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
 
   useEffect(() => {
     loadResult();
@@ -21,6 +32,42 @@ const MockResult = () => {
       alert(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDownloadPdf = async () => {
+    try {
+      setDownloadingPdf(true);
+      await downloadMockResultPdf(attemptId);
+      toast.success("Result PDF downloaded successfully.", {
+        position: "top-center",
+      });
+    } catch (error) {
+      const message =
+        error?.message || "Failed to download result PDF.";
+      toast.error(message, {
+        position: "top-center",
+      });
+    } finally {
+      setDownloadingPdf(false);
+    }
+  };
+
+  const handleSendEmail = async () => {
+    try {
+      setSendingEmail(true);
+      await sendMockResultEmail(attemptId);
+      toast.success("Result sent to your email successfully.", {
+        position: "top-center",
+      });
+    } catch (error) {
+      const message =
+        error?.message || "Failed to send result email.";
+      toast.error(message, {
+        position: "top-center",
+      });
+    } finally {
+      setSendingEmail(false);
     }
   };
 
@@ -211,7 +258,33 @@ const MockResult = () => {
 
         <hr className="my-6" />
 
-        {/* Buttons */}
+        {/* Result Actions */}
+
+        <div className="grid md:grid-cols-2 gap-4 mb-6">
+
+          <button
+            onClick={handleDownloadPdf}
+            disabled={downloadingPdf}
+            className="flex items-center justify-center gap-2 bg-cyan-600 text-white px-6 py-3 rounded-lg hover:bg-cyan-700 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            <FaDownload />
+            {downloadingPdf ? "Downloading..." : "Download PDF"}
+          </button>
+
+          <button
+            onClick={handleSendEmail}
+            disabled={sendingEmail}
+            className="flex items-center justify-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            <FaEnvelope />
+            {sendingEmail ? "Sending..." : "Send Result to Mail"}
+          </button>
+
+        </div>
+
+        <hr className="my-6" />
+
+        {/* Navigation Buttons */}
 
         <div className="flex flex-col md:flex-row justify-center gap-4">
 
