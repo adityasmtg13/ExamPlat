@@ -18,21 +18,19 @@ import { getTestDisplayState, isTestAvailable } from "../utils/mockTestUtils";
 const testVisuals = {
   JEE: {
     icon: <FaCalculator />,
-    accent: "border-blue-200 bg-blue-50 text-blue-700",
-    button: "bg-blue-700 hover:bg-blue-800",
-    gradient: "from-blue-600 to-blue-800",
-    lightBg: "bg-blue-50",
-    lightText: "text-blue-700",
-    ring: "ring-blue-200",
+    accent: "border-slate-200 bg-slate-100 text-slate-700",
+    button: "bg-slate-800 hover:bg-slate-950",
+    lightBg: "bg-slate-100",
+    lightText: "text-slate-700",
+    ring: "ring-slate-300",
   },
   NEET: {
     icon: <FaFlask />,
-    accent: "border-emerald-200 bg-emerald-50 text-emerald-700",
-    button: "bg-emerald-600 hover:bg-emerald-700",
-    gradient: "from-emerald-500 to-emerald-700",
-    lightBg: "bg-emerald-50",
-    lightText: "text-emerald-700",
-    ring: "ring-emerald-200",
+    accent: "border-slate-200 bg-slate-100 text-slate-700",
+    button: "bg-slate-800 hover:bg-slate-950",
+    lightBg: "bg-slate-100",
+    lightText: "text-slate-700",
+    ring: "ring-slate-300",
   },
 };
 
@@ -46,23 +44,23 @@ const formatDateTime = (value) => {
 
 const stateStyles = {
   Start: {
-    badge: "bg-emerald-50 text-emerald-700",
+    badge: "border border-slate-200 bg-slate-50 text-slate-700",
     label: "Open",
   },
   ReTest: {
-    badge: "bg-blue-50 text-blue-700",
+    badge: "border border-slate-200 bg-slate-50 text-slate-700",
     label: "Re-Test Available",
   },
   NotYetOpen: {
-    badge: "bg-amber-50 text-amber-700",
+    badge: "border border-slate-200 bg-slate-50 text-slate-700",
     label: "Not Yet Open",
   },
   Completed: {
-    badge: "bg-slate-100 text-slate-600",
+    badge: "border border-slate-200 bg-slate-100 text-slate-600",
     label: "Completed",
   },
   Unavailable: {
-    badge: "bg-slate-100 text-slate-600",
+    badge: "border border-slate-200 bg-slate-100 text-slate-600",
     label: "Unavailable",
   },
 };
@@ -74,8 +72,7 @@ function MockTestList({ examCategory, tests = [], loading = false }) {
   const visual = testVisuals[examCategory] || {
     icon: <FaClipboardList />,
     accent: "border-slate-200 bg-slate-50 text-slate-700",
-    button: "bg-slate-950 hover:bg-cyan-700",
-    gradient: "from-slate-700 to-slate-900",
+    button: "bg-slate-800 hover:bg-slate-950",
     lightBg: "bg-slate-50",
     lightText: "text-slate-700",
     ring: "ring-slate-200",
@@ -102,7 +99,7 @@ function MockTestList({ examCategory, tests = [], loading = false }) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center rounded-2xl border border-slate-200 bg-white shadow-md shadow-slate-200/70">
         <div className="text-center">
-          <div className="mx-auto mb-5 h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-cyan-700" />
+          <div className="mx-auto mb-5 h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-slate-700" />
           <h2 className="text-xl font-bold text-slate-950">Loading {examCategory} mock tests</h2>
           <p className="mt-2 text-sm text-slate-500">
             Fetching tests mapped to your {examCategory} registration.
@@ -118,7 +115,7 @@ function MockTestList({ examCategory, tests = [], loading = false }) {
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/70 sm:p-8">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <p className={`text-sm font-semibold uppercase tracking-[0.16em] ${visual.lightText}`}>
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-slate-600">
               {examCategory} Practice Portal
             </p>
             <h1 className="mt-3 text-3xl font-bold text-slate-950 md:text-4xl">
@@ -316,7 +313,7 @@ function MockTestList({ examCategory, tests = [], loading = false }) {
                       >
                         {stateStyle.label}
                       </span>
-                      <span className={`rounded-full px-3 py-1 text-sm font-semibold ${visual.lightBg} ${visual.lightText}`}>
+                      <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700">
                         {test.selectAllStudents ? "All mapped students" : "Restricted"}
                       </span>
                       <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold text-slate-700">
@@ -329,7 +326,7 @@ function MockTestList({ examCategory, tests = [], loading = false }) {
                       <button
                         type="button"
                         onClick={() => navigate(`/mock-test/instructions/${test.testId}`)}
-                        className={`mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 font-semibold text-white shadow-lg shadow-slate-200 transition ${visual.button}`}
+                        className={`mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3.5 font-semibold text-white shadow-md shadow-slate-300 transition ${visual.button}`}
                       >
                         {state === "ReTest" ? (
                           <>

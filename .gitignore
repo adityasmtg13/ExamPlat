@@ -24,3 +24,12 @@ Thumbs.db
 
 # Coverage
 coverage/
+
+# Python
+**/__pycache__/
+**/.venv/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.ipynb_checkpoints/
+*.py[cod]

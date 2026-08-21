@@ -39,7 +39,7 @@ function MockTestsJEE() {
         <button
           type="button"
           onClick={() => navigate("/mock-tests")}
-          className="mb-6 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-blue-600 hover:text-blue-700"
+          className="mb-6 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-400 hover:text-slate-950"
         >
           <FaArrowLeft className="text-xs" />
           Back to Exam Selection
