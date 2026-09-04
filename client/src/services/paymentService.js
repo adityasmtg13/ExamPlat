@@ -40,6 +40,32 @@ export const createPayment = async (paymentData) => {
 };
 
 /**
+ * Initiate payment attempt (user clicked "Pay")
+ * POST /api/payment/initiate
+ *
+ * This only marks the attempt as initiated — it does NOT confirm the payment.
+ * Confirmation happens server-side when the (mock) middleman receives funds.
+ */
+export const initiatePayment = async (paymentId, simulation) => {
+  try {
+    const response = await axios.post(
+      `${API}/initiate`,
+      { paymentId, simulation },
+      authConfig()
+    );
+
+    return response.data;
+  } catch (error) {
+    throw (
+      error.response?.data || {
+        success: false,
+        message: "Failed to initiate payment.",
+      }
+    );
+  }
+};
+
+/**
  * Complete payment (Mock Gateway)
  * POST /api/payment/complete
  */

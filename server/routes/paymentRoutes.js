@@ -5,6 +5,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 const {
   createPayment,
+  initiatePayment,
   completePayment,
   getPaymentHistory,
   getPaymentById,
@@ -12,6 +13,9 @@ const {
 
 // Create a new payment
 router.post("/create", authMiddleware, createPayment);
+
+// Initiate payment attempt (user clicked "Pay")
+router.post("/initiate", authMiddleware, initiatePayment);
 
 // Complete payment (Mock Payment Gateway)
 router.post("/complete", authMiddleware, completePayment);

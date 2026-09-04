@@ -22,6 +22,7 @@ const mockTestRoutes = require("./routes/mockTestRoutes");
 const mockExamRoutes = require("./routes/mockExamRoutes");
 const auditRoutes = require("./routes/auditRoutes");
 const rankPredictionRoutes = require("./routes/rankPredictionRoutes");
+const paymentLifecycle = require("./services/paymentLifecycle");
 
 connectDB();
 
@@ -55,4 +56,9 @@ const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+
+  // Payment lifecycle sweeper: enforces 5-minute session expiry, confirms
+  // received payments from the (mock) middleman, and finalizes receipts
+  // after the 20-second grace period — even with no user connected.
+  paymentLifecycle.startLifecycleSweeper();
 });

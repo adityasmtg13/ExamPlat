@@ -1,93 +1,13 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { FaArrowLeft, FaLock, FaMobileAlt, FaShieldAlt } from "react-icons/fa";
 import { completePayment } from "../services/paymentService";
 
 const MockUPIPayment = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const payment = location.state?.payment;
-
-  const [loading, setLoading] = useState(false);
-
-  if (!payment) {
-    navigate("/register-exam");
-    return null;
-  }
-
-  const handlePayment = async () => {
-    try {
-      setLoading(true);
-
-      // Simulate payment processing
-      await new Promise((resolve) => setTimeout(resolve, 2500));
-
-      const response = await completePayment(payment._id);
-
-      navigate("/payment/success", {
-        state: {
-          payment: response.payment,
-        },
-      });
-    } catch (error) {
-      toast.error(error.message || "Payment failed.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-gray-100 flex justify-center items-center p-6">
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl p-8">
-        <h1 className="text-3xl font-bold text-center text-blue-700 mb-8">
-          ExamPlat UPI Payment
-        </h1>
-
-        <div className="space-y-4 border rounded-xl p-5 mb-8">
-          <div className="flex justify-between">
-            <span className="font-medium">Merchant</span>
-            <span>ExamPlat</span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="font-medium">UPI ID</span>
-            <span>examplat@ybl</span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="font-medium">Payment Number</span>
-            <span>{payment.paymentNumber}</span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="font-medium">Amount</span>
-            <span className="font-bold text-green-600">
-              ₹{payment.amount}
-            </span>
-          </div>
-        </div>
-
-        <div className="mb-8 rounded-xl bg-blue-50 p-4 text-center">
-          <p className="text-gray-700">
-            Pay using UPI.
-          </p>
-        </div>
-
-        <button
-          onClick={handlePayment}
-          disabled={loading}
-          className={`w-full rounded-lg py-3 text-lg font-semibold text-white transition ${
-            loading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-green-600 hover:bg-green-700"
-          }`}
-        >
-          {loading ? "Processing Payment..." : `Pay ₹${payment.amount}`}
-        </button>
-      </div>
-    </div>
-  );
+  const navigate = useNavigate(); const location = useLocation(); const payment = location.state?.payment; const [loading, setLoading] = useState(false);
+  if (!payment) { navigate("/register-exam"); return null; }
+  const handlePayment = async () => { try { setLoading(true); await new Promise((resolve) => setTimeout(resolve, 2500)); const response = await completePayment(payment._id); navigate("/payment/success", { state: { payment: response.payment } }); } catch (error) { toast.error(error.message || "Payment failed."); } finally { setLoading(false); } };
+  return <div className="min-h-screen bg-[#f4f7fb] px-4 py-6 sm:px-6 sm:py-10"><main className="mx-auto w-full max-w-md overflow-hidden rounded-[28px] bg-white shadow-[0_24px_70px_rgba(15,23,42,0.13)] ring-1 ring-slate-200/70"><header className="flex items-center justify-between border-b border-slate-100 px-6 py-5"><button onClick={() => navigate(-1)} className="flex h-9 w-9 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100" aria-label="Go back"><FaArrowLeft /></button><div className="text-center"><p className="text-sm font-bold text-slate-900">ExamPlat</p><p className="text-[11px] font-medium text-slate-500">Secure checkout</p></div><div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"><FaLock className="text-xs" /></div></header><section className="px-6 py-8 sm:px-8"><div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-2xl text-white"><FaMobileAlt /></div><h1 className="mt-4 text-center text-xl font-bold text-slate-900">UPI payment</h1><p className="mt-1 text-center text-sm text-slate-500">Pay securely to ExamPlat</p><div className="mt-7 rounded-2xl bg-slate-50 px-5 py-5"><div className="flex justify-between text-sm"><span className="text-slate-500">UPI ID</span><span className="font-semibold text-slate-800">examplat@ybl</span></div><div className="my-4 border-t border-slate-200" /><div className="flex items-end justify-between"><div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Amount payable</p><p className="mt-1 text-3xl font-bold text-slate-900">₹{payment.amount}</p></div><span className="text-xs font-medium text-slate-500">{payment.paymentNumber}</span></div></div><button onClick={handlePayment} disabled={loading} className={`mt-7 w-full rounded-xl py-4 text-base font-bold text-white shadow-lg transition ${loading ? "cursor-not-allowed bg-slate-400 shadow-none" : "bg-[#1355e8] shadow-blue-200 hover:bg-blue-700"}`}>{loading ? "Processing payment..." : `Pay ₹${payment.amount}`}</button></section><footer className="flex items-center justify-center gap-2 border-t border-slate-100 bg-slate-50 px-5 py-4 text-xs text-slate-500"><FaShieldAlt className="text-blue-600" /> Bank-grade encrypted checkout</footer></main></div>;
 };
-
 export default MockUPIPayment;

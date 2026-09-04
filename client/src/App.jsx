@@ -20,6 +20,9 @@ import Payment from "./pages/Payment";
 import MockUPIPayment from "./pages/MockUPIPayment";
 import MockQRCode from "./pages/MockQRCode";
 import MockCardPayment from "./pages/MockCardPayment";
+import NetBankingPayment from "./pages/NetBankingPayment";
+import QRPayment from "./pages/QRPayment";
+import PaymentPasscode from "./pages/PaymentPasscode";
 import PaymentSuccess from "./pages/PaymentSuccess";
 
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -162,7 +165,36 @@ function App() {
         />
 
         <Route
-          path="/payment/success"
+          path="/payment/netbanking"
+          element={
+            <ProtectedRoute>
+              <NetBankingPayment />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* QR-scan dedicated payment page */}
+        <Route
+          path="/payment/scan/:paymentId"
+          element={
+            <ProtectedRoute>
+              <QRPayment />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* QR-scan passcode step */}
+        <Route
+          path="/payment/scan/:paymentId/passcode"
+          element={
+            <ProtectedRoute>
+              <PaymentPasscode />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/payment/success/:paymentId?"
           element={
             <ProtectedRoute>
               <PaymentSuccess />

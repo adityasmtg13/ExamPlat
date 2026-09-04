@@ -1,105 +1,13 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { FaArrowLeft, FaLock, FaQrcode, FaShieldAlt } from "react-icons/fa";
 import { completePayment } from "../services/paymentService";
 
 const MockQRCode = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const payment = location.state?.payment;
-
-  const [loading, setLoading] = useState(false);
-
-  if (!payment) {
-    navigate("/register-exam");
-    return null;
-  }
-
-  const handlePayment = async () => {
-    try {
-      setLoading(true);
-
-      // Simulate QR scan and payment delay
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      const response = await completePayment(payment._id);
-
-      navigate("/payment/success", {
-        state: {
-          payment: response.payment,
-        },
-      });
-    } catch (error) {
-      toast.error(error.message || "Payment failed.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-6">
-      <div className="w-full max-w-lg rounded-2xl bg-white p-8 shadow-xl">
-        <h1 className="mb-8 text-center text-3xl font-bold text-blue-700">
-          QR Code Payment
-        </h1>
-
-        <div className="mb-6 flex justify-center">
-          <img
-            src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=examplat@ybl&pn=ExamPlat&am=${payment.amount}`}
-            alt="QR Code"
-            className="rounded-lg border shadow"
-          />
-        </div>
-
-        <div className="mb-8 space-y-3 rounded-xl border p-5">
-          <div className="flex justify-between">
-            <span className="font-medium">Merchant</span>
-            <span>ExamPlat</span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="font-medium">UPI ID</span>
-            <span>examplat@ybl</span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="font-medium">Payment Number</span>
-            <span>{payment.paymentNumber}</span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="font-medium">Amount</span>
-            <span className="font-bold text-green-600">
-              ₹{payment.amount}
-            </span>
-          </div>
-        </div>
-
-        <div className="mb-6 rounded-lg bg-yellow-50 p-4 text-center text-sm text-gray-700">
-          <p>
-            In a real payment gateway, you would scan this QR code using your
-            preferred UPI application.
-          </p>
-          <p className="mt-2 font-semibold">
-            Click the button below for successful QR payment.
-          </p>
-        </div>
-
-        <button
-          onClick={handlePayment}
-          disabled={loading}
-          className={`w-full rounded-lg py-3 text-lg font-semibold text-white transition ${
-            loading
-              ? "cursor-not-allowed bg-gray-400"
-              : "bg-green-600 hover:bg-green-700"
-          }`}
-        >
-          {loading ? "Verifying Payment..." : `Pay ₹${payment.amount}`}
-        </button>
-      </div>
-    </div>
-  );
+  const navigate = useNavigate(); const location = useLocation(); const payment = location.state?.payment; const [loading, setLoading] = useState(false);
+  if (!payment) { navigate("/register-exam"); return null; }
+  const handlePayment = async () => { try { setLoading(true); await new Promise((resolve) => setTimeout(resolve, 3000)); const response = await completePayment(payment._id); navigate("/payment/success", { state: { payment: response.payment } }); } catch (error) { toast.error(error.message || "Payment failed."); } finally { setLoading(false); } };
+  return <div className="min-h-screen bg-[#f4f7fb] px-4 py-6 sm:px-6 sm:py-10"><main className="mx-auto w-full max-w-md overflow-hidden rounded-[28px] bg-white shadow-[0_24px_70px_rgba(15,23,42,0.13)] ring-1 ring-slate-200/70"><header className="flex items-center justify-between border-b border-slate-100 px-6 py-5"><button onClick={() => navigate(-1)} className="flex h-9 w-9 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100" aria-label="Go back"><FaArrowLeft /></button><div className="text-center"><p className="text-sm font-bold text-slate-900">ExamPlat</p><p className="text-[11px] font-medium text-slate-500">UPI checkout</p></div><div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"><FaLock className="text-xs" /></div></header><section className="px-6 py-7 text-center sm:px-8"><div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-xl text-blue-600"><FaQrcode /></div><h1 className="mt-3 text-xl font-bold text-slate-900">Scan & pay</h1><p className="mt-1 text-sm text-slate-500">Use any UPI app to scan this code</p><div className="mx-auto mt-6 w-fit rounded-2xl border border-slate-200 p-3 shadow-sm"><img src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=examplat@ybl&pn=ExamPlat&am=${payment.amount}`} alt="UPI QR Code" className="h-48 w-48 rounded-xl" /></div><div className="mt-6 flex items-center justify-between rounded-2xl bg-slate-50 px-5 py-4 text-left"><div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Amount payable</p><p className="mt-1 text-2xl font-bold text-slate-900">₹{payment.amount}</p></div><div className="text-right text-xs text-slate-500"><p>ExamPlat</p><p className="mt-1 font-medium">examplat@ybl</p></div></div><button onClick={handlePayment} disabled={loading} className={`mt-7 w-full rounded-xl py-4 text-base font-bold text-white shadow-lg transition ${loading ? "cursor-not-allowed bg-slate-400 shadow-none" : "bg-[#1355e8] shadow-blue-200 hover:bg-blue-700"}`}>{loading ? "Verifying payment..." : "I've completed payment"}</button></section><footer className="flex items-center justify-center gap-2 border-t border-slate-100 bg-slate-50 px-5 py-4 text-xs text-slate-500"><FaShieldAlt className="text-blue-600" /> Scan securely with your UPI app</footer></main></div>;
 };
-
 export default MockQRCode;

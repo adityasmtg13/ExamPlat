@@ -1,110 +1,18 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { FaCheckCircle, FaDownload, FaLock, FaShieldAlt } from "react-icons/fa";
 import { downloadReceipt } from "../services/receiptService";
+import { getPaymentById } from "../services/paymentService";
 
 const PaymentSuccess = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const payment = location.state?.payment;
-
-  if (!payment) {
-    navigate("/register-exam");
-    return null;
-  }
-
-  const handleDownloadReceipt = async () => {
-    try {
-      await downloadReceipt(payment._id);
-    } catch (error) {
-      toast.error(error.message || "Unable to download receipt.");
-    }
-  };
-
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-green-50 p-6">
-      <div className="w-full max-w-xl rounded-2xl bg-white p-8 shadow-xl">
-        <div className="mb-6 text-center">
-          <div className="mb-4 text-6xl">✅</div>
-
-          <h1 className="text-3xl font-bold text-green-700">
-            Payment Successful
-          </h1>
-
-          <p className="mt-2 text-gray-600">
-            Your exam registration payment has been completed successfully.
-          </p>
-        </div>
-
-        <div className="space-y-4 rounded-xl border p-6">
-          <div className="flex justify-between">
-            <span className="font-medium">Payment Number</span>
-            <span>{payment.paymentNumber}</span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="font-medium">Transaction ID</span>
-            <span className="break-all text-right">
-              {payment.transactionId}
-            </span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="font-medium">Amount Paid</span>
-            <span className="font-bold text-green-600">
-              ₹{payment.amount}
-            </span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="font-medium">Payment Method</span>
-            <span>{payment.paymentMethod}</span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="font-medium">Status</span>
-
-            <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">
-              {payment.status}
-            </span>
-          </div>
-
-          <div className="flex justify-between">
-            <span className="font-medium">Paid On</span>
-
-            <span>
-              {payment.paidAt
-                ? new Date(payment.paidAt).toLocaleString("en-IN")
-                : "-"}
-            </span>
-          </div>
-        </div>
-
-        <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-          <button
-            onClick={() => navigate("/register-exam")}
-            className="flex-1 rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-700"
-          >
-            Registration History
-          </button>
-
-          <button
-            onClick={handleDownloadReceipt}
-            className="flex-1 rounded-lg bg-green-600 px-5 py-3 font-semibold text-white transition hover:bg-green-700"
-          >
-            Download Receipt
-          </button>
-        </div>
-
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="mt-4 w-full rounded-lg border border-gray-300 px-5 py-3 font-semibold text-gray-700 transition hover:bg-gray-100"
-        >
-          Back to Dashboard
-        </button>
-      </div>
-    </div>
-  );
+  const navigate = useNavigate(); const location = useLocation(); const { paymentId } = useParams();
+  const [payment, setPayment] = useState(location.state?.payment || null); const [loading, setLoading] = useState(!location.state?.payment);
+  useEffect(() => { if (payment) return; if (!paymentId) { navigate("/register-exam", { replace: true }); return; } const loadPayment = async () => { try { const response = await getPaymentById(paymentId); setPayment(response.payment); } catch (error) { toast.error(error.message || "Unable to load payment details."); navigate("/register-exam", { replace: true }); } finally { setLoading(false); } }; loadPayment(); }, [payment, paymentId, navigate]);
+  if (loading) return <div className="flex min-h-screen items-center justify-center bg-[#f4f7fb]"><span className="h-7 w-7 animate-spin rounded-full border-3 border-blue-600 border-t-transparent" /></div>;
+  if (!payment) return null;
+  const handleDownloadReceipt = async () => { try { await downloadReceipt(payment._id); } catch (error) { toast.error(error.message || "Unable to download receipt."); } };
+  const details = [["Payment ID", payment.paymentNumber], ["Transaction ID", payment.transactionId], ["Payment method", payment.paymentMethod], ["Paid on", payment.paidAt ? new Date(payment.paidAt).toLocaleString("en-IN") : "-"]];
+  return <div className="min-h-screen bg-[#f4f7fb] px-4 py-6 sm:px-6 sm:py-10"><main className="mx-auto w-full max-w-md overflow-hidden rounded-[28px] bg-white shadow-[0_24px_70px_rgba(15,23,42,0.13)] ring-1 ring-slate-200/70"><header className="flex items-center justify-between border-b border-slate-100 px-6 py-5"><div><p className="font-bold text-slate-900">ExamPlat</p><p className="text-xs text-slate-500">Payment receipt</p></div><div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700"><FaLock className="text-[10px]" /> Secure</div></header><section className="px-6 py-8 sm:px-8"><div className="text-center"><div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600"><FaCheckCircle className="text-4xl" /></div><h1 className="mt-4 text-2xl font-bold tracking-tight text-slate-900">Payment successful</h1><p className="mt-2 text-sm text-slate-500">Your examination registration is confirmed.</p></div><div className="mt-7 rounded-2xl bg-emerald-50 px-5 py-4 text-center"><p className="text-xs font-semibold uppercase tracking-[0.12em] text-emerald-600">Amount paid</p><p className="mt-1 text-3xl font-bold text-emerald-700">₹{payment.amount}</p></div><div className="mt-5 divide-y divide-slate-100 rounded-2xl border border-slate-200 px-4">{details.map(([label, value]) => <div key={label} className="flex gap-4 py-3.5 text-sm"><span className="w-28 shrink-0 text-slate-500">{label}</span><span className="min-w-0 break-all text-right font-semibold text-slate-700">{value || "-"}</span></div>)}</div><button onClick={handleDownloadReceipt} className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-[#1355e8] py-4 text-base font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"><FaDownload /> Download receipt</button><button onClick={() => navigate("/register-exam")} className="mt-3 w-full rounded-xl border border-slate-200 py-3.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50">View registrations</button></section><footer className="flex items-center justify-center gap-2 border-t border-slate-100 bg-slate-50 px-5 py-4 text-xs text-slate-500"><FaShieldAlt className="text-blue-600" /> Your payment was securely processed</footer></main></div>;
 };
-
 export default PaymentSuccess;
