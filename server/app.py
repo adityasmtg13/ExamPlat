@@ -686,7 +686,7 @@ if __name__ == "__main__":
     port = int(
         os.environ.get(
             "PYTHON_PORT",
-            5001
+            5002
         )
     )
 

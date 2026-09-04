@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 const PYTHON_SERVICE_URL =
-  process.env.PYTHON_SERVICE_URL || "http://localhost:5001";
+  process.env.PYTHON_SERVICE_URL || "http://localhost:5002";
 
 /**
  * POST /api/predict-rank
