@@ -1,11 +1,7 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { downloadReceipt } from "../services/receiptService";
 
 function RegistrationHistory({ registrations = [] }) {
-  const navigate = useNavigate();
-
   const getStatusBadge = (status) => {
     switch (status) {
       case "Registered":
@@ -95,7 +91,11 @@ function RegistrationHistory({ registrations = [] }) {
                     {registration.status === "Pending Payment" && (
                       <button
                         onClick={() =>
-                          navigate(`/payment/${registration._id}`)
+                          window.open(
+                            `${window.location.origin}/payment/${registration._id}`,
+                            "_blank",
+                            "noopener,noreferrer"
+                          )
                         }
                         className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
                       >

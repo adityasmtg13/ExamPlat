@@ -1,24 +1,36 @@
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { FaArrowLeft, FaCreditCard, FaLock, FaShieldAlt } from "react-icons/fa";
-import { completePayment } from "../services/paymentService";
+import { completePayment, getPaymentById } from "../services/paymentService";
 
 const MockCardPayment = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const payment = location.state?.payment;
+  const [searchParams] = useSearchParams();
+  const [payment, setPayment] = useState(location.state?.payment || null);
+  const [pageLoading, setPageLoading] = useState(!location.state?.payment);
   const [cardNumber, setCardNumber] = useState("");
   const [cardHolder, setCardHolder] = useState("");
   const [expiry, setExpiry] = useState("");
   const [cvv, setCvv] = useState("");
   const [loading, setLoading] = useState(false);
-  if (!payment) { navigate("/register-exam"); return null; }
+  useEffect(() => {
+    if (payment) return;
+    const paymentId = searchParams.get("paymentId");
+    if (!paymentId) { navigate("/register-exam", { replace: true }); return; }
+    getPaymentById(paymentId).then((response) => setPayment(response.payment)).catch((error) => {
+      toast.error(error.message || "Unable to load payment details.");
+      navigate("/register-exam", { replace: true });
+    }).finally(() => setPageLoading(false));
+  }, [payment, searchParams, navigate]);
+  if (pageLoading) return <div className="flex min-h-screen items-center justify-center bg-[#f4f7fb]"><span className="h-7 w-7 animate-spin rounded-full border-3 border-blue-600 border-t-transparent" /></div>;
+  if (!payment) return null;
   const handlePayment = async (e) => {
     e.preventDefault();
     if (!cardNumber.trim() || !cardHolder.trim() || !expiry.trim() || !cvv.trim()) return toast.error("Please fill in all card details.");
     try { setLoading(true); await new Promise((resolve) => setTimeout(resolve, 3000)); const response = await completePayment(payment._id); navigate("/payment/success", { state: { payment: response.payment } }); }
-    catch (error) { toast.error(error.message || "Payment failed."); } finally { setLoading(false); }
+    catch { navigate(`/payment/success/${payment._id}`, { state: { payment: { ...payment, status: "Failed" }, failure: true } }); } finally { setLoading(false); }
   };
   const fieldClass = "mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-3 focus:ring-blue-100";
   return <div className="min-h-screen bg-[#f4f7fb] px-4 py-6 sm:px-6 sm:py-10"><main className="mx-auto w-full max-w-md overflow-hidden rounded-[28px] bg-white shadow-[0_24px_70px_rgba(15,23,42,0.13)] ring-1 ring-slate-200/70">
