@@ -22,6 +22,7 @@ const mockTestRoutes = require("./routes/mockTestRoutes");
 const mockExamRoutes = require("./routes/mockExamRoutes");
 const auditRoutes = require("./routes/auditRoutes");
 const rankPredictionRoutes = require("./routes/rankPredictionRoutes");
+const collegePredictionRoutes = require("./routes/collegePredictionRoutes");
 const paymentLifecycle = require("./services/paymentLifecycle");
 
 connectDB();
@@ -45,6 +46,7 @@ app.use("/api/mock-tests", mockTestRoutes);
 app.use("/api/mock-exam", mockExamRoutes);
 app.use("/api/audit", auditRoutes);
 app.use("/api/predict-rank", rankPredictionRoutes);
+app.use("/api/predict-colleges", collegePredictionRoutes);
 
 // Home Route
 app.get("/", (req, res) => {
