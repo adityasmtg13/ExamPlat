@@ -13,7 +13,9 @@ import MockTestsNEET from "./pages/MockTestsNEET";
 import ComingSoon from "./pages/ComingSoon";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsAndConditions from "./pages/TermsAndConditions";
+import CookiePolicy from "./pages/CookiePolicy";
 import ScrollToTop from "./components/ScrollToTop";
+import CookieConsentBanner from "./components/CookieConsentBanner";
 
 // Payment Pages
 import Payment from "./pages/Payment";
@@ -41,6 +43,7 @@ function App() {
   return (
     <>
       <ScrollToTop />
+      <CookieConsentBanner />
 
       <Routes>
         <Route path="/" element={<Home />} />
@@ -126,6 +129,7 @@ function App() {
 
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+        <Route path="/cookie-policy" element={<CookiePolicy />} />
 
         {/* Payment Routes */}
         <Route

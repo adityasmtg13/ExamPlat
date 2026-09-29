@@ -42,22 +42,32 @@ function RankPredictionModal({ exam, open, onClose }) {
       return;
     }
 
-    const averageMarks = exam.attempts?.length
-      ? Number(
-          (exam.attempts.reduce((sum, item) => sum + (item.score || 0), 0) / exam.attempts.length).toFixed(2)
-        )
+    const attempts = exam.attempts || [];
+    const scores = attempts.map((item) => item.score || 0);
+    const percentages = attempts.map((item) => Number(item.percentage || 0));
+
+    const highestMarks = attempts.length ? Math.max(...scores) : 0;
+    const lowestMarks = attempts.length ? Math.min(...scores) : 0;
+    const averageMarks = attempts.length
+      ? Number((scores.reduce((sum, s) => sum + s, 0) / attempts.length).toFixed(2))
+      : 0;
+
+    const highestPercentage = attempts.length ? Math.max(...percentages) : 0;
+    const lowestPercentage = attempts.length ? Math.min(...percentages) : 0;
+    const averagePercentage = attempts.length
+      ? Number((percentages.reduce((sum, p) => sum + p, 0) / attempts.length).toFixed(2))
       : 0;
 
     // Compute stats and predicted colleges inside useEffect
     const stats = [
       { label: "Exam Name", value: exam.examType || "N/A" },
-      { label: "Total Attempts", value: exam.totalAttempts ?? 0 },
-      { label: "Highest Marks", value: exam.highestMarks ?? "--" },
-      { label: "Lowest Marks", value: exam.lowestMarks ?? "--" },
-      { label: "Average Marks", value: exam.averageMarks ?? averageMarks ?? "--" },
-      { label: "Highest Percentage", value: exam.highestPercentage == null ? "--" : `${exam.highestPercentage}%` },
-      { label: "Lowest Percentage", value: exam.lowestPercentage == null ? "--" : `${exam.lowestPercentage}%` },
-      { label: "Average Percentage", value: exam.averagePercentage == null ? "--" : `${exam.averagePercentage}%` },
+      { label: "Total Attempts", value: exam.totalAttempts ?? attempts.length },
+      { label: "Highest Marks", value: highestMarks },
+      { label: "Lowest Marks", value: lowestMarks },
+      { label: "Average Marks", value: averageMarks },
+      { label: "Highest Percentage", value: `${highestPercentage}%` },
+      { label: "Lowest Percentage", value: `${lowestPercentage}%` },
+      { label: "Average Percentage", value: `${averagePercentage}%` },
     ];
 
     const predictedColleges = [
@@ -96,24 +106,32 @@ function RankPredictionModal({ exam, open, onClose }) {
     return null;
   }
 
-  // Re-compute stats and predictedColleges for rendering
-  // We need to get averageMarks here - but it was computed in useEffect
-  // We'll use a ref or compute it again. Let's compute averageMarks here too.
-  const averageMarks = exam.attempts?.length
-    ? Number(
-        (exam.attempts.reduce((sum, item) => sum + (item.score || 0), 0) / exam.attempts.length).toFixed(2)
-      )
+  // Re-compute stats for rendering from the exam's attempts
+  const attempts = exam.attempts || [];
+  const scores = attempts.map((item) => item.score || 0);
+  const percentages = attempts.map((item) => Number(item.percentage || 0));
+
+  const highestMarks = attempts.length ? Math.max(...scores) : 0;
+  const lowestMarks = attempts.length ? Math.min(...scores) : 0;
+  const averageMarks = attempts.length
+    ? Number((scores.reduce((sum, s) => sum + s, 0) / attempts.length).toFixed(2))
+    : 0;
+
+  const highestPercentage = attempts.length ? Math.max(...percentages) : 0;
+  const lowestPercentage = attempts.length ? Math.min(...percentages) : 0;
+  const averagePercentage = attempts.length
+    ? Number((percentages.reduce((sum, p) => sum + p, 0) / attempts.length).toFixed(2))
     : 0;
 
   const stats = [
     { label: "Exam Name", value: exam.examType || "N/A" },
-    { label: "Total Attempts", value: exam.totalAttempts ?? 0 },
-    { label: "Highest Marks", value: exam.highestMarks ?? "--" },
-    { label: "Lowest Marks", value: exam.lowestMarks ?? "--" },
-    { label: "Average Marks", value: exam.averageMarks ?? averageMarks ?? "--" },
-    { label: "Highest Percentage", value: exam.highestPercentage == null ? "--" : `${exam.highestPercentage}%` },
-    { label: "Lowest Percentage", value: exam.lowestPercentage == null ? "--" : `${exam.lowestPercentage}%` },
-    { label: "Average Percentage", value: exam.averagePercentage == null ? "--" : `${exam.averagePercentage}%` },
+    { label: "Total Attempts", value: exam.totalAttempts ?? attempts.length },
+    { label: "Highest Marks", value: highestMarks },
+    { label: "Lowest Marks", value: lowestMarks },
+    { label: "Average Marks", value: averageMarks },
+    { label: "Highest Percentage", value: `${highestPercentage}%` },
+    { label: "Lowest Percentage", value: `${lowestPercentage}%` },
+    { label: "Average Percentage", value: `${averagePercentage}%` },
   ];
 
   const predictedColleges = [

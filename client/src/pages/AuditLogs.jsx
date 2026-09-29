@@ -122,6 +122,9 @@ function AuditLogs() {
             <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
               Track all activities performed on your account.
             </p>
+            <p className="mt-3 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1 text-xs font-medium text-cyan-200">
+              Only the past 1 week of activity is shown.
+            </p>
           </div>
 
           <div className="p-6 sm:p-8">

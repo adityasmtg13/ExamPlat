@@ -5,8 +5,10 @@ import {
   FaHeadset,
   FaLock,
   FaShieldAlt,
+  FaCookieBite,
 } from "react-icons/fa";
 import logo from "../assets/logo.png";
+import { openCookieSettings } from "../services/cookieConsent";
 
 const footerCards = [
   {
@@ -28,11 +30,11 @@ const footerCards = [
   },
 ];
 
-function Footer() {
+function Footer({ footerRef }) {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-slate-200 bg-white">
+    <footer ref={footerRef} className="border-t border-slate-200 bg-white">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="grid gap-4 md:grid-cols-3">
           {footerCards.map((card) => (
@@ -79,6 +81,17 @@ function Footer() {
             <Link to="/terms-and-conditions" className="text-slate-600 hover:text-cyan-700">
               Terms &amp; Conditions
             </Link>
+            <Link to="/cookie-policy" className="text-slate-600 hover:text-cyan-700">
+              Cookie Policy
+            </Link>
+            <button
+              type="button"
+              onClick={openCookieSettings}
+              className="inline-flex items-center gap-2 text-slate-600 hover:text-cyan-700"
+            >
+              <FaCookieBite className="text-xs" />
+              Cookie Preferences
+            </button>
             <a href="mailto:support@ExamPlat - e-Examination Platformexamplatform.in" className="text-slate-600 hover:text-cyan-700">
               Contact Us
             </a>

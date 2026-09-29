@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import Navbar from "../components/Navbar";
 import QuickServiceCard from "../components/QuickServiceCard";
 import { getAnalytics } from "../services/mockTestService";
+import { predictRank } from "../services/rankPredictionService";
 import { getAuditLogs, logActivity } from "../services/auditService";
 import { getRegistrationHistory } from "../services/registrationService";
 import Footer from "../components/Footer";
@@ -86,6 +87,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const [student, setStudent] = useState(getStudent());
   const [analytics, setAnalytics] = useState(null);
+  const [rankPrediction, setRankPrediction] = useState(null);
   const [auditLogs, setAuditLogs] = useState([]);
   const [registeredExamsCount, setRegisteredExamsCount] = useState(0);
   const [registrations, setRegistrations] = useState([]);
@@ -139,6 +141,48 @@ function Dashboard() {
       window.removeEventListener("studentUpdated", syncStudent);
     };
   }, []);
+
+  // Compute average marks across all completed attempts
+  const computeAverageMarks = (analyticsData) => {
+    const groups = Object.values(analyticsData?.analytics || {});
+    let totalScore = 0;
+    let totalAttempts = 0;
+
+    groups.forEach((group) => {
+      (group.attempts || []).forEach((attempt) => {
+        totalScore += attempt.score || 0;
+        totalAttempts += 1;
+      });
+    });
+
+    return totalAttempts ? Number((totalScore / totalAttempts).toFixed(2)) : 0;
+  };
+
+  // Fetch the on-demand rank prediction once analytics are available
+  useEffect(() => {
+    if (!analytics) {
+      return;
+    }
+
+    const averageMarks = computeAverageMarks(analytics);
+
+    const fetchPrediction = async () => {
+      try {
+        const result = await predictRank({
+          averageMarks,
+          examType: "JEE Main",
+        });
+
+        if (result?.success) {
+          setRankPrediction(result);
+        }
+      } catch (err) {
+        console.error("Rank Prediction Error:", err);
+      }
+    };
+
+    fetchPrediction();
+  }, [analytics]);
 
   const handleRegisterClick = () => {
     if (!profileCompleted) {
@@ -380,13 +424,21 @@ function Dashboard() {
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
                     AIR
                   </p>
-                  <p className="mt-3 text-3xl font-bold text-slate-950">--</p>
+                  <p className="mt-3 text-3xl font-bold text-slate-950">
+                    {rankPrediction?.prediction?.estimatedRank
+                      ? `#${rankPrediction.prediction.estimatedRank.toLocaleString()}`
+                      : "--"}
+                  </p>
                 </div>
                 <div className="rounded-xl bg-slate-50 p-5">
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
-                    Percentile
+                    Percentage
                   </p>
-                  <p className="mt-3 text-3xl font-bold text-slate-950">--</p>
+                  <p className="mt-3 text-3xl font-bold text-slate-950">
+                    {analytics?.overall?.averagePercentage != null
+                      ? `${analytics.overall.averagePercentage}%`
+                      : "--"}
+                  </p>
                 </div>
                 <div className="rounded-xl bg-slate-50 p-5">
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
@@ -394,7 +446,9 @@ function Dashboard() {
                   </p>
 
                   <p className="mt-2 text-2xl font-bold text-slate-950">
-                    {analytics?.overall?.averagePercentile?.toFixed(2) ?? "0.00"}%
+                    {rankPrediction?.prediction?.percentile != null
+                      ? `${rankPrediction.prediction.percentile.toFixed(2)}%`
+                      : "0.00%"}
                   </p>
                 </div>
               </div>

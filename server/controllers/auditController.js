@@ -9,8 +9,21 @@ exports.getAuditLogs = async (req, res) => {
   try {
     const studentId = req.student.id;
 
-    const logs = await AuditLog.find({ studentId })
-      .sort({ createdAt: -1 });
+    // Data retention: only keep & return the past 1 week of activity
+    const RETENTION_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+    const cutoff = new Date(Date.now() - RETENTION_MS);
+
+    // Delete any audit logs older than the retention window
+    await AuditLog.deleteMany({
+      studentId,
+      createdAt: { $lt: cutoff },
+    });
+
+    // Only fetch logs from the past 7 days
+    const logs = await AuditLog.find({
+      studentId,
+      createdAt: { $gte: cutoff },
+    }).sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,

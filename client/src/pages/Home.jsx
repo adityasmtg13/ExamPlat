@@ -16,6 +16,7 @@ import {
 } from "react-icons/fa";
 import { MdEmojiEvents } from "react-icons/md";
 import logo from "../assets/logo.png";
+import Footer from "../components/Footer";
 
 function Home() {
   const heroRef = useRef(null);
@@ -664,46 +665,7 @@ function Home() {
       </div>
 
       {/* ===================== FOOTER ===================== */}
-      <footer ref={contactRef} className="bg-[#0d2d62] text-white">
-        <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-3 gap-12">
-          <div>
-            <div className="flex items-center gap-3 mb-5">
-              <img
-                            src={logo}
-                            alt="ExamPlat logo"
-                            className="h-12 w-12 rounded-lg bg-white p-1.5"
-              />
-              <h2 className="text-2xl font-bold">EXAMPLAT</h2>
-            </div>
-            <p className="leading-8 text-gray-300">
-              India's premier e-Examination platform providing
-              AI-powered practice tests, performance analytics,
-              and personalized resources for students
-              preparing for national competitive exams.
-            </p>
-          </div>
-          <div>
-            <h3 className="text-xl font-bold mb-5">Quick Links</h3>
-            <ul className="space-y-3 text-gray-300">
-              <li><Link to="/" className="hover:text-yellow-300 transition">Home</Link></li>
-              <li><Link to="/login" className="hover:text-yellow-300 transition">Student Login</Link></li>
-              <li><Link to="/register" className="hover:text-yellow-300 transition">Student Registration</Link></li>
-              <li><Link to="/mock-tests" className="hover:text-yellow-300 transition">Mock Tests</Link></li>
-              <li><Link to="/notifications" className="hover:text-yellow-300 transition">Notifications</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-xl font-bold mb-5">Contact Information</h3>
-            <p className="text-gray-300">EXAMPLAT</p>
-            <p className="text-gray-300">Amaravati - 522237</p>
-            <p className="text-gray-300 mt-3" href="mailto:support@examplat.in">📧 support@examplat.in</p>
-            <p className="text-gray-300">☎ 1800-000-0000</p>
-          </div>
-        </div>
-        <div className="border-t border-blue-700 py-5 text-center text-gray-300">
-          <p>© 2026 EXAMPLAT • All Rights Reserved</p>
-        </div>
-      </footer>
+      <Footer footerRef={contactRef} />
 
       {/* ===================== CSS ANIMATIONS ===================== */}
       <style jsx>{`

@@ -33,4 +33,10 @@ const auditLogSchema = new mongoose.Schema(
   }
 );
 
+// Auto-delete audit logs older than 7 days (data retention)
+auditLogSchema.index(
+  { createdAt: 1 },
+  { expireAfterSeconds: 7 * 24 * 60 * 60 }
+);
+
 module.exports = mongoose.model("AuditLog", auditLogSchema);
