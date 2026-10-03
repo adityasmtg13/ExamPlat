@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:5010/api/receipt";
+const API = "https://examplat-backend.onrender.com/api/receipt";
 
 /**
  * Get JWT token from localStorage
