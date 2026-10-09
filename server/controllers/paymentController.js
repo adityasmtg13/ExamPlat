@@ -1,3 +1,5 @@
+const jwt = require("jsonwebtoken");
+
 const Payment = require("../models/Payment");
 const ExamRegistration = require("../models/ExamRegistration");
 const {
@@ -8,6 +10,42 @@ const Student = require("../models/Student");
 const sendPaymentConfirmation = require("../utils/sendPaymentConfirmation");
 const createAuditLog = require("../utils/createAuditLog");
 const lifecycle = require("../services/paymentLifecycle");
+
+/**
+ * Signed, short-lived login token embedded in the payment QR URL.
+ *
+ * The QR acts as the "login details" delivered to the scanning device: the
+ * token is bound to the payment and its owner, and it expires together with
+ * the payment session. When scanned, the client exchanges it at
+ * /api/auth/qr-login for a normal session token, signs the student in
+ * automatically, and jumps straight to the UPI PIN step.
+ */
+const buildQrLoginToken = (payment, now = new Date()) => {
+  const ttlSeconds = Math.max(
+    60,
+    Math.ceil((payment.expiresAt.getTime() - now.getTime()) / 1000)
+  );
+
+  return jwt.sign(
+    {
+      purpose: "qr-payment-login",
+      studentId: payment.studentId.toString(),
+      paymentId: payment._id.toString(),
+    },
+    process.env.JWT_SECRET,
+    { expiresIn: ttlSeconds }
+  );
+};
+
+/**
+ * Serialize a payment for the createPayment response, augmented with the
+ * QR login token needed to build the "scan to pay" QR code on the client.
+ */
+const withQrLoginToken = (payment) => {
+  const data = payment.toObject ? payment.toObject() : { ...payment };
+  data.qrLoginToken = buildQrLoginToken(payment);
+  return data;
+};
 
 /**
  * Create a payment for a registration
@@ -75,7 +113,7 @@ const createPayment = async (req, res) => {
       if (active.status === "Pending") {
         return res.status(200).json({
           success: true,
-          payment: active,
+          payment: withQrLoginToken(active),
           paymentSession: lifecycle.buildSessionPayload(active, now),
         });
       }
@@ -92,7 +130,7 @@ const createPayment = async (req, res) => {
       const refreshed = await lifecycle.expirePaymentIfNeeded(initiated);
       return res.status(200).json({
         success: true,
-        payment: refreshed,
+        payment: withQrLoginToken(refreshed),
         paymentSession: lifecycle.buildSessionPayload(refreshed, now),
       });
     }
@@ -113,7 +151,7 @@ const createPayment = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Payment created successfully.",
-      payment,
+      payment: withQrLoginToken(payment),
       paymentSession: lifecycle.buildSessionPayload(payment, new Date()),
     });
   } catch (error) {

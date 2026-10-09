@@ -1,4 +1,4 @@
-const transporter = require("./mailSender");
+const { sendExamPlatMail } = require("./mailSender");
 const generateMockResultEmail = require("./mockResultEmail");
 const { generateMockResultBuffer } = require("./mockResultPdf");
 
@@ -21,14 +21,11 @@ const sendMockResultEmail = async ({ student, result }) => {
     // Send email
     const studentEmail = student?.email || student?.alternateEmail;
     const recipientEmail = studentEmail || process.env.BREVO_CC_EMAIL;
-    const recipients = [recipientEmail, process.env.BREVO_CC_EMAIL].filter(Boolean);
 
-    const senderAddress = process.env.BREVO_FROM_EMAIL || process.env.BREVO_SMTP_USER || "noreply@example.com";
-
-    await transporter.sendMail({
-      from: `"ExamPlat Results" <${senderAddress}>`,
-      to: [recipientEmail],
-      cc: studentEmail ? [process.env.BREVO_CC_EMAIL] : undefined,
+    await sendExamPlatMail({
+      senderLabel: "ExamPlat Results",
+      to: recipientEmail,
+      cc: studentEmail ? process.env.BREVO_CC_EMAIL : undefined,
       subject: email.subject,
       html: email.html,
 
@@ -41,7 +38,7 @@ const sendMockResultEmail = async ({ student, result }) => {
       ],
     });
 
-    console.log(`✅ Mock result email sent to ${recipients.join(", ")}`);
+    console.log(`✅ Mock result email sent to ${recipientEmail}`);
   } catch (err) {
     console.error("❌ Failed to send mock result email:", err);
     throw err;

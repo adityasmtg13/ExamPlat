@@ -177,14 +177,13 @@ function App() {
           }
         />
 
-        {/* QR-scan dedicated payment page */}
+        {/* QR-scan dedicated payment page.
+            Public by design: the QR code itself embeds a short-lived login
+            token, so a phone that scans it can be signed in automatically
+            (QRPayment handles auth: token exchange or redirect to /login). */}
         <Route
           path="/payment/scan/:paymentId"
-          element={
-            <ProtectedRoute>
-              <QRPayment />
-            </ProtectedRoute>
-          }
+          element={<QRPayment />}
         />
 
         {/* QR-scan passcode step */}

@@ -34,6 +34,18 @@ export const loginStudent = (data) => {
   return axios.post(`${API}/login`, data);
 };
 
+/**
+ * QR-scan auto-login
+ * POST /api/auth/qr-login
+ *
+ * Exchanges the short-lived token embedded in the payment QR for a normal
+ * session token + student profile, so the scanning device is signed in
+ * automatically and jumps straight to the UPI PIN step.
+ */
+export const qrLogin = (data) => {
+  return axios.post(`${API}/qr-login`, data);
+};
+
 export const logoutStudent = () => {
   return axios.post(`${API}/logout`, {}, authConfig());
 };

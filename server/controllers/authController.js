@@ -1,8 +1,9 @@
 const crypto = require("crypto");
 const Student = require("../models/Student");
+const Payment = require("../models/Payment");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const transporter = require("../utils/mailSender");
+const { sendExamPlatMail } = require("../utils/mailSender");
 const createAuditLog = require("../utils/createAuditLog");
 const { isValidEmail, isValidName, getPasswordValidationErrors } = require("../utils/validation");
 
@@ -62,17 +63,15 @@ exports.registerStudent = async (req, res) => {
     });
 
     try {
-      const recipients = [email, process.env.BREVO_CC_EMAIL].filter(Boolean);
-      const senderAddress = process.env.BREVO_FROM_EMAIL || process.env.BREVO_SMTP_USER || "noreply@example.com";
-      await transporter.sendMail({
-        from: `"ExamPlat Verification" <${senderAddress}>`,
-        to: [email],
-        cc: [process.env.BREVO_CC_EMAIL],
+      await sendExamPlatMail({
+        senderLabel: "ExamPlat Verification",
+        to: email,
+        cc: process.env.BREVO_CC_EMAIL,
         subject: "Verify your ExamPlat account",
         html: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
   <div style="background: #0f4c81; padding: 24px 32px; text-align: center;">
-    <a href="http://localhost:5173/" style="color: #ffffff; font-size: 24px; font-weight: 700; text-decoration: none;">
+    <a href="https://examplatstudent.vercel.app/" style="color: #ffffff; font-size: 24px; font-weight: 700; text-decoration: none;">
       ExamPlat
     </a>
     <div style="margin-top: 6px; color: #dbeafe; font-size: 14px;">
@@ -107,14 +106,14 @@ exports.registerStudent = async (req, res) => {
       © ${new Date().getFullYear()} ExamPlat. All rights reserved.
     </p>
 
-    <a href="http://localhost:5173/" style="color: #0f4c81; font-size: 13px; text-decoration: none;">
+    <a href="https://examplatstudent.vercel.app/" style="color: #0f4c81; font-size: 13px; text-decoration: none;">
       ExamPlat — e-Examination Platform
     </a>
   </div>
 </div>
         `,
       });
-      console.log(`OTP email sent to: ${recipients.join(", ")}`);
+      console.log(`OTP email sent to: ${email}`);
     } catch (mailError) {
       console.error("OTP email failed:", mailError);
     }
@@ -246,17 +245,14 @@ exports.resendOtp = async (req, res) => {
     student.isEmailVerified = false;
     await student.save();
 
-    const recipients = [email, process.env.BREVO_CC_EMAIL].filter(Boolean);
-    const senderAddress = process.env.BREVO_FROM_EMAIL || process.env.BREVO_SMTP_USER || "noreply@example.com";
-    await transporter.sendMail({
-      from: `"ExamPlat" <${senderAddress}>`,
-      to: [email],
-      cc: [process.env.BREVO_CC_EMAIL],
+    await sendExamPlatMail({
+      to: email,
+      cc: process.env.BREVO_CC_EMAIL,
       subject: "Your ExamPlat OTP",
       html: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
   <div style="background: #0f4c81; padding: 24px 32px; text-align: center;">
-    <a href="http://localhost:5173/" style="color: #ffffff; font-size: 24px; font-weight: 700; text-decoration: none;">
+    <a href="https://examplatstudent.vercel.app/" style="color: #ffffff; font-size: 24px; font-weight: 700; text-decoration: none;">
       ExamPlat
     </a>
     <div style="margin-top: 6px; color: #dbeafe; font-size: 14px;">
@@ -291,23 +287,25 @@ exports.resendOtp = async (req, res) => {
       © ${new Date().getFullYear()} ExamPlat. All rights reserved.
     </p>
 
-    <a href="http://localhost:5173/" style="color: #0f4c81; font-size: 13px; text-decoration: none;">
+    <a href="https://examplatstudent.vercel.app/" style="color: #0f4c81; font-size: 13px; text-decoration: none;">
       ExamPlat — e-Examination Platform
     </a>
   </div>
 </div>
       `,
     });
-    console.log(`Resend OTP email sent to: ${recipients.join(", ")}`);
+    console.log(`Resend OTP email sent to: ${email}`);
 
     res.status(200).json({
       success: true,
       message: "OTP resent successfully.",
     });
   } catch (err) {
+    console.error("Resend OTP email error:", err);
     res.status(500).json({
       success: false,
-      message: err.message,
+      message:
+        "Your OTP could not be sent right now. Please try again in a few minutes.",
     });
   }
 };
@@ -345,17 +343,15 @@ exports.forgotPassword = async (req, res) => {
       "Requested Password Reset"
     );
 
-    const recipients = [email, process.env.BREVO_CC_EMAIL].filter(Boolean);
-    const senderAddress = process.env.BREVO_FROM_EMAIL || process.env.BREVO_SMTP_USER || "noreply@example.com";
-    await transporter.sendMail({
-      from: `"ExamPlat Support" <${senderAddress}>`,
-      to: [email],
-      cc: [process.env.BREVO_CC_EMAIL],
+    await sendExamPlatMail({
+      senderLabel: "ExamPlat Support",
+      to: email,
+      cc: process.env.BREVO_CC_EMAIL,
       subject: "Reset your ExamPlat password",
       html: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
   <div style="background: #0f4c81; padding: 24px 32px; text-align: center;">
-    <a href="http://localhost:5173/" style="color: #ffffff; font-size: 24px; font-weight: 700; text-decoration: none;">
+    <a href="https://examplatstudent.vercel.app/" style="color: #ffffff; font-size: 24px; font-weight: 700; text-decoration: none;">
       ExamPlat
     </a>
     <div style="margin-top: 6px; color: #dbeafe; font-size: 14px;">
@@ -390,23 +386,25 @@ exports.forgotPassword = async (req, res) => {
       © ${new Date().getFullYear()} ExamPlat. All rights reserved.
     </p>
 
-    <a href="http://localhost:5173/" style="color: #0f4c81; font-size: 13px; text-decoration: none;">
+    <a href="https://examplatstudent.vercel.app/" style="color: #0f4c81; font-size: 13px; text-decoration: none;">
       ExamPlat — e-Examination Platform
     </a>
   </div>
 </div>
       `,
     });
-    console.log(`Password reset OTP email sent to: ${recipients.join(", ")}`);
+    console.log(`Password reset OTP email sent to: ${email}`);
 
     res.status(200).json({
       success: true,
       message: "Password reset OTP sent.",
     });
   } catch (err) {
+    console.error("Password reset email error:", err);
     res.status(500).json({
       success: false,
-      message: err.message,
+      message:
+        "Your password reset OTP could not be sent right now. Please try again in a few minutes.",
     });
   }
 };
@@ -486,6 +484,105 @@ exports.logoutStudent = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Logged out successfully.",
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+/**
+ * QR-scan auto-login
+ * POST /api/auth/qr-login
+ *
+ * The payment QR code embeds a short-lived, signed token (issued in
+ * paymentController.createPayment). Scanning the QR opens the payment page,
+ * which posts that token here. This endpoint verifies the token belongs to
+ * the given payment and its owner, then signs the student in with a normal
+ * session token — no credentials need to be typed on the scanning device.
+ */
+exports.qrLogin = async (req, res) => {
+  try {
+    const { token, paymentId } = req.body;
+
+    if (!token || !paymentId) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "This payment link is incomplete. Please scan the QR code again.",
+      });
+    }
+
+    let payload;
+    try {
+      payload = jwt.verify(token, process.env.JWT_SECRET);
+    } catch {
+      return res.status(401).json({
+        success: false,
+        message:
+          "This payment link has expired. Please generate a fresh payment QR code.",
+      });
+    }
+
+    if (
+      payload.purpose !== "qr-payment-login" ||
+      payload.paymentId !== paymentId
+    ) {
+      return res.status(401).json({
+        success: false,
+        message:
+          "This payment link is invalid. Please generate a fresh payment QR code.",
+      });
+    }
+
+    const payment = await Payment.findById(paymentId);
+
+    if (!payment) {
+      return res.status(404).json({
+        success: false,
+        message: "Payment not found.",
+      });
+    }
+
+    if (payment.studentId.toString() !== payload.studentId) {
+      return res.status(401).json({
+        success: false,
+        message:
+          "This payment link is invalid. Please generate a fresh payment QR code.",
+      });
+    }
+
+    const student = await Student.findById(payload.studentId);
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        message: "Student not found.",
+      });
+    }
+
+    const sessionToken = jwt.sign(
+      { id: student._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    await createAuditLog(
+      student._id,
+      "Student Login",
+      "Logged in via QR payment link."
+    );
+
+    const studentData = student.toObject();
+    delete studentData.password;
+
+    res.status(200).json({
+      success: true,
+      message: "Login Successful",
+      token: sessionToken,
+      student: studentData,
     });
   } catch (err) {
     res.status(500).json({

@@ -1,4 +1,4 @@
-const transporter = require("./mailSender");
+const { sendExamPlatMail } = require("./mailSender");
 const generatePaymentEmail = require("./paymentEmail");
 const {
   generateReceiptBuffer,
@@ -37,14 +37,11 @@ const sendPaymentConfirmation = async ({
     // Send email
     const studentEmail = student?.email || student?.alternateEmail;
     const recipientEmail = studentEmail || process.env.BREVO_CC_EMAIL;
-    const recipients = [recipientEmail, process.env.BREVO_CC_EMAIL].filter(Boolean);
 
-    const senderAddress = process.env.BREVO_FROM_EMAIL || process.env.BREVO_SMTP_USER || "noreply@example.com";
-
-    await transporter.sendMail({
-      from: `"ExamPlat Payments" <${senderAddress}>`,
-      to: [recipientEmail],
-      cc: studentEmail ? [process.env.BREVO_CC_EMAIL] : undefined,
+    await sendExamPlatMail({
+      senderLabel: "ExamPlat Payments",
+      to: recipientEmail,
+      cc: studentEmail ? process.env.BREVO_CC_EMAIL : undefined,
       subject: email.subject,
       html: email.html,
 
@@ -57,9 +54,7 @@ const sendPaymentConfirmation = async ({
       ],
     });
 
-    console.log(
-      `✅ Payment confirmation email sent to ${recipients.join(", ")}`
-    );
+    console.log(`✅ Payment confirmation email sent to ${recipientEmail}`);
   } catch (err) {
     console.error(
       "❌ Failed to send payment confirmation email:",

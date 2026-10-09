@@ -1,5 +1,11 @@
-import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import {
+  Navigate,
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import {
   FaChevronDown,
   FaChevronRight,
@@ -11,13 +17,25 @@ import {
 
 import usePaymentSession from "../hooks/usePaymentSession";
 import PaymentStatusScreen from "../components/PaymentStatusScreen";
+import { qrLogin } from "../services/authService";
+import { getToken, setStudent, setToken } from "../storage";
 
 /**
  * Dedicated payment page opened when the UPI QR code is scanned.
  *
- * The payment ID comes from the QR code URL. The relevant payment record and
- * live session state are loaded from the database (ownership is verified by
- * the backend). The UI is driven entirely by the backend status:
+ * The QR URL carries:
+ *   - the payment ID (path), and
+ *   - a short-lived, signed login token (`?login=...`) issued when the
+ *     payment was created (see paymentController.createPayment).
+ *
+ * Scanning the QR therefore logs the device in automatically
+ * (POST /api/auth/qr-login) and jumps straight to the UPI PIN step — no
+ * credentials are typed. When no token is present and nobody is signed in,
+ * the visitor is redirected to the normal login page.
+ *
+ * The payment record and live session state are loaded from the database
+ * (ownership is verified by the backend). The UI is driven entirely by the
+ * backend status:
  *
  *   Pending            → payment info + countdown + "Proceed to Payment"
  *   PaymentInitiated   → processing (attempt in progress)
@@ -27,10 +45,51 @@ import PaymentStatusScreen from "../components/PaymentStatusScreen";
  */
 const QRPayment = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { paymentId } = useParams();
+  const [searchParams] = useSearchParams();
+
+  // The QR code embeds a short-lived login token that lets the scanning
+  // device sign in automatically and go straight to the UPI PIN step.
+  const loginToken = searchParams.get("login");
+
+  const [signingIn, setSigningIn] = useState(false);
+  const [signInError, setSignInError] = useState(null);
 
   const { payment, loading, error, refresh, timeRemainingLabel } =
     usePaymentSession(paymentId);
+
+  // QR scanned → exchange the embedded token for a session, then jump
+  // directly to the PIN (passcode) entry page.
+  useEffect(() => {
+    if (!loginToken) return;
+
+    const autoSignIn = async () => {
+      try {
+        setSigningIn(true);
+
+        const response = await qrLogin({ token: loginToken, paymentId });
+
+        if (!response.success) {
+          throw new Error(response.message || "Sign-in failed.");
+        }
+
+        setToken(response.token);
+        setStudent(response.student);
+
+        // replace: true drops the login token from the URL bar.
+        navigate(`/payment/scan/${paymentId}/passcode`, { replace: true });
+      } catch (err) {
+        setSignInError(
+          err.message ||
+            "We could not sign you in automatically. Please log in manually."
+        );
+        setSigningIn(false);
+      }
+    };
+
+    autoSignIn();
+  }, [loginToken, paymentId, navigate]);
 
   // When the payment reaches Success (e.g. the user returns to this link
   // after the grace period), continue into the existing success flow.
@@ -46,6 +105,52 @@ const QRPayment = () => {
   const handleProceed = () => {
     navigate(`/payment/scan/${paymentId}/passcode`);
   };
+
+  // Public entry point: scanning devices are usually NOT logged in. With no
+  // login token and no active session, send them to the normal login page
+  // (they can return here afterwards to continue the payment).
+  if (!loginToken && !getToken()) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (signingIn) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#f4f7fb] px-6">
+        <div className="flex items-center gap-3 rounded-2xl bg-white px-5 py-4 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-slate-200">
+          <span className="h-5 w-5 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+          Signing you in securely...
+        </div>
+      </div>
+    );
+  }
+
+  if (signInError) {
+    return (
+      <PaymentStatusScreen
+        variant="failed"
+        title="Sign-in Link Expired"
+        message={signInError}
+        extra={
+          <div className="mt-6 text-center">
+            <button
+              onClick={() =>
+                navigate("/login", { state: { from: location }, replace: true })
+              }
+              className="flex w-full items-center justify-center rounded-xl bg-slate-900 py-3.5 text-sm font-bold text-white transition hover:bg-slate-700"
+            >
+              Continue to Login
+            </button>
+            <button
+              onClick={() => navigate("/register-exam", { replace: true })}
+              className="mt-3 w-full rounded-xl border border-slate-200 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50"
+            >
+              Go to Dashboard
+            </button>
+          </div>
+        }
+      />
+    );
+  }
 
   if (loading && !payment) {
     return (

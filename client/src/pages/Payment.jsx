@@ -40,7 +40,11 @@ const Payment = () => {
     if (registrationId) { fetchRegistration(); logActivity("Viewed Payments"); } else navigate("/register-exam");
   }, [registrationId, navigate]);
 
-  const qrPaymentUrl = payment ? `${window.location.origin}/payment/scan/${payment._id}` : null;
+  // The QR URL carries the short-lived login token, so scanning it signs the
+  // device in automatically and jumps straight to the UPI PIN step.
+  const qrPaymentUrl = payment
+    ? `${window.location.origin}/payment/scan/${payment._id}?login=${payment.qrLoginToken}`
+    : null;
   const chooseMethod = (method) => {
     if (method === "upi") return setSelectedMethod("upi");
     if (!payment) return;
@@ -101,7 +105,7 @@ const Payment = () => {
         <section className="bg-slate-50/60 px-6 py-7 sm:px-8">
           <div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-white"><FaMobileAlt /></div><div><h2 className="font-bold text-slate-900">Pay via UPI</h2><p className="text-xs text-slate-500">Scan QR or enter your UPI ID</p></div></div>
           <div className="mt-5 rounded-2xl bg-white p-4 ring-1 ring-slate-200"><label className="text-xs font-bold uppercase tracking-wide text-slate-500">UPI ID</label><div className="mt-2 flex gap-2"><input type="text" placeholder="yourname@upi" value={upiId} onChange={(e) => setUpiId(e.target.value)} className="min-w-0 flex-1 rounded-lg border border-slate-200 px-3 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-3 focus:ring-blue-100" /><button type="button" className="rounded-lg bg-slate-900 px-4 text-sm font-bold text-white transition hover:bg-slate-700">Send</button></div></div>
-          {payment && qrPaymentUrl ? <div className="mt-5 rounded-2xl bg-white p-5 text-center ring-1 ring-slate-200"><p className="text-sm font-bold text-slate-800">Scan with any UPI app</p><Link to={`/payment/scan/${payment._id}`} className="mx-auto mt-4 block w-fit rounded-xl border border-slate-200 bg-white p-2 shadow-sm transition hover:shadow-md"><img src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrPaymentUrl)}`} alt="UPI QR Code" className="h-44 w-44 rounded-lg" /></Link><div className="mt-4 flex items-center justify-center gap-2 text-xs text-slate-500"><FaQrcode /> Click the QR to continue in this demo</div></div> : <div className="mt-5 rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">QR code is unavailable for this registration.</div>}
+          {payment && qrPaymentUrl ? <div className="mt-5 rounded-2xl bg-white p-5 text-center ring-1 ring-slate-200"><p className="text-sm font-bold text-slate-800">Scan with any UPI app</p><Link to={`/payment/scan/${payment._id}?login=${payment.qrLoginToken}`} className="mx-auto mt-4 block w-fit rounded-xl border border-slate-200 bg-white p-2 shadow-sm transition hover:shadow-md"><img src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrPaymentUrl)}`} alt="UPI QR Code" className="h-44 w-44 rounded-lg" /></Link><div className="mt-4 flex items-center justify-center gap-2 text-xs text-slate-500"><FaQrcode /> Click the QR to continue in this demo</div></div> : <div className="mt-5 rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">QR code is unavailable for this registration.</div>}
         </section>
       </div>
       <footer className="flex items-center justify-center gap-2 border-t border-slate-100 bg-white px-5 py-4 text-xs text-slate-500"><FaShieldAlt className="text-blue-600" /> Payments are secured with bank-grade encryption</footer>

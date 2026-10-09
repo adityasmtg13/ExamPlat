@@ -12,7 +12,8 @@ resendOtp,
 forgotPassword,
 resetPassword,
 loginStudent,
-logoutStudent
+logoutStudent,
+qrLogin
 
 }=require("../controllers/authController");
 
@@ -22,6 +23,7 @@ router.post("/resend-otp",resendOtp);
 router.post("/forgot-password",forgotPassword);
 router.post("/reset-password",resetPassword);
 router.post("/login",loginStudent);
+router.post("/qr-login",qrLogin);
 router.post("/logout", authMiddleware, logoutStudent);
 
 module.exports=router;

@@ -747,7 +747,7 @@ npm run dev
 Frontend
 
 ```text
-http://localhost:5173
+https://examplatstudent.vercel.app
 ```
 
 Backend

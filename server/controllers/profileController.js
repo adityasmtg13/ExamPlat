@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
 const Student = require("../models/Student");
-const transporter = require("../utils/mailSender");
+const { sendExamPlatMail } = require("../utils/mailSender");
 const createAuditLog = require("../utils/createAuditLog");
 const {
   isValidAddress,
@@ -224,14 +224,13 @@ exports.sendAccountSettingsOtp = async (req, res) => {
 
     await student.save();
 
-    const recipients = [action === "email" ? normalizedEmail : student.email, process.env.BREVO_CC_EMAIL].filter(Boolean);
-    const senderAddress = process.env.BREVO_FROM_EMAIL || process.env.BREVO_SMTP_USER || "noreply@example.com";
+    const recipientEmail = action === "email" ? normalizedEmail : student.email;
 
     try {
-      await transporter.sendMail({
-        from: `"ExamPlat Security" <${senderAddress}>`,
-        to: [action === "email" ? normalizedEmail : student.email],
-        cc: [process.env.BREVO_CC_EMAIL],
+      await sendExamPlatMail({
+        senderLabel: "ExamPlat Security",
+        to: recipientEmail,
+        cc: process.env.BREVO_CC_EMAIL,
         subject: action === "email"
           ? "Verify your new Email Address"
           : action === "password"
@@ -242,7 +241,7 @@ exports.sendAccountSettingsOtp = async (req, res) => {
         html: `
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
   <div style="background: #0f4c81; padding: 24px 32px; text-align: center;">
-    <a href="http://localhost:5173/" style="color: #ffffff; font-size: 24px; font-weight: 700; text-decoration: none;">
+    <a href="https://examplatstudent.vercel.app/" style="color: #ffffff; font-size: 24px; font-weight: 700; text-decoration: none;">
       ExamPlat
     </a>
     <div style="margin-top: 6px; color: #dbeafe; font-size: 14px;">
@@ -290,14 +289,14 @@ exports.sendAccountSettingsOtp = async (req, res) => {
       © ${new Date().getFullYear()} ExamPlat. All rights reserved.
     </p>
 
-    <a href="http://localhost:5173/" style="color: #0f4c81; font-size: 13px; text-decoration: none;">
+    <a href="https://examplatstudent.vercel.app/" style="color: #0f4c81; font-size: 13px; text-decoration: none;">
       ExamPlat — e-Examination Platform
     </a>
   </div>
 </div>
         `,
       });
-      console.log(`Settings OTP email sent to: ${recipients.join(", ")}`);
+      console.log(`Settings OTP email sent to: ${recipientEmail}`);
     } catch (mailError) {
       console.error("Settings OTP email failed:", mailError);
     }
