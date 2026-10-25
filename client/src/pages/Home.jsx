@@ -233,7 +233,7 @@ function Home() {
             <div className="max-w-3xl">
               <div className="flex items-center gap-3 mb-6">
                 <div className="bg-yellow-400 text-[#0d2d62] px-4 py-2 rounded-full font-bold text-sm">
-                  India's AI Powered Examination Platform
+                  India's Examination Platform
                 </div>
               </div>
               <h1 className="text-6xl font-bold text-white mb-5 leading-tight">
