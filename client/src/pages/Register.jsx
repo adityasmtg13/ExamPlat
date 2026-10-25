@@ -89,6 +89,10 @@ function Register() {
         duration: 5000,
       });
     } catch (err) {
+      if (err.response?.data?.registrationPending) {
+        setRegisteredEmail(form.email.trim());
+        setOtpStep(true);
+      }
       const errorMessages = err.response?.data?.errors || [];
       if (errorMessages.length > 0) {
         errorMessages.forEach((message) => toast.error(message));

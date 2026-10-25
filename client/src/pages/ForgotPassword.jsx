@@ -62,7 +62,11 @@ function ForgotPassword() {
 
     try {
       setLoading(true);
-      const res = await resetPassword({ email: email.trim(), otp, password });
+      const res = await resetPassword({
+        email: email.trim(),
+        otp,
+        newPassword: password,
+      });
       if (res.data?.token) {
         localStorage.setItem("token", res.data.token);
       }

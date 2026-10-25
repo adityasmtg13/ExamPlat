@@ -116,6 +116,12 @@ exports.registerStudent = async (req, res) => {
       console.log(`OTP email sent to: ${email}`);
     } catch (mailError) {
       console.error("OTP email failed:", mailError);
+      return res.status(503).json({
+        success: false,
+        registrationPending: true,
+        message:
+          "Your account was created, but we could not send the verification code. Please use Resend OTP.",
+      });
     }
 
     const studentData = student.toObject();
@@ -218,6 +224,9 @@ exports.verifyOtp = async (req, res) => {
 };
 
 exports.resendOtp = async (req, res) => {
+  let student;
+  let previousOtp;
+  let previousOtpExpiresAt;
   try {
     const { email } = req.body;
 
@@ -228,7 +237,7 @@ exports.resendOtp = async (req, res) => {
       });
     }
 
-    const student = await Student.findOne({ email });
+    student = await Student.findOne({ email });
 
     if (!student) {
       return res.status(404).json({
@@ -237,6 +246,15 @@ exports.resendOtp = async (req, res) => {
       });
     }
 
+    if (student.isEmailVerified) {
+      return res.status(400).json({
+        success: false,
+        message: "This email is already verified. Please sign in.",
+      });
+    }
+
+    previousOtp = student.otp;
+    previousOtpExpiresAt = student.otpExpiresAt;
     const otp = crypto.randomInt(100000, 999999).toString();
     const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
@@ -302,6 +320,15 @@ exports.resendOtp = async (req, res) => {
     });
   } catch (err) {
     console.error("Resend OTP email error:", err);
+    if (student) {
+      student.otp = previousOtp;
+      student.otpExpiresAt = previousOtpExpiresAt;
+      try {
+        await student.save();
+      } catch (rollbackError) {
+        console.error("Resend OTP rollback error:", rollbackError);
+      }
+    }
     res.status(500).json({
       success: false,
       message:
@@ -411,12 +438,20 @@ exports.forgotPassword = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
   try {
-    const { email, otp, password } = req.body;
+    const { email, otp, newPassword } = req.body;
 
-    if (!email || !otp || !password) {
+    if (!email || !otp || !newPassword) {
       return res.status(400).json({
         success: false,
         message: "Email, OTP, and new password are required.",
+      });
+    }
+
+    const passwordErrors = getPasswordValidationErrors(newPassword);
+    if (passwordErrors.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: passwordErrors[0],
       });
     }
 
@@ -436,7 +471,7 @@ exports.resetPassword = async (req, res) => {
       });
     }
 
-    student.password = await bcrypt.hash(password, 10);
+    student.password = await bcrypt.hash(newPassword, 10);
     student.otp = null;
     student.otpExpiresAt = null;
     await student.save();
