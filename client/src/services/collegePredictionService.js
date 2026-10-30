@@ -1,7 +1,8 @@
 import axios from "axios";
+import API_BASE_URL from "./api";
 
 const COLLEGE_PREDICTION_API =
-  "https://examplat-backend.onrender.com/api/predict-colleges";
+  `${API_BASE_URL}/predict-colleges`;
 
 const getToken = () => localStorage.getItem("token");
 

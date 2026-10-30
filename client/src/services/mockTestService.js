@@ -1,7 +1,8 @@
 import axios from "axios";
+import API_BASE_URL from "./api";
 
-const MOCK_TEST_API = "https://examplat-backend.onrender.com/api/mock-tests";
-const MOCK_EXAM_API = "https://examplat-backend.onrender.com/api/mock-exam";
+const MOCK_TEST_API = `${API_BASE_URL}/mock-tests`;
+const MOCK_EXAM_API = `${API_BASE_URL}/mock-exam`;
 
 /**
  * Get JWT Token

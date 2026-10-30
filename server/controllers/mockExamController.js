@@ -148,6 +148,7 @@ exports.getMockQuestions = async (req, res) => {
 
       attempt: {
         _id: attempt._id,
+        testId: attempt.testId,
         examType: attempt.examType,
         attemptNumber: attempt.attemptNumber,
       },

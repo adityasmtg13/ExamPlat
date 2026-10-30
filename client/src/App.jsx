@@ -35,6 +35,7 @@ import MockInstructions from "./pages/MockInstructions";
 import MockExam from "./pages/MockExam";
 import MockResult from "./pages/MockResult";
 import Marks from "./pages/Marks";
+import FinalResult from "./pages/FinalResult";
 import AnalyticsDashboard from "./pages/AnalyticsDashboard";
 import Settings from "./pages/Settings";
 import AuditLogs from "./pages/AuditLogs";
@@ -237,6 +238,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Marks />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/final-result"
+          element={
+            <ProtectedRoute>
+              <FinalResult />
             </ProtectedRoute>
           }
         />

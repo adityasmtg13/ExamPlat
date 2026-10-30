@@ -34,6 +34,13 @@ function MockInstructions() {
     try {
       setStarting(true);
 
+      if (!document.fullscreenElement) {
+        if (!document.documentElement.requestFullscreen) {
+          throw new Error("Fullscreen mode is not supported in this browser.");
+        }
+        await document.documentElement.requestFullscreen();
+      }
+
       const response = await startMockAttempt(testId);
       navigate(`/mock-test/exam/${response.attempt._id}`);
     } catch (error) {
@@ -43,6 +50,7 @@ function MockInstructions() {
         );
 
         if (!submitPrevious) {
+          if (document.fullscreenElement) await document.exitFullscreen();
           return;
         }
 
@@ -57,6 +65,7 @@ function MockInstructions() {
           );
         }
       } else {
+        if (document.fullscreenElement) await document.exitFullscreen();
         toast.error(error.message || "Unable to start the selected test.");
       }
     } finally {
@@ -145,6 +154,8 @@ function MockInstructions() {
               <li>Read every question carefully before answering.</li>
               <li>Responses are stored locally until submission.</li>
               <li>Use the navigation buttons to move between questions.</li>
+              <li>The examination opens in fullscreen. Exiting fullscreen automatically submits your current attempt.</li>
+              <li>Copying, pasting, opening developer tools, or attempting a screenshot is restricted and will show a warning.</li>
               <li>Submit the examination once completed.</li>
               <li>Only eligible mapped students can attempt this test.</li>
             </ol>
@@ -174,7 +185,7 @@ function MockInstructions() {
                   : "cursor-not-allowed bg-gray-400"
               }`}
             >
-              {starting ? "Starting..." : test.canAttempt ? "Start Test" : "Not Available"}
+              {starting ? "Starting..." : test.canAttempt ? "Start Fullscreen Test" : "Not Available"}
             </button>
           </div>
         </div>

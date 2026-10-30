@@ -668,7 +668,7 @@ function Home() {
       <Footer footerRef={contactRef} />
 
       {/* ===================== CSS ANIMATIONS ===================== */}
-      <style jsx>{`
+      <style>{`
         @keyframes scroll {
           0% {
             transform: translateX(0);

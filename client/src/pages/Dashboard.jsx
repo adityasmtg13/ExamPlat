@@ -7,6 +7,7 @@ import { getAnalytics } from "../services/mockTestService";
 import { predictRank } from "../services/rankPredictionService";
 import { getAuditLogs, logActivity } from "../services/auditService";
 import { getRegistrationHistory } from "../services/registrationService";
+import { getFinalResults } from "../services/finalResultService";
 import Footer from "../components/Footer";
 import {
   FaUserCircle,
@@ -24,6 +25,7 @@ import {
   FaClipboardCheck,
   FaHistory,
   FaChevronRight,
+  FaAward,
 } from "react-icons/fa";
 import { getStudent } from "../storage";
 import { isProfileComplete } from "../utils/profileUtils";
@@ -91,6 +93,7 @@ function Dashboard() {
   const [auditLogs, setAuditLogs] = useState([]);
   const [registeredExamsCount, setRegisteredExamsCount] = useState(0);
   const [registrations, setRegistrations] = useState([]);
+  const [finalResults, setFinalResults] = useState([]);
 
   const profileCompleted = isProfileComplete(student);
 
@@ -126,6 +129,15 @@ function Dashboard() {
     }
   };
 
+  const fetchFinalResults = async () => {
+    try {
+      const response = await getFinalResults();
+      setFinalResults(response.results || []);
+    } catch (error) {
+      console.error("Final Results Error:", error);
+    }
+  };
+
   useEffect(() => {
     const syncStudent = () => setStudent(getStudent());
 
@@ -133,6 +145,7 @@ function Dashboard() {
     fetchAnalytics();
     fetchAuditLogs();
     fetchRegistrations();
+    fetchFinalResults();
     logActivity("Viewed Dashboard");
 
     window.addEventListener("studentUpdated", syncStudent);
@@ -241,7 +254,20 @@ function Dashboard() {
         ? ""
         : "Fill all profile details correctly to proceed with examination registration.",
     },
+    ...(finalResults.length > 0
+      ? [{
+          title: "Final Exam Results",
+          description: "View your published final examination results.",
+          icon: <FaAward />,
+          iconClassName: "text-emerald-600",
+          onClick: () => navigate("/final-result"),
+        }]
+      : []),
   ];
+
+  const latestResultNotifications = finalResults
+    .sort((a, b) => new Date(b.exam.publishedAt || 0) - new Date(a.exam.publishedAt || 0))
+    .slice(0, 3);
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900">
@@ -518,22 +544,24 @@ function Dashboard() {
             </div>
 
             <div className="mt-6 grid gap-4">
-              <div className="flex items-start gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
-                <FaCheckCircle className="mt-1 shrink-0 text-emerald-600" />
-                <p className="text-sm font-medium text-slate-700">
-                  JEE Main Mock Test Portal Available
-                </p>
-              </div>
-              <div className="flex items-start gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
-                <FaCheckCircle className="mt-1 shrink-0 text-emerald-600" />
-                <p className="text-sm font-medium text-slate-700">
-                  New Analytics Update Released
-                </p>
-              </div>
-              <div className="flex items-start gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
-                <FaCheckCircle className="mt-1 shrink-0 text-emerald-600" />
-                <p className="text-sm font-medium text-slate-700">Rank Predictor Improved</p>
-              </div>
+              {latestResultNotifications.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-5 text-sm text-slate-500">
+                  No recent final exam results have been released for you.
+                </div>
+              ) : latestResultNotifications.map(({ exam }) => (
+                <button
+                  key={exam.id}
+                  type="button"
+                  onClick={() => navigate("/final-result")}
+                  className="flex items-start gap-3 rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-left transition hover:border-emerald-300"
+                >
+                  <FaCheckCircle className="mt-1 shrink-0 text-emerald-600" />
+                  <span>
+                    <span className="block text-sm font-semibold text-slate-800">{exam.title} results released</span>
+                    {exam.publishedAt && <span className="mt-1 block text-xs text-slate-500">{new Date(exam.publishedAt).toLocaleDateString("en-IN")}</span>}
+                  </span>
+                </button>
+              ))}
             </div>
           </section>
 

@@ -1,6 +1,7 @@
 import axios from "axios";
+import API_BASE_URL from "./api";
 
-const API = "https://examplat-backend.onrender.com/api/registration";
+const API = `${API_BASE_URL}/registration`;
 
 // Get JWT Token
 const getToken = () => {
