@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "https://examplat-backend.onrender.com/api/audit";
+const API = "http://localhost:5010/api/audit";
 
 /**
  * Get JWT token from localStorage

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "https://examplat-backend.onrender.com/api/registration";
+const API = "http://localhost:5010/api/registration";
 
 // Get JWT Token
 const getToken = () => {

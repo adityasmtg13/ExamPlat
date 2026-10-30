@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const RANK_PREDICTION_API = "https://examplat-backend.onrender.com/api/predict-rank";
+const RANK_PREDICTION_API = "http://localhost:5010/api/predict-rank";
 
 const getToken = () => localStorage.getItem("token");
 

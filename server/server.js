@@ -28,26 +28,32 @@ const { resolveSender } = require("./utils/mailSender");
 
 /**
  * Mail configuration sanity check. Logs a clear warning at boot if the app
- * can never send email (missing SMTP credentials), so a misconfigured
+ * can never send email (missing Brevo API key), so a misconfigured
  * environment (e.g. Render missing the BREVO_* variables) is obvious in the
  * logs instead of silently producing 500s / silent send failures.
  */
 const verifyMailConfig = () => {
-  const hasUser = !!process.env.BREVO_SMTP_USER;
-  const hasPass = !!process.env.BREVO_SMTP_PASS;
+  const hasApiKey = !!process.env.BREVO_API_KEY;
+  const hasFrom = !!process.env.BREVO_FROM_EMAIL;
 
-  if (!hasUser || !hasPass) {
+  if (!hasApiKey) {
     console.error(
-      "⚠️  BREVO SMTP credentials are MISSING " +
-        "(BREVO_SMTP_USER / BREVO_SMTP_PASS not set). " +
+      "⚠️  BREVO_API_KEY is MISSING. " +
         "ALL emails (OTP, password reset, payment receipts, mock results) " +
-        "will fail. Add them to server/.env locally and to the Render " +
+        "will fail. Add it to server/.env locally and to the Render " +
         "dashboard Environment for production."
     );
     return false;
   }
 
-  console.log(`📧 Mail configured → From: ${resolveSender()}`);
+  if (!hasFrom) {
+    console.warn(
+      "⚠️  BREVO_FROM_EMAIL is not set; falling back to default sender address. " +
+        "Make sure the sender is verified in the Brevo dashboard."
+    );
+  }
+
+  console.log(`📧 Mail configured (Brevo HTTP API) → From: ${resolveSender()}`);
   return true;
 };
 

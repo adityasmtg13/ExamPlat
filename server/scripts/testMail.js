@@ -22,9 +22,7 @@ const to = process.env.BREVO_CC_EMAIL;
 const from = resolveSender();
 
 console.log("─".repeat(60));
-console.log("SMTP host :", process.env.BREVO_SMTP_HOST || "smtp-relay.brevo.com");
-console.log("SMTP user :", process.env.BREVO_SMTP_USER);
-console.log("SMTP pass :", process.env.BREVO_SMTP_PASS ? "✓ set" : "✗ MISSING");
+console.log("API key  :", process.env.BREVO_API_KEY ? "✓ set" : "✗ MISSING");
 console.log("From      :", from);
 console.log("To        :", to);
 console.log("─".repeat(60));
@@ -36,7 +34,7 @@ if (!to) {
 
 (async () => {
   try {
-    await sendExamPlatMail({
+    const result = await sendExamPlatMail({
       senderLabel: "ExamPlat Mail Test",
       to,
       subject: "ExamPlat mail self-test",
@@ -49,7 +47,10 @@ if (!to) {
       ].join(""),
     });
 
-    console.log("✔ ACCEPTED (250) - relay accepted the mail.");
+    console.log("✔ ACCEPTED - Brevo API accepted the mail.");
+    if (result && result.messageId) {
+      console.log("  messageId:", result.messageId);
+    }
     console.log(
       "  Next: check the inbox/junk for the message, and Brevo Statistics → Logs for delivery status."
     );
