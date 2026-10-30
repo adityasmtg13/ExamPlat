@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const COLLEGE_PREDICTION_API =
-  "http://localhost:5010/api/predict-colleges";
+  "https://examplat-backend.onrender.com/api/predict-colleges";
 
 const getToken = () => localStorage.getItem("token");
 
