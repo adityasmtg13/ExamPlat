@@ -1,6 +1,6 @@
 # 🇮🇳 ExamPlat - e-Examination Platform (ExamPlat)
 
-An AI-powered MERN Stack based examination platform inspired by the **ExamPlat - e-Examination Platform .**. The platform enables students to register, prepare, and participate in competitive examinations such as **JEE**, **NEET**, and other ExamPlat - e-Examination Platform-level entrance exams through a secure government-style portal.
+A MERN Stack based examination platform inspired by the **ExamPlat - e-Examination Platform .**. The platform enables students to register, prepare, and participate in competitive examinations such as **JEE**, **NEET**, and other ExamPlat - e-Examination Platform-level entrance exams through a secure government-style portal.
 
 ExamPlat provides secure authentication, student profile management, examination registration, mock payment gateway, downloadable PDF receipts, and a modern dashboard experience.
 
